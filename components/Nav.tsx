@@ -1,34 +1,40 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
-const links = [
+const leftLinks = [
   { href: "#about", label: "About" },
   { href: "#journey", label: "Journey" },
   { href: "#portfolio", label: "Portfolio" },
+];
+
+const rightLinks = [
   { href: "#velar", label: "Velar Studio" },
   { href: "#capabilities", label: "Capabilities" },
   { href: "#contact", label: "Contact" },
 ];
 
+const allLinks = [...leftLinks, ...rightLinks];
+
 export default function Nav() {
   const [open, setOpen] = useState(false);
-  const headerRef = useRef<HTMLElement>(null);
+  const [docked, setDocked] = useState(false);
 
-  // The hero sizes itself against the nav, which occupies flow. Publish the
-  // real measured height so the two can't drift apart across breakpoints.
+  // The in-hero nav scrolls away with the hero; once it is gone, dock a slim
+  // bar at the top so navigation stays reachable. Driven by scroll position
+  // rather than IntersectionObserver: observer callbacks are tied to the
+  // rendering lifecycle, so they stall wherever frames are throttled.
   useEffect(() => {
-    const el = headerRef.current;
-    if (!el) return;
-    const publish = () =>
-      document.documentElement.style.setProperty(
-        "--nav-h",
-        `${el.getBoundingClientRect().height}px`
-      );
-    publish();
-    const ro = new ResizeObserver(publish);
-    ro.observe(el);
-    return () => ro.disconnect();
+    const onScroll = () => {
+      const hero = document.querySelector(".hero-shell");
+      const threshold = hero
+        ? hero.getBoundingClientRect().height * 0.75
+        : window.innerHeight * 0.75;
+      setDocked(window.scrollY > threshold);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
@@ -47,60 +53,60 @@ export default function Nav() {
   }, []);
 
   return (
-    <header
-      ref={headerRef}
-      className="sticky top-0 z-50 bg-ink/80 backdrop-blur-xl border-b hairline"
-    >
-      <nav className="max-w-content mx-auto flex items-center justify-between px-6 py-4">
-        <a
-          href="#top"
-          className="logo-mark font-mono text-sm text-text focus-ring rounded"
-          onClick={() => setOpen(false)}
-        >
-          <span className="text-signal">~</span>oleksii.samarskyi
-          <span className="logo-mark__cursor">_</span>
-        </a>
-
-        <ul className="hidden md:flex items-center gap-7">
-          {links.map((l) => (
+    <>
+      {/* Desktop: plain links laid across the hero, split around the portrait */}
+      <nav className={`hero-nav ${docked ? "hero-nav--docked" : ""}`}>
+        <ul className="hero-nav__group">
+          {leftLinks.map((l) => (
             <li key={l.href}>
-              <a
-                href={l.href}
-                className="tag text-muted hover:text-text transition-colors focus-ring rounded no-underline"
-              >
+              <a href={l.href} className="hero-nav__link focus-ring">
                 {l.label}
               </a>
             </li>
           ))}
         </ul>
 
-        <div className="hidden md:block">
-          <a
-            href="#contact"
-            className="button button-primary button-nav focus-ring"
-          >
-            Get in touch
-          </a>
-        </div>
+        <a href="#top" className="hero-nav__brand focus-ring">
+          <span className="text-signal">~</span>oleksii.samarskyi
+        </a>
 
-        {/* Burger — mobile only */}
+        <ul className="hero-nav__group hero-nav__group--right">
+          {rightLinks.map((l) => (
+            <li key={l.href}>
+              <a href={l.href} className="hero-nav__link focus-ring">
+                {l.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      {/* Mobile bar */}
+      <div className={`mobile-bar md:hidden ${docked ? "mobile-bar--docked" : ""}`}>
+        <a
+          href="#top"
+          className="logo-mark font-mono text-sm text-text focus-ring rounded"
+          onClick={() => setOpen(false)}
+        >
+          <span className="text-signal">~</span>oleksii.samarskyi
+        </a>
         <button
           type="button"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
-          className={`burger md:hidden focus-ring ${open ? "burger--open" : ""}`}
+          className={`burger focus-ring ${open ? "burger--open" : ""}`}
         >
           <span className="burger__bar" />
           <span className="burger__bar" />
           <span className="burger__bar" />
         </button>
-      </nav>
+      </div>
 
       {/* Mobile panel */}
       <div className={`mobile-panel md:hidden ${open ? "mobile-panel--open" : ""}`}>
         <ul className="mobile-panel__list">
-          {links.map((l, i) => (
+          {allLinks.map((l, i) => (
             <li
               key={l.href}
               className="mobile-panel__item"
@@ -117,7 +123,7 @@ export default function Nav() {
           ))}
           <li
             className="mobile-panel__item mobile-panel__item--cta"
-            style={{ transitionDelay: open ? `${80 + links.length * 55}ms` : "0ms" }}
+            style={{ transitionDelay: open ? `${80 + allLinks.length * 55}ms` : "0ms" }}
           >
             <a
               href="#contact"
@@ -129,6 +135,6 @@ export default function Nav() {
           </li>
         </ul>
       </div>
-    </header>
+    </>
   );
 }

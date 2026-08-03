@@ -7,12 +7,6 @@ html {
   overflow-anchor: none;
 }
 
-:root {
-  /* Height of the sticky nav. It occupies flow, so the hero has to subtract
-     it to actually be one viewport tall. Kept in sync by Nav on mount. */
-  --nav-h: 69px;
-}
-
 body {
   background-color: #0A0812;
   color: #F3F1F8;
@@ -219,14 +213,11 @@ body {
 /* ---- Mobile panel ---- */
 .mobile-panel {
   position: fixed;
-  top: 65px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(10,8,18,0.92);
+  inset: 0;
+  z-index: 50;
+  background: rgba(10,8,18,0.96);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border-top: 1px solid #241E33;
   transform: translateY(-8px);
   opacity: 0;
   visibility: hidden;
@@ -245,7 +236,8 @@ body {
   display: flex;
   flex-direction: column;
   gap: 1.75rem;
-  padding: 2.5rem 1.5rem;
+  /* Top padding clears the fixed mobile bar. */
+  padding: 6rem 1.5rem 2.5rem;
 }
 .mobile-panel__item {
   opacity: 0;
@@ -533,18 +525,19 @@ body {
   line-height: 1;
 }
 
-/* ---- Hero: giant background wordmark ---- */
+/* ---- Hero ----
+   Everything is positioned against the hero box itself, so the wordmark, the
+   nav row, the portrait and the headline stack in the reference's order. */
 .hero-shell {
   position: relative;
-  height: calc(100svh - var(--nav-h));
+  height: 100svh;
   min-height: 560px;
-  display: flex;
-  align-items: flex-end;
   overflow: hidden;
 }
 .hero-bigname {
   position: absolute;
-  top: -0.06em;
+  /* Clears the fixed mobile bar; on wide screens it can bleed off the top. */
+  top: 3.75rem;
   left: 50%;
   transform: translateX(-50%);
   width: max-content;
@@ -553,24 +546,125 @@ body {
   font-weight: 700;
   /* Oversized on purpose: the wordmark bleeds past both edges like the
      reference, so the viewport crops it rather than shrinking it. */
-  font-size: clamp(7rem, 25vw, 20rem);
-  line-height: 0.78;
-  letter-spacing: -0.035em;
+  font-size: clamp(7rem, 29vw, 24rem);
+  line-height: 0.76;
+  letter-spacing: -0.04em;
   white-space: nowrap;
-  z-index: 0;
+  color: #A855F7;
+  z-index: 1;
   pointer-events: none;
   user-select: none;
 }
+@media (min-width: 900px) {
+  .hero-bigname { top: -0.04em; }
+}
+.hero-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  pointer-events: none;
+}
+.hero-stage > * { pointer-events: auto; }
+
+/* ---- In-hero nav ---- */
+.hero-nav {
+  position: absolute;
+  top: 46%;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+@media (min-width: 900px) {
+  .hero-nav { display: flex; }
+}
+.hero-nav__group {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+  flex: 1;
+}
+.hero-nav__group--right { justify-content: flex-end; }
+.hero-nav__brand {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: #F3F1F8;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+.hero-nav__link {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.92rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #F3F1F8;
+  white-space: nowrap;
+  transition: color 0.3s ease;
+}
+.hero-nav__link:hover { color: #C77DFF; }
+
+/* Once the hero is gone the same row docks as a slim bar. */
+.hero-nav--docked {
+  position: fixed;
+  top: 0;
+  padding: 0.85rem 2rem;
+  background: rgba(10, 8, 18, 0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid #241E33;
+  max-width: none;
+}
+.hero-nav--docked .hero-nav__brand {
+  opacity: 1;
+  pointer-events: auto;
+}
+.hero-nav--docked .hero-nav__link { font-size: 0.78rem; }
+
+/* ---- Mobile bar ---- */
+.mobile-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.25rem;
+  transition: background-color 0.35s ease, border-color 0.35s ease;
+  border-bottom: 1px solid transparent;
+}
+.mobile-bar--docked {
+  background: rgba(10, 8, 18, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom-color: #241E33;
+}
 .hero-portrait-frame {
-  position: relative;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* Taller than the shell so the head reaches up into the wordmark. */
+  height: 88svh;
   z-index: 10;
-  height: min(74svh, 680px);
-  width: 100%;
   display: flex;
   justify-content: center;
 }
 @media (min-width: 768px) {
-  .hero-portrait-frame { height: min(80svh, 780px); }
+  .hero-portrait-frame { height: 92svh; }
 }
 .hero-portrait-img {
   object-fit: contain;
@@ -590,22 +684,35 @@ body {
 }
 .hero-overlay {
   position: absolute;
-  left: 50%;
-  bottom: 4.5rem;
-  transform: translateX(-50%);
+  left: 1.5rem;
+  right: 1.5rem;
+  bottom: 5.5rem;
   z-index: 20;
-  width: min(100%, 58rem);
   text-align: center;
   text-shadow: 0 6px 30px rgba(10, 8, 18, 0.9);
 }
-@media (min-width: 768px) {
-  .hero-overlay { bottom: 5.5rem; }
+@media (min-width: 900px) {
+  .hero-overlay {
+    /* Left-aligned block starting just left of centre, as in the reference. */
+    left: 34%;
+    right: auto;
+    bottom: 6.5rem;
+    width: min(46rem, 58vw);
+    text-align: left;
+  }
+}
+.hero-headline {
+  font-size: clamp(2.6rem, 9.5vw, 5.6rem);
+  line-height: 0.94;
+}
+@media (min-width: 900px) {
+  .hero-headline { font-size: clamp(3.4rem, 5.6vw, 5.4rem); }
 }
 .hero-ground {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  left: 1.5rem;
+  right: 1.5rem;
+  bottom: 1.5rem;
   z-index: 20;
   display: flex;
   align-items: flex-end;
@@ -613,8 +720,9 @@ body {
   gap: 1.5rem;
   text-shadow: 0 4px 20px rgba(10, 8, 18, 0.9);
 }
-@media (min-width: 768px) {
+@media (min-width: 900px) {
   .hero-ground { justify-content: space-between; }
+  .hero-ground__center { display: none; }
 }
 .hero-portrait-glow {
   position: absolute;
@@ -630,9 +738,39 @@ body {
 }
 .hero-float-card {
   position: absolute;
-  z-index: 20;
+  z-index: 25;
+  display: none;
+  padding: 1rem 1.25rem;
+  border-radius: 1.1rem;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   opacity: 0;
   animation: hero-rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@media (min-width: 900px) {
+  .hero-float-card { display: block; }
+}
+.hero-card__figure {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 2.4rem;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.hero-card__label {
+  margin-top: 0.45rem;
+  white-space: nowrap;
+  color: #C9C4D8;
+}
+.hero-card--stat-a { left: 4%; top: 56%; }
+.hero-card--stat-b { left: 4%; top: 72%; }
+.hero-card--traits { right: 4%; top: 54%; padding: 0.9rem 1.15rem; }
+@media (min-width: 1280px) {
+  .hero-card--stat-a { left: 8%; }
+  .hero-card--stat-b { left: 8%; }
+  .hero-card--traits { right: 8%; }
 }
 .hero-trait-row {
   display: flex;

@@ -22,85 +22,78 @@ export default function Home() {
       <Nav />
 
       {/* HERO */}
-      <section className="hero-shell relative overflow-hidden px-6">
-        <p aria-hidden className="hero-bigname grad-text">
+      <section className="hero-shell">
+        <p aria-hidden className="hero-bigname">
           OLEKSII
         </p>
 
-        <div className="relative z-10 max-w-content mx-auto w-full pb-8">
-          <div className="hero-portrait-frame">
-            <div className="hero-portrait-glow" />
-            <HeroPortrait />
-            <div className="hero-portrait-fade" />
+        {/* Portrait sits behind the nav row and headline, like the reference */}
+        <div className="hero-portrait-frame">
+          <div className="hero-portrait-glow" />
+          <HeroPortrait />
+          <div className="hero-portrait-fade" />
+        </div>
 
-            {/* Floating cards — left */}
-            <div
-              className="hero-float-card glass rounded-2xl px-4 py-3 md:px-5 md:py-4 md:absolute md:left-0 lg:left-4 md:top-[42%] hidden md:block"
-              style={{ animationDelay: "0.5s" }}
-            >
-              <p className="font-display text-3xl font-semibold tracking-tight leading-none">
-                3<span className="text-signal">+</span>
-              </p>
-              <p className="eyebrow mt-1.5 whitespace-nowrap">Years in performance creative</p>
-            </div>
-            <div
-              className="hero-float-card glass rounded-2xl px-4 py-3 md:px-5 md:py-4 md:absolute md:left-0 lg:left-4 md:top-[62%] hidden md:block"
-              style={{ animationDelay: "0.65s" }}
-            >
-              <p className="font-display text-3xl font-semibold tracking-tight leading-none">
-                10<span className="text-signal">+</span>
-              </p>
-              <p className="eyebrow mt-1.5 whitespace-nowrap">Platforms &amp; AI tools</p>
-            </div>
+        <div className="hero-stage">
+          {/* Floating cards — left */}
+          <div className="hero-float-card hero-card--stat-a" style={{ animationDelay: "0.5s" }}>
+            <p className="hero-card__figure">
+              3<span className="text-signal">+</span>
+            </p>
+            <p className="eyebrow hero-card__label">Years in performance creative</p>
+          </div>
+          <div className="hero-float-card hero-card--stat-b" style={{ animationDelay: "0.65s" }}>
+            <p className="hero-card__figure">
+              10<span className="text-signal">+</span>
+            </p>
+            <p className="eyebrow hero-card__label">Platforms &amp; AI tools</p>
+          </div>
 
-            {/* Floating traits card — right */}
-            <div
-              className="hero-float-card glass rounded-2xl px-4 py-3 md:px-5 md:py-4 md:absolute md:right-0 lg:right-4 md:top-[38%] hidden md:block"
-              style={{ animationDelay: "0.8s" }}
-            >
-              {traits.map((t) => (
-                <div key={t} className="hero-trait-row">
-                  <span className="hero-trait-dot" />
-                  <span className="tag text-text whitespace-nowrap">{t}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Headline overlay — sits on the portrait like the reference */}
-            <div className="hero-overlay">
-              <h1 className="font-display text-[2.9rem] md:text-7xl lg:text-8xl leading-[0.92] font-bold tracking-tight">
-                <span className="hero-name-line block"><span>Performance creative,</span></span>
-                <span className="hero-name-line block"><span>built to convert.</span></span>
-              </h1>
-
-              <div className="hero-ctas mt-7 flex flex-wrap items-center justify-center gap-3">
-                <a href="#journey" className="button button-primary focus-ring">
-                  My Journey
-                </a>
-                <a href="#contact" className="button button-secondary focus-ring">
-                  Get in Touch
-                </a>
+          {/* Floating traits card — right */}
+          <div className="hero-float-card hero-card--traits" style={{ animationDelay: "0.8s" }}>
+            {traits.map((t) => (
+              <div key={t} className="hero-trait-row">
+                <span className="hero-trait-dot" />
+                <span className="tag text-text whitespace-nowrap">{t}</span>
               </div>
-            </div>
+            ))}
+          </div>
 
-            {/* Ground row — reads over the bottom of the portrait */}
-            <div className="hero-ground hero-bio">
-              <p className="text-muted text-sm leading-relaxed max-w-[13rem] hidden md:block">
-                Oleksii Samarskyi.
-                <br />
-                Poland · Remote.
-              </p>
-              <p className="eyebrow eyebrow-signal">
-                Performance Creative &amp; Growth
-              </p>
-              <p className="text-muted text-sm leading-relaxed max-w-[17rem] text-right hidden md:block">
-                3+ years of static, motion &amp; AI-assisted creative for paid
-                acquisition. Founder of{" "}
-                <a href="#velar" className="text-text underline decoration-signal underline-offset-4">
-                  Velar Studio
-                </a>.
-              </p>
+          {/* Headline — left-aligned over the chest, as in the reference */}
+          <div className="hero-overlay">
+            <h1 className="hero-headline font-display font-bold tracking-tight">
+              <span className="hero-name-line block"><span>Performance</span></span>
+              <span className="hero-name-line block"><span>creative, built</span></span>
+              <span className="hero-name-line block"><span>to convert.</span></span>
+            </h1>
+
+            <div className="hero-ctas mt-7 flex flex-wrap items-center gap-3">
+              <a href="#journey" className="button button-primary focus-ring">
+                My Journey
+              </a>
+              <a href="#contact" className="button button-secondary focus-ring">
+                Get in Touch
+              </a>
             </div>
+          </div>
+
+          {/* Ground row */}
+          <div className="hero-ground hero-bio">
+            <p className="text-muted text-sm leading-relaxed max-w-[13rem] hidden md:block">
+              The performance creative.
+              <br />
+              That&apos;s Oleksii.
+            </p>
+            <p className="eyebrow eyebrow-signal hero-ground__center">
+              Performance Creative &amp; Growth
+            </p>
+            <p className="text-muted text-sm leading-relaxed max-w-[18rem] text-right hidden md:block">
+              3+ years of static, motion &amp; AI-assisted creative for paid
+              acquisition. Founder of{" "}
+              <a href="#velar" className="text-text underline decoration-signal underline-offset-4">
+                Velar Studio
+              </a>.
+            </p>
           </div>
         </div>
       </section>
