@@ -24,7 +24,7 @@ const config: Config = {
         mono: ["var(--font-mono)"],
       },
       maxWidth: {
-        content: "1180px",
+        content: "1440px",
       },
     },
   },

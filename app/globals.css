@@ -542,13 +542,13 @@ body {
   transform: translateX(-50%);
   width: max-content;
   text-align: center;
-  font-family: var(--font-display);
-  font-weight: 700;
-  /* Oversized on purpose: the wordmark bleeds past both edges like the
-     reference, so the viewport crops it rather than shrinking it. */
-  font-size: clamp(7rem, 29vw, 24rem);
-  line-height: 0.76;
-  letter-spacing: -0.04em;
+  font-family: var(--font-wordmark), var(--font-display);
+  font-weight: 400;
+  /* Condensed face lets 7 letters fill the width at the reference's letter
+     height; a normal-width face would come out a third too short. */
+  font-size: 35.5vw;
+  line-height: 0.78;
+  letter-spacing: -0.005em;
   white-space: nowrap;
   color: #A855F7;
   z-index: 1;
@@ -556,15 +556,12 @@ body {
   user-select: none;
 }
 @media (min-width: 900px) {
-  .hero-bigname { top: -0.04em; }
+  .hero-bigname { top: 1.5rem; }
 }
 .hero-stage {
   position: absolute;
   inset: 0;
   z-index: 20;
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
   pointer-events: none;
 }
 .hero-stage > * { pointer-events: auto; }
@@ -572,7 +569,7 @@ body {
 /* ---- In-hero nav ---- */
 .hero-nav {
   position: absolute;
-  top: 46%;
+  top: 53%;
   left: 0;
   right: 0;
   z-index: 40;
@@ -580,9 +577,8 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0 2rem;
+  /* Edge to edge, like the reference — not held in a centred container. */
+  padding: 0 2.75rem;
 }
 @media (min-width: 900px) {
   .hero-nav { display: flex; }
@@ -590,10 +586,21 @@ body {
 .hero-nav__group {
   display: flex;
   align-items: center;
-  gap: 1.75rem;
+  gap: 1rem;
   flex: 1;
 }
 .hero-nav__group--right { justify-content: flex-end; }
+/* Hairline separators between links, as in the reference. */
+.hero-nav__group li + li::before {
+  content: "|";
+  margin-right: 1rem;
+  color: rgba(243, 241, 248, 0.35);
+  font-weight: 400;
+}
+.hero-nav__group li {
+  display: flex;
+  align-items: center;
+}
 .hero-nav__brand {
   font-family: var(--font-mono);
   font-size: 0.8rem;
@@ -605,9 +612,9 @@ body {
 }
 .hero-nav__link {
   font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 0.92rem;
-  letter-spacing: 0.02em;
+  font-weight: 700;
+  font-size: 1.06rem;
+  letter-spacing: 0.01em;
   text-transform: uppercase;
   color: #F3F1F8;
   white-space: nowrap;
@@ -657,14 +664,15 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  /* Taller than the shell so the head reaches up into the wordmark. */
-  height: 88svh;
+  /* Taller than the shell so the head reaches up into the wordmark and the
+     shoulders are cropped by the bottom edge, as in the reference. */
+  height: 96svh;
   z-index: 10;
   display: flex;
   justify-content: center;
 }
-@media (min-width: 768px) {
-  .hero-portrait-frame { height: 92svh; }
+@media (min-width: 900px) {
+  .hero-portrait-frame { height: 99svh; }
 }
 .hero-portrait-img {
   object-fit: contain;
@@ -694,25 +702,27 @@ body {
 @media (min-width: 900px) {
   .hero-overlay {
     /* Left-aligned block starting just left of centre, as in the reference. */
-    left: 34%;
+    left: 33%;
     right: auto;
-    bottom: 6.5rem;
-    width: min(46rem, 58vw);
+    bottom: 5.5rem;
+    /* Narrow column so the lines break short and clear the traits card. */
+    width: min(34rem, 34vw);
     text-align: left;
   }
 }
 .hero-headline {
   font-size: clamp(2.6rem, 9.5vw, 5.6rem);
   line-height: 0.94;
+  letter-spacing: -0.03em;
 }
 @media (min-width: 900px) {
-  .hero-headline { font-size: clamp(3.4rem, 5.6vw, 5.4rem); }
+  .hero-headline { font-size: clamp(3.6rem, 4.9vw, 6.2rem); }
 }
 .hero-ground {
   position: absolute;
-  left: 1.5rem;
-  right: 1.5rem;
-  bottom: 1.5rem;
+  left: 2.75rem;
+  right: 2.75rem;
+  bottom: 2rem;
   z-index: 20;
   display: flex;
   align-items: flex-end;
@@ -754,24 +764,23 @@ body {
 }
 .hero-card__figure {
   font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 2.4rem;
+  font-weight: 800;
+  font-size: 3.3rem;
   line-height: 1;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
 }
 .hero-card__label {
-  margin-top: 0.45rem;
-  white-space: nowrap;
+  margin-top: 0.5rem;
   color: #C9C4D8;
+  font-size: 0.68rem;
+  line-height: 1.5;
+  /* Wraps instead of running wide, so the cards stay clear of the headline. */
+  max-width: 8.5rem;
 }
-.hero-card--stat-a { left: 4%; top: 56%; }
-.hero-card--stat-b { left: 4%; top: 72%; }
-.hero-card--traits { right: 4%; top: 54%; padding: 0.9rem 1.15rem; }
-@media (min-width: 1280px) {
-  .hero-card--stat-a { left: 8%; }
-  .hero-card--stat-b { left: 8%; }
-  .hero-card--traits { right: 8%; }
-}
+.hero-float-card { padding: 1.15rem 1.4rem; }
+.hero-card--stat-a { left: 17%; top: 60%; }
+.hero-card--stat-b { left: 20%; top: 77%; }
+.hero-card--traits { right: 15%; top: 57%; padding: 1.05rem 1.35rem; }
 .hero-trait-row {
   display: flex;
   align-items: center;

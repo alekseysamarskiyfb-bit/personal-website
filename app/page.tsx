@@ -63,8 +63,8 @@ export default function Home() {
           <div className="hero-overlay">
             <h1 className="hero-headline font-display font-bold tracking-tight">
               <span className="hero-name-line block"><span>Performance</span></span>
-              <span className="hero-name-line block"><span>creative, built</span></span>
-              <span className="hero-name-line block"><span>to convert.</span></span>
+              <span className="hero-name-line block"><span>Creative,</span></span>
+              <span className="hero-name-line block"><span>That Converts.</span></span>
             </h1>
 
             <div className="hero-ctas mt-7 flex flex-wrap items-center gap-3">
