@@ -7,6 +7,12 @@ html {
   overflow-anchor: none;
 }
 
+:root {
+  /* Height of the sticky nav. It occupies flow, so the hero has to subtract
+     it to actually be one viewport tall. Kept in sync by Nav on mount. */
+  --nav-h: 69px;
+}
+
 body {
   background-color: #0A0812;
   color: #F3F1F8;
@@ -487,69 +493,128 @@ body {
   .stat-counter__label { font-size: 0.6rem; }
 }
 
+/* ---- Word-by-word reveal ---- */
+.reveal-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.12em;
+}
+.reveal-word__inner {
+  display: inline-block;
+  transform: translateY(115%);
+  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+.text-reveal.is-visible .reveal-word__inner {
+  transform: translateY(0);
+}
+
+/* ---- Odometer year ---- */
+.odometer {
+  display: inline-flex;
+  align-items: flex-start;
+  line-height: 1;
+}
+.odometer__col {
+  display: inline-block;
+  overflow: hidden;
+  height: 1em;
+  line-height: 1;
+}
+.odometer__strip {
+  display: block;
+  transition: transform 1.15s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+.odometer__cell {
+  display: block;
+  height: 1em;
+  line-height: 1;
+}
+
 /* ---- Hero: giant background wordmark ---- */
 .hero-shell {
-  min-height: 92svh;
+  position: relative;
+  height: calc(100svh - var(--nav-h));
+  min-height: 560px;
   display: flex;
   align-items: flex-end;
-}
-@media (min-width: 768px) {
-  .hero-shell { min-height: 96svh; }
+  overflow: hidden;
 }
 .hero-bigname {
   position: absolute;
-  top: 4.5rem;
+  top: -0.06em;
   left: 50%;
   transform: translateX(-50%);
-  width: 100%;
+  width: max-content;
   text-align: center;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(4.2rem, 17vw, 12.5rem);
-  line-height: 0.86;
-  letter-spacing: -0.02em;
+  /* Oversized on purpose: the wordmark bleeds past both edges like the
+     reference, so the viewport crops it rather than shrinking it. */
+  font-size: clamp(7rem, 25vw, 20rem);
+  line-height: 0.78;
+  letter-spacing: -0.035em;
   white-space: nowrap;
   z-index: 0;
   pointer-events: none;
   user-select: none;
-  opacity: 0.9;
-  animation: bigname-drift 16s ease-in-out infinite;
-}
-@media (min-width: 768px) {
-  .hero-bigname { top: 3.5rem; }
-}
-@keyframes bigname-drift {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50% { transform: translateX(-50%) translateY(-10px); }
 }
 .hero-portrait-frame {
   position: relative;
   z-index: 10;
-  height: min(62svh, 520px);
+  height: min(74svh, 680px);
   width: 100%;
   display: flex;
   justify-content: center;
 }
 @media (min-width: 768px) {
-  .hero-portrait-frame { height: min(66svh, 600px); }
+  .hero-portrait-frame { height: min(80svh, 780px); }
 }
 .hero-portrait-img {
   object-fit: contain;
   object-position: bottom center;
 }
-.hero-portrait-mask {
-  -webkit-mask-image: linear-gradient(180deg, #000 68%, transparent 97%);
-  mask-image: linear-gradient(180deg, #000 68%, transparent 97%);
+/* Soft grounding shadow under the portrait. Deliberately NOT mask-image:
+   masks silently dropped the portrait in some engines here. */
+.hero-portrait-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 22%;
+  background: linear-gradient(180deg, rgba(10, 8, 18, 0) 0%, rgba(10, 8, 18, 0.55) 100%);
+  pointer-events: none;
+  z-index: 15;
 }
 .hero-overlay {
   position: absolute;
   left: 50%;
-  bottom: 0;
+  bottom: 4.5rem;
   transform: translateX(-50%);
   z-index: 20;
-  width: min(100%, 46rem);
+  width: min(100%, 58rem);
   text-align: center;
-  text-shadow: 0 6px 30px rgba(10, 8, 18, 0.85);
+  text-shadow: 0 6px 30px rgba(10, 8, 18, 0.9);
+}
+@media (min-width: 768px) {
+  .hero-overlay { bottom: 5.5rem; }
+}
+.hero-ground {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 1.5rem;
+  text-shadow: 0 4px 20px rgba(10, 8, 18, 0.9);
+}
+@media (min-width: 768px) {
+  .hero-ground { justify-content: space-between; }
 }
 .hero-portrait-glow {
   position: absolute;
@@ -638,12 +703,12 @@ body {
   -webkit-text-stroke: 1px #3A3350;
   -webkit-text-fill-color: transparent;
 }
+/* Solid fill, not background-clip:text — clipping a gradient to text does not
+   reach the odometer's nested digit spans, which left the year invisible. */
 .timeline-card--active .timeline-card__year {
-  color: transparent;
+  color: #B98BFF;
   -webkit-text-stroke: 0px;
-  background-image: linear-gradient(135deg, #7C5CFF 0%, #B355F5 45%, #F472D0 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
+  -webkit-text-fill-color: #B98BFF;
 }
 .timeline-card__meta {
   display: flex;
@@ -899,6 +964,7 @@ body {
     scroll-behavior: auto !important;
   }
   .reveal { opacity: 1 !important; transform: none !important; }
+  .reveal-word__inner { transform: none !important; }
   .hero-eyebrow, .hero-tagline, .hero-bio, .hero-ctas, .hero-visual, .hero-float-card {
     opacity: 1 !important; transform: none !important;
   }

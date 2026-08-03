@@ -26,7 +26,7 @@ export default function HeroPortrait() {
       ref={ref}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="hero-visual hero-portrait-mask relative h-full aspect-[2/3] mx-auto transition-transform duration-300 ease-out"
+      className="hero-visual relative h-full aspect-[2/3] mx-auto transition-transform duration-300 ease-out"
       style={{ animationDelay: "0.25s" }}
     >
       <Image

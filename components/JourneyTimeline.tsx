@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState, type UIEvent } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import YearOdometer from "@/components/YearOdometer";
+import TextReveal from "@/components/TextReveal";
 
 type Entry = {
   year: string;
@@ -130,9 +132,9 @@ export default function JourneyTimeline() {
       className="timeline-section max-w-content mx-auto px-6 py-20 md:py-28 border-t hairline"
     >
       <p className="eyebrow eyebrow-signal mb-4">My Journey</p>
-      <h2 className="font-display text-3xl md:text-5xl font-bold tracking-tight mb-6 max-w-2xl">
+      <TextReveal className="font-display text-3xl md:text-5xl font-bold tracking-tight mb-6 max-w-2xl">
         How I got here.
-      </h2>
+      </TextReveal>
       <p className="text-lg text-muted max-w-xl mb-14">
         Not a resume — the actual path. Scroll through, click into any year
         for the longer story.
@@ -153,7 +155,7 @@ export default function JourneyTimeline() {
                 key={entry.year}
                 className={`timeline-card glass ${active ? "timeline-card--active" : ""} ${open ? "timeline-card--open" : ""}`}
               >
-                <p className="timeline-card__year">{entry.year}</p>
+                <YearOdometer year={entry.year} className="timeline-card__year" />
                 <div className="timeline-card__meta">
                   <span>{entry.handle}</span>
                   <span className="dot">•</span>

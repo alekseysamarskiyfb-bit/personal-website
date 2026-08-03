@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const links = [
   { href: "#about", label: "About" },
@@ -13,6 +13,23 @@ const links = [
 
 export default function Nav() {
   const [open, setOpen] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
+
+  // The hero sizes itself against the nav, which occupies flow. Publish the
+  // real measured height so the two can't drift apart across breakpoints.
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const publish = () =>
+      document.documentElement.style.setProperty(
+        "--nav-h",
+        `${el.getBoundingClientRect().height}px`
+      );
+    publish();
+    const ro = new ResizeObserver(publish);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   useEffect(() => {
     document.documentElement.style.overflow = open ? "hidden" : "";
@@ -30,7 +47,10 @@ export default function Nav() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 bg-ink/80 backdrop-blur-xl border-b hairline">
+    <header
+      ref={headerRef}
+      className="sticky top-0 z-50 bg-ink/80 backdrop-blur-xl border-b hairline"
+    >
       <nav className="max-w-content mx-auto flex items-center justify-between px-6 py-4">
         <a
           href="#top"

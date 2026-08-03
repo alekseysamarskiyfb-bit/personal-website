@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Reveal from "@/components/Reveal";
+import TextReveal from "@/components/TextReveal";
 
 type Kind = "static" | "video";
 
@@ -40,11 +41,9 @@ export default function Portfolio() {
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-14">
           <div>
             <p className="eyebrow eyebrow-data mb-4">Selected work</p>
-            <h2 className="font-display text-3xl md:text-5xl font-bold tracking-tight max-w-xl">
-              Built for the feed,
-              <br />
-              made to perform.
-            </h2>
+            <TextReveal className="font-display text-3xl md:text-5xl font-bold tracking-tight max-w-xl">
+              Built for the feed, made to perform.
+            </TextReveal>
           </div>
 
           <div className="portfolio-toggle relative">

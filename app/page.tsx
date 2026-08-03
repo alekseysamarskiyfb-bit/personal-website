@@ -9,6 +9,8 @@ import JourneyTimeline from "@/components/JourneyTimeline";
 import Portfolio from "@/components/Portfolio";
 import Footer from "@/components/Footer";
 import HeroPortrait from "@/components/HeroPortrait";
+import SmoothScroll from "@/components/SmoothScroll";
+import TextReveal from "@/components/TextReveal";
 
 const traits = ["Performance Creative", "Growth-minded", "Team Lead", "Reliable", "Builder"];
 
@@ -16,6 +18,7 @@ export default function Home() {
   return (
     <main id="top" className="font-body">
       <ScrollReset />
+      <SmoothScroll />
       <Nav />
 
       {/* HERO */}
@@ -28,6 +31,7 @@ export default function Home() {
           <div className="hero-portrait-frame">
             <div className="hero-portrait-glow" />
             <HeroPortrait />
+            <div className="hero-portrait-fade" />
 
             {/* Floating cards — left */}
             <div
@@ -64,12 +68,12 @@ export default function Home() {
 
             {/* Headline overlay — sits on the portrait like the reference */}
             <div className="hero-overlay">
-              <h1 className="font-display text-[2.6rem] md:text-6xl lg:text-7xl leading-[0.98] font-bold tracking-tight">
+              <h1 className="font-display text-[2.9rem] md:text-7xl lg:text-8xl leading-[0.92] font-bold tracking-tight">
                 <span className="hero-name-line block"><span>Performance creative,</span></span>
                 <span className="hero-name-line block"><span>built to convert.</span></span>
               </h1>
 
-              <div className="hero-ctas mt-6 flex flex-wrap items-center justify-center gap-3">
+              <div className="hero-ctas mt-7 flex flex-wrap items-center justify-center gap-3">
                 <a href="#journey" className="button button-primary focus-ring">
                   My Journey
                 </a>
@@ -78,24 +82,25 @@ export default function Home() {
                 </a>
               </div>
             </div>
-          </div>
 
-          <div className="hero-bio mt-6 flex flex-col md:flex-row items-center md:items-end justify-between gap-4 text-sm">
-            <p className="text-muted max-w-[15rem] text-center md:text-left leading-relaxed">
-              Oleksii Samarskyi.
-              <br />
-              Poland · Remote.
-            </p>
-            <p className="eyebrow eyebrow-signal order-first md:order-none">
-              Performance Creative &amp; Growth
-            </p>
-            <p className="text-muted max-w-[17rem] text-center md:text-right leading-relaxed">
-              3+ years producing static, motion &amp; AI-assisted creative for
-              paid acquisition. Founder of{" "}
-              <a href="#velar" className="text-text underline decoration-signal underline-offset-4">
-                Velar Studio
-              </a>.
-            </p>
+            {/* Ground row — reads over the bottom of the portrait */}
+            <div className="hero-ground hero-bio">
+              <p className="text-muted text-sm leading-relaxed max-w-[13rem] hidden md:block">
+                Oleksii Samarskyi.
+                <br />
+                Poland · Remote.
+              </p>
+              <p className="eyebrow eyebrow-signal">
+                Performance Creative &amp; Growth
+              </p>
+              <p className="text-muted text-sm leading-relaxed max-w-[17rem] text-right hidden md:block">
+                3+ years of static, motion &amp; AI-assisted creative for paid
+                acquisition. Founder of{" "}
+                <a href="#velar" className="text-text underline decoration-signal underline-offset-4">
+                  Velar Studio
+                </a>.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -126,13 +131,9 @@ export default function Home() {
           <p className="eyebrow mb-4">About</p>
         </Reveal>
         <div className="grid md:grid-cols-[1fr_1.4fr] gap-10">
-          <Reveal>
-            <h2 className="font-display text-3xl md:text-5xl font-bold tracking-tight">
-              From ad creative
-              <br />
-              to growth.
-            </h2>
-          </Reveal>
+          <TextReveal className="font-display text-3xl md:text-5xl font-bold tracking-tight">
+            From ad creative to growth.
+          </TextReveal>
           <Reveal delay={100} className="space-y-5 text-muted text-lg leading-relaxed">
             <p>
               I started as a designer — UI/UX, branding, logo and identity
@@ -169,10 +170,10 @@ export default function Home() {
       <section id="velar" className="max-w-content mx-auto px-6 py-20 md:py-28 border-t hairline">
         <Reveal>
           <p className="eyebrow eyebrow-data mb-4">My venture</p>
-          <h2 className="font-display text-3xl md:text-5xl font-bold tracking-tight mb-14 max-w-2xl">
-            Velar Studio
-          </h2>
         </Reveal>
+        <TextReveal className="font-display text-3xl md:text-5xl font-bold tracking-tight mb-14 max-w-2xl">
+          Velar Studio
+        </TextReveal>
 
         <Reveal>
           <VelarBlock />
@@ -183,10 +184,10 @@ export default function Home() {
       <section id="capabilities" className="max-w-content mx-auto px-6 py-20 md:py-28 border-t hairline">
         <Reveal>
           <p className="eyebrow mb-4">Capabilities</p>
-          <h2 className="font-display text-3xl md:text-5xl font-bold tracking-tight mb-14 max-w-2xl">
-            What I bring to a product.
-          </h2>
         </Reveal>
+        <TextReveal className="font-display text-3xl md:text-5xl font-bold tracking-tight mb-14 max-w-2xl">
+          What I bring to a product.
+        </TextReveal>
 
         <div className="grid md:grid-cols-3 gap-6">
           <Reveal>
@@ -270,11 +271,9 @@ export default function Home() {
         </div>
         <Reveal className="relative">
           <p className="eyebrow mb-4">Contact</p>
-          <h2 className="font-display text-3xl md:text-5xl font-bold tracking-tight max-w-2xl mb-6">
-            Building a product?
-            <br />
-            Let&apos;s talk.
-          </h2>
+          <TextReveal className="font-display text-3xl md:text-5xl font-bold tracking-tight max-w-2xl mb-6">
+            Building a product? Let&apos;s talk.
+          </TextReveal>
           <p className="text-lg text-muted max-w-xl mb-10">
             Open to conversations about growth, brand and creative — for my
             own work or for Velar Studio.
