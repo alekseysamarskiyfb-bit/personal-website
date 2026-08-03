@@ -1,12 +1,14 @@
-import Image from "next/image";
 import Nav from "@/components/Nav";
 import Marquee from "@/components/Marquee";
 import Reveal from "@/components/Reveal";
 import StatCounter from "@/components/StatCounter";
 import TiltCard from "@/components/TiltCard";
-import JourneyItem from "@/components/JourneyItem";
 import VelarBlock from "@/components/VelarBlock";
 import ScrollReset from "@/components/ScrollReset";
+import JourneyTimeline from "@/components/JourneyTimeline";
+import Portfolio from "@/components/Portfolio";
+import Footer from "@/components/Footer";
+import HeroPortrait from "@/components/HeroPortrait";
 
 const traits = ["Performance Creative", "Growth-minded", "Team Lead", "Reliable", "Builder"];
 
@@ -17,67 +19,83 @@ export default function Home() {
       <Nav />
 
       {/* HERO */}
-      <section className="relative max-w-content mx-auto px-6 pt-16 pb-14 md:pt-20 md:pb-20 overflow-hidden">
-        <div className="orb-field">
-          <span className="orb orb--a" />
-        </div>
+      <section className="hero-shell relative overflow-hidden px-6">
+        <p aria-hidden className="hero-bigname grad-text">
+          OLEKSII
+        </p>
 
-        <div className="relative grid md:grid-cols-[1.15fr_0.85fr] gap-12 md:gap-16 items-center">
-          <div>
-            <p className="hero-eyebrow eyebrow eyebrow-signal mb-7">
+        <div className="relative z-10 max-w-content mx-auto w-full pb-8">
+          <div className="hero-portrait-frame">
+            <div className="hero-portrait-glow" />
+            <HeroPortrait />
+
+            {/* Floating cards — left */}
+            <div
+              className="hero-float-card glass rounded-2xl px-4 py-3 md:px-5 md:py-4 md:absolute md:left-0 lg:left-4 md:top-[42%] hidden md:block"
+              style={{ animationDelay: "0.5s" }}
+            >
+              <p className="font-display text-3xl font-semibold tracking-tight leading-none">
+                3<span className="text-signal">+</span>
+              </p>
+              <p className="eyebrow mt-1.5 whitespace-nowrap">Years in performance creative</p>
+            </div>
+            <div
+              className="hero-float-card glass rounded-2xl px-4 py-3 md:px-5 md:py-4 md:absolute md:left-0 lg:left-4 md:top-[62%] hidden md:block"
+              style={{ animationDelay: "0.65s" }}
+            >
+              <p className="font-display text-3xl font-semibold tracking-tight leading-none">
+                10<span className="text-signal">+</span>
+              </p>
+              <p className="eyebrow mt-1.5 whitespace-nowrap">Platforms &amp; AI tools</p>
+            </div>
+
+            {/* Floating traits card — right */}
+            <div
+              className="hero-float-card glass rounded-2xl px-4 py-3 md:px-5 md:py-4 md:absolute md:right-0 lg:right-4 md:top-[38%] hidden md:block"
+              style={{ animationDelay: "0.8s" }}
+            >
+              {traits.map((t) => (
+                <div key={t} className="hero-trait-row">
+                  <span className="hero-trait-dot" />
+                  <span className="tag text-text whitespace-nowrap">{t}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Headline overlay — sits on the portrait like the reference */}
+            <div className="hero-overlay">
+              <h1 className="font-display text-[2.6rem] md:text-6xl lg:text-7xl leading-[0.98] font-bold tracking-tight">
+                <span className="hero-name-line block"><span>Performance creative,</span></span>
+                <span className="hero-name-line block"><span>built to convert.</span></span>
+              </h1>
+
+              <div className="hero-ctas mt-6 flex flex-wrap items-center justify-center gap-3">
+                <a href="#journey" className="button button-primary focus-ring">
+                  My Journey
+                </a>
+                <a href="#contact" className="button button-secondary focus-ring">
+                  Get in Touch
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div className="hero-bio mt-6 flex flex-col md:flex-row items-center md:items-end justify-between gap-4 text-sm">
+            <p className="text-muted max-w-[15rem] text-center md:text-left leading-relaxed">
+              Oleksii Samarskyi.
+              <br />
+              Poland · Remote.
+            </p>
+            <p className="eyebrow eyebrow-signal order-first md:order-none">
               Performance Creative &amp; Growth
             </p>
-
-            <h1 className="font-display text-5xl md:text-7xl leading-[0.98] font-semibold tracking-tight">
-              <span className="hero-name-line"><span>Oleksii</span></span>
-              <span className="hero-name-line"><span>Samarskyi</span></span>
-            </h1>
-
-            <p className="hero-bio mt-6 text-lg text-muted max-w-xl leading-relaxed">
-              3+ years producing performance creative for paid acquisition —
-              Meta, TikTok, Native, Display. Founder of{" "}
+            <p className="text-muted max-w-[17rem] text-center md:text-right leading-relaxed">
+              3+ years producing static, motion &amp; AI-assisted creative for
+              paid acquisition. Founder of{" "}
               <a href="#velar" className="text-text underline decoration-signal underline-offset-4">
                 Velar Studio
               </a>.
             </p>
-
-            <div className="hero-ctas mt-8 flex flex-wrap items-center gap-2">
-              {traits.map((t) => (
-                <span
-                  key={t}
-                  className="tag text-muted border hairline rounded-full px-3 py-1.5"
-                >
-                  {t}
-                </span>
-              ))}
-            </div>
-
-            <div className="hero-ctas mt-8 flex flex-wrap items-center gap-4">
-              <a href="#journey" className="button button-primary focus-ring">
-                My Journey
-              </a>
-              <a href="#contact" className="button button-secondary focus-ring">
-                Get in Touch
-              </a>
-            </div>
-          </div>
-
-          <div className="hero-visual portrait-wrap relative w-full max-w-sm mx-auto md:mx-0 md:ml-auto">
-            <div className="relative aspect-[4/5] rounded-2xl overflow-hidden border hairline">
-              <Image
-                src="/avatar-4k.jpeg"
-                alt="Oleksii Samarskyi"
-                fill
-                sizes="(min-width: 768px) 380px, 90vw"
-                className="portrait object-cover"
-                priority
-              />
-              <div className="portrait-overlay absolute inset-0 pointer-events-none" />
-            </div>
-            <div className="portrait-badge absolute -bottom-4 left-4 md:-left-4 border hairline rounded-xl px-4 py-3">
-              <p className="eyebrow">Based in</p>
-              <p className="font-display text-sm font-medium">Poland · Remote</p>
-            </div>
           </div>
         </div>
       </section>
@@ -142,75 +160,10 @@ export default function Home() {
       </section>
 
       {/* JOURNEY */}
-      <section id="journey" className="max-w-content mx-auto px-6 py-20 md:py-28 border-t hairline">
-        <Reveal>
-          <p className="eyebrow eyebrow-signal mb-4">My Journey</p>
-          <h2 className="font-display text-3xl md:text-5xl font-bold tracking-tight mb-6 max-w-2xl">
-            How I got here.
-          </h2>
-          <p className="text-lg text-muted max-w-xl mb-14">
-            Not a resume — the actual path. Click into any year for the
-            longer story.
-          </p>
-        </Reveal>
+      <JourneyTimeline />
 
-        <div>
-          <Reveal>
-            <JourneyItem
-              year="2023"
-              teaser="First real campaigns."
-              tags={["UGC Advertising", "Motion Design"]}
-            >
-              I started as a Junior Performance Designer, producing static,
-              video and animated creatives for Search, Sweepstakes and
-              Crypto paid campaigns. No mentor telling me the rules — just a
-              lot of creatives that didn&apos;t work, until some did.
-            </JourneyItem>
-          </Reveal>
-
-          <Reveal>
-            <JourneyItem
-              year="2024"
-              teaser="Learning to lead."
-              tags={["Team Leadership", "Performance Marketing"]}
-            >
-              I was handed a team of 4 designers at ADPRODIGIES and put in
-              charge of the iGaming creative pipeline. Running weekly
-              reviews with media buyers taught me more about what actually
-              converts than a year of solo production ever did.
-            </JourneyItem>
-          </Reveal>
-
-          <Reveal>
-            <JourneyItem
-              year="2025"
-              teaser="Scaling with AI in the pipeline."
-              tags={["AI Creative", "Prompt Engineering"]}
-            >
-              Tools like Midjourney, Runway and HeyGen went from novelty to
-              part of the daily workflow. I kept producing for affiliate and
-              performance teams — Traffic Place, and a senior role producing
-              creative for paid campaigns across Meta, TikTok and Display —
-              while the volume and speed of what one person could ship kept
-              climbing.
-            </JourneyItem>
-          </Reveal>
-
-          <Reveal>
-            <JourneyItem
-              year="2026"
-              teaser="Building something of my own."
-              now
-              tags={["Founder", "Velar Studio"]}
-            >
-              Everything up to this point — the failed creatives, the team
-              lead seat, the AI-assisted pipelines — became the foundation
-              for Velar Studio: a creative production venture built on
-              actual production experience, not just a portfolio.
-            </JourneyItem>
-          </Reveal>
-        </div>
-      </section>
+      {/* PORTFOLIO */}
+      <Portfolio />
 
       {/* VELAR STUDIO */}
       <section id="velar" className="max-w-content mx-auto px-6 py-20 md:py-28 border-t hairline">
@@ -345,12 +298,7 @@ export default function Home() {
         </Reveal>
       </section>
 
-      <footer className="border-t hairline">
-        <div className="max-w-content mx-auto px-6 py-8 flex flex-col md:flex-row justify-between gap-2 text-muted tag">
-          <p>Oleksii Samarskyi — Founder, Velar Studio</p>
-          <p>© 2026</p>
-        </div>
-      </footer>
+      <Footer />
     </main>
   );
 }

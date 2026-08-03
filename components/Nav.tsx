@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 const links = [
   { href: "#about", label: "About" },
   { href: "#journey", label: "Journey" },
+  { href: "#portfolio", label: "Portfolio" },
   { href: "#velar", label: "Velar Studio" },
   { href: "#capabilities", label: "Capabilities" },
   { href: "#contact", label: "Contact" },
@@ -53,12 +54,14 @@ export default function Nav() {
           ))}
         </ul>
 
-        <a
-          href="#contact"
-          className="button button-primary button-nav focus-ring hidden md:inline-flex"
-        >
-          Get in touch
-        </a>
+        <div className="hidden md:block">
+          <a
+            href="#contact"
+            className="button button-primary button-nav focus-ring"
+          >
+            Get in touch
+          </a>
+        </div>
 
         {/* Burger — mobile only */}
         <button
