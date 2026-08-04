@@ -343,9 +343,10 @@ p {
   display: block;
 }
 
-.line,
-.word,
-.char {
+/* Only lines get the compositing hint. A layer on a .word stops an
+   ancestor's background-clip:text showing through, which rendered the
+   gradient nav item blank. */
+.line {
   will-change: transform;
 }
 
@@ -409,7 +410,8 @@ p {
   overflow: hidden;
 }
 
-.is-text-link > span,
+.is-text-link span,
+.nav-link-mask-inner > span,
 .btn-mask > p {
   display: block;
 }
@@ -520,6 +522,10 @@ button:focus-visible {
 .nav-container {
   display: flex;
   flex-flow: column;
+  /* Spans the viewport: panels distribute down the full height instead of
+     stacking at the top and leaving the bottom empty. */
+  height: calc(100vh - var(--s18) * 2);
+  justify-content: space-between;
   /* Revealed by the preloader at t=1.4. Hidden here so the rail cannot
      flash at its resting position before the ghost engine has measured. */
   opacity: 0;
@@ -766,6 +772,7 @@ button:focus-visible {
 .nav-menu-wrap {
   display: flex;
   flex-flow: column;
+  margin-top: auto;
 }
 
 .nav-menu {
@@ -840,34 +847,50 @@ button:focus-visible {
   max-width: 235px;
 }
 
-/* The venture gets the one gradient treatment on the site.
-   Painted on the INNERMOST text holders, not on the link: ButtonHover wraps
-   the label in spans and SplitText wraps those in .word, so a gradient
-   clipped to the link itself has no text of its own left to clip to — the
-   item renders blank. */
-.hero-navigation-link.is-feature span,
-.hero-navigation-link.is-feature .word {
-  background-image: linear-gradient(96deg, #d9c6ff, #a87bff 45%, var(--accent));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+/* The venture item — the site's one gradient treatment.
+
+   The gradient lives on the PILL, not on the text. Clipping a gradient to
+   the label cannot survive this component: ButtonHover splits the label into
+   .word wrappers and GSAP transforms them on hover, and a transformed
+   descendant composites on its own layer, so it stops acting as a clip for
+   the ancestor's background — the phrase renders blank. The border carries
+   one unbroken ramp across the whole phrase instead, and takes the sweep
+   with it. */
+.hero-navigation-link.is-feature {
+  color: #efe7ff;
+  text-shadow: 0 0 18px rgba(143, 92, 255, 0.4);
 }
 
-.nav-menu-item:hover .hero-navigation-link.is-feature span,
-.nav-menu-item:hover .hero-navigation-link.is-feature .word {
-  background-image: linear-gradient(96deg, #ffffff, #efe6ff);
+/* One slow light sweep — the only moving decoration on the page. */
+@keyframes velar-sweep {
+  from {
+    background-position: 130% 0;
+  }
+  to {
+    background-position: -130% 0;
+  }
 }
 
-/* A quiet marker so the item is distinguishable without relying on colour
-   alone — the gradient reads as decoration to anyone who cannot see it. */
+/* Animated gradient edge on the pill, so the item is distinguishable
+   without relying on colour alone. */
 .nav-menu-item:has(.is-feature) .nav-item-bg {
-  border-color: rgba(143, 92, 255, 0.35);
-  background-image: linear-gradient(
-    92deg,
-    rgba(143, 92, 255, 0.16),
-    rgba(143, 92, 255, 0.02)
-  );
+  border-color: transparent;
+  background-image: linear-gradient(var(--surface-solid), var(--surface-solid)),
+    linear-gradient(
+      96deg,
+      rgba(143, 92, 255, 0.95),
+      rgba(226, 212, 255, 0.6),
+      rgba(143, 92, 255, 0.95)
+    );
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  background-size: 100% 100%, 260% 100%;
+  animation: velar-sweep 7s linear infinite;
+}
+
+.nav-menu-item:has(.is-feature):hover .nav-item-bg {
+  box-shadow: 0 0 0 1px rgba(143, 92, 255, 0.3),
+    0 0 24px -6px rgba(143, 92, 255, 0.6);
 }
 
 /* Optical correction: at 16px these glyphs sit beside 18px uppercase labels,
@@ -1085,8 +1108,8 @@ button:focus-visible {
      the sticky frame is pinned (0.53H <= H - 100vh requires H >= 213vh).
      Shorter than the reference's 300vh because HeroSnap settles the
      remainder — the distance no longer has to be walked by hand. */
-  min-height: 220vh;
-  padding-bottom: 105vh;
+  min-height: 175vh;
+  padding-bottom: 62vh;
   pointer-events: none;
   overflow: hidden;
 }
@@ -1119,6 +1142,7 @@ button:focus-visible {
   height: 100vh;
   /* Equal optical margin on all three sides of the mark. */
   padding: var(--s40) var(--s40) var(--s40);
+  isolation: isolate;
   pointer-events: none;
 }
 
@@ -1134,11 +1158,13 @@ button:focus-visible {
 .hero-mark-slot {
   position: relative;
   z-index: 1;   /* behind the portrait */
-  /* Full container width, with the top margin equal to the side margins so
-     the mark is optically centred in its own frame. */
-  width: 100%;
+  /* Full container width, top margin equal to the sides — but capped against
+     viewport HEIGHT too. The mark scales with width and the viewport does
+     not, so on a wide-but-short screen an uncapped mark grew tall enough to
+     push the nav row straight into the floating cards. */
+  width: min(100%, 132vh);
   margin: 0 auto;
-  --mark-w: calc(100vw - var(--s40) * 2);
+  --mark-w: min(calc(100vw - var(--s40) * 2), 132vh);
 }
 
 .mark-ghost,
@@ -1174,10 +1200,12 @@ button:focus-visible {
   width: 100%;
   padding: 0 var(--s40);
   pointer-events: none;
-  --mark-w: calc(100vw - var(--s40) * 2);
+  --mark-w: min(calc(100vw - var(--s40) * 2), 132vh);
 }
 
 .mark-preload {
+  width: min(100%, 132vh);
+  margin: 0 auto;
   opacity: 0;   /* the preloader turns this on; hidden pre-JS */
 }
 
@@ -1243,7 +1271,7 @@ button:focus-visible {
      an auto-height wrap collapses to 0 and .hero-card-3's percentage inset
      resolves against nothing. 26vw is the stacked height of the two stat
      ghosts plus their gap. */
-  height: 17vw;
+  height: clamp(11.5rem, 17vw, 20rem);
   margin: 0 auto;
   pointer-events: none;
 }
@@ -1278,8 +1306,8 @@ button:focus-visible {
   flex-flow: column;
   justify-content: flex-start;
   align-items: center;
-  gap: var(--s12);
-  padding: var(--s20);
+  gap: clamp(0.55rem, 0.83vw, 1rem);
+  padding: clamp(0.8rem, 1.25vw, 1.5rem);
   border-radius: var(--s10);
   color: var(--ink);
   font-family: var(--font-display), Arial, sans-serif;
@@ -1319,7 +1347,7 @@ button:focus-visible {
 }
 
 .hero-stat-a-icon {
-  width: 2.9vw;
+  width: clamp(1.9rem, 2.9vw, 3.6rem);
   height: auto;
   color: var(--accent);
 }
@@ -1327,9 +1355,9 @@ button:focus-visible {
 .hero-stat-b-numb {
   display: block;
   color: var(--accent);
-  font-size: 2.9vw;
+  font-size: clamp(1.9rem, 2.9vw, 3.6rem);
   font-weight: 700;
-  line-height: 0.9;
+  line-height: 1;
   letter-spacing: -0.04em;
 }
 
@@ -1346,20 +1374,22 @@ button:focus-visible {
    Setting both at one size is what made this card read as compressed. */
 .hero-stat-figure {
   font-family: var(--font-display), Arial, sans-serif;
-  font-size: clamp(1.4rem, 2.15vw, 2.6rem);
+  font-size: clamp(1.6rem, 2.15vw, 2.7rem);
   font-weight: 700;
-  line-height: 0.95;
+  line-height: 1;
   letter-spacing: -0.04em;
   color: var(--ink);
 }
 
 .hero-stat-label {
   font-family: var(--font-body), Arial, sans-serif;
-  font-size: clamp(0.62rem, 0.9vw, 1.05rem);
+  font-size: clamp(0.78rem, 0.94vw, 1.1rem);
   font-weight: 500;
-  line-height: 1.25;
-  letter-spacing: 0.02em;
+  /* 1.25 clipped descenders on the two-line label; 1.4 gives it room. */
+  line-height: 1.4;
+  letter-spacing: 0.005em;
   color: var(--ink-70);
+  text-wrap: balance;
 }
 
 .hero-stat-icon-wrap,
@@ -1510,17 +1540,17 @@ button:focus-visible {
 
 /* ---- portrait ------------------------------------------------------------ */
 .profile-img-wrap {
-  position: fixed;
+  position: absolute;
   inset: 0;
-  /* Above the wordmark, below the rail's own controls. The mark reads as
-     the backdrop the portrait stands in front of — the depth cue the whole
-     hero rests on. */
-  z-index: 6;
+  /* IN FRONT of the wordmark. Both live in the hero now, so a plain z-index
+     settles it — inside .navigation the portrait was in a different stacking
+     context from the mark and no z-index in either could reach across. */
+  z-index: 2;
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
 }
 
@@ -1530,8 +1560,8 @@ button:focus-visible {
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   /* Revealed by the preloader with blur + scale from the bottom. */
   opacity: 0;
 }
@@ -1559,7 +1589,10 @@ button:focus-visible {
 .about-section {
   position: relative;
   z-index: 200;
-  margin-top: -78vh;
+  /* Starts on the same top line as the rail, so the header reads as a
+     continuation of the layout rather than a block dropped in below it. */
+  padding-top: var(--s18);
+  margin-top: -46vh;
   padding-bottom: var(--s216);
 }
 
@@ -1576,11 +1609,10 @@ button:focus-visible {
   display: flex;
   flex-flow: column;
   width: 100%;
-  /* Reserves the run the cards are magnetised into. Seven milestones sit 14%
-     apart, so the container has to be tall enough that 14% clears a card's
-     own height — at 260vh the step was 327px against ~380px cards and they
-     collided. */
-  height: 340vh;
+  /* Reserves the run the cards are magnetised into. Card height grows with
+     the viewport (their width is vw-based), so the step has to clear a card
+     at the WIDEST viewport, not the narrowest. */
+  height: 470vh;
   padding-bottom: var(--s72);
 }
 
@@ -1871,7 +1903,8 @@ button:focus-visible {
   width: 100%;
   min-height: 100vh;
   padding: var(--s216) var(--edge) var(--s72) var(--gutter);
-  background-color: var(--ground);
+  /* No background of its own — this section must not read as a tonal change
+     from the rest of the page. */
   overflow: hidden;
 }
 

@@ -34,12 +34,6 @@ export const Sidebar = {
       force3D: false,
     });
 
-    const inverse = 1 / STATE.sidebarScale;
-
-    const portrait = Utils.$(".profile-img-wrap");
-    if (portrait && portrait.closest(".nav-container")) {
-      gsap.set(portrait, { scale: inverse, transformOrigin: "top left", force3D: false });
-    }
   },
 };
 
@@ -195,9 +189,9 @@ export const ButtonHover = {
          label when the pointer enters the pill, the icon or the padding —
          not only when it lands on the six characters of text. */
       const scopeSel = el.getAttribute("data-hover-scope");
-      const scope = (scopeSel && el.closest(scopeSel)) || el;
+      const scope = scopeSel ? el.closest(scopeSel) : null;
 
-      Utils.addEvent(scope, "mouseenter", () => {
+      const run = () => {
         if (tl) tl.kill();
         tl = gsap.timeline();
 
@@ -213,7 +207,13 @@ export const ButtonHover = {
         );
 
         showingA = !showingA;
-      });
+      };
+
+      /* Both targets. The row is the hit area while the link sits in the
+         rail; once the ghost engine has flown the link into the hero the row
+         is still back in the rail, so the link needs its own listener too. */
+      Utils.addEvent(el, "mouseenter", run);
+      if (scope && scope !== el) Utils.addEvent(scope, "mouseenter", run);
     });
   },
 };

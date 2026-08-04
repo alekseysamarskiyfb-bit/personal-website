@@ -42,41 +42,10 @@ export default function Sidebar() {
       data-tl-type="trigger"
       data-tl-trigger=".hero"
       data-tl-start="53% top"
-      data-tl-from="{'zIndex': 2}"
+      data-tl-from="{'zIndex': 9}"
       data-tl-to="{'zIndex': 100, 'duration': 0.1}"
     >
       <div className="nav-container">
-        {/* The portrait. Lives inside the rail so the sidebar's own scale
-            applies to it, and is reparented to <body> by the ProfileImage
-            module once the hero is half gone — the rail's transform would
-            otherwise trap its position:fixed. */}
-        <div
-          className="profile-img-wrap"
-          data-tl-desktop
-          data-tl-type="trigger"
-          data-tl-trigger=".hero"
-          data-tl-start="top 70%"
-        >
-          <div className="profile-img-item">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              className="hero-profile-img"
-              src="/portrait-cutout.png"
-              alt="Oleksii Samarskyi"
-              width={1600}
-              height={2400}
-              decoding="async"
-              data-tl-desktop
-              data-tl-type="scroll"
-              data-tl-trigger=".hero"
-              data-tl-start="top top"
-              data-tl-end="70% top"
-              data-tl-from="{'filter': 'blur(0px)', 'opacity': 1}"
-              data-tl-to="{'filter': 'blur(90px)', 'opacity': 0.3}"
-            />
-          </div>
-        </div>
-
         {/* ---- panel 1: mark, socials, positioning line ------------------ */}
         <div className="nav-top-layout">
           <div
@@ -246,12 +215,6 @@ export default function Sidebar() {
               data-flip-trigger=".hero"
               data-flip-start="top top"
               data-flip-end="40% top"
-              data-tl-type="scroll"
-              data-tl-trigger=".hero"
-              data-tl-start="20% top"
-              data-tl-end="22% top"
-              data-tl-from="{'color': '#ffffff'}"
-              data-tl-to="{'color': '#000000'}"
             >
               20k+ Creatives
             </p>
@@ -289,12 +252,6 @@ export default function Sidebar() {
               data-flip-trigger=".hero"
               data-flip-start="top top"
               data-flip-end="40% top"
-              data-tl-type="scroll"
-              data-tl-trigger=".hero"
-              data-tl-start="20% top"
-              data-tl-end="22% top"
-              data-tl-from="{'color': '#ffffff'}"
-              data-tl-to="{'color': '#000000'}"
             >
               Years in performance
             </p>
@@ -411,7 +368,7 @@ export default function Sidebar() {
             </div>
             <div className="nav-button-slot is-flip-slot">
               <a className="nav-button-secondary" href="#portfolio" data-button-hover>
-                <p>Portfolio</p>
+                <p>See Work</p>
                 <IconArrowUpRight className="nav-button-arrow" />
               </a>
             </div>

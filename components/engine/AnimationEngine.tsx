@@ -23,7 +23,7 @@ import { StyleEngine } from "./modules/styleEngine";
 import { GhostEngine } from "./modules/ghostEngine";
 import { LenisInit, AnchorLinks } from "./modules/lenis";
 import { Sidebar, Clipboard, ButtonHover } from "./modules/sidebar";
-import { Preloader, ProfileImage } from "./modules/preloader";
+import { Preloader } from "./modules/preloader";
 import { MagneticPositions, HorizontalScroll } from "./modules/scroll";
 import { TimelineSpine } from "./modules/spine";
 import { HeroSnap } from "./modules/heroSnap";
@@ -50,7 +50,6 @@ function initAll() {
 
   CardInteractions.init();
   Popups.init();
-  ProfileImage.init();
   CTAAnimation.init();
   Clipboard.init();
   ImageTrail.init();

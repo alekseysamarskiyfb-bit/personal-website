@@ -251,66 +251,7 @@ export const Preloader = {
 };
 
 /**
- * PROFILE IMAGE HANDOFF
- *
- * The portrait starts inside the rail so the rail's own scale applies to it.
- * Once the hero is half gone it is REPARENTED to <body> at its current rect:
- * the rail's transform creates a containing block that would otherwise trap
- * position:fixed and drag the portrait along as the rail scales.
- * Opacity/visibility are carried across so the swap never flashes.
+ * The portrait now renders inside the hero rather than inside the rail, so
+ * the old reparent-to-body handoff is gone: there is no scaled ancestor left
+ * to trap its positioning, and nothing to hand off.
  */
-export const ProfileImage = {
-  isMoved: false,
-  originalCss: "",
-
-  init() {
-    if (isMobile()) return;
-
-    const hero = Utils.$(".hero");
-    const wrap = Utils.$(".profile-img-wrap");
-    const navContainer = Utils.$(".nav-container");
-    if (!hero || !wrap || !navContainer) return;
-
-    this.originalCss = wrap.style.cssText;
-    const inverseScale = 1 / STATE.sidebarScale;
-
-    const onScroll = () => {
-      const heroRect = hero.getBoundingClientRect();
-      const hasPassed = heroRect.top + heroRect.height * 0.5 <= 0;
-
-      if (hasPassed && !this.isMoved) {
-        const rect = wrap.getBoundingClientRect();
-        const cs = window.getComputedStyle(wrap);
-        document.body.appendChild(wrap);
-        wrap.style.cssText = `
-          position: fixed !important;
-          top: ${rect.top}px !important;
-          left: ${rect.left}px !important;
-          width: ${rect.width}px !important;
-          height: ${rect.height}px !important;
-          transform: none !important;
-          z-index: 1000;
-          opacity: ${cs.opacity};
-          visibility: ${cs.visibility};
-          pointer-events: none;
-        `;
-        this.isMoved = true;
-      } else if (!hasPassed && this.isMoved) {
-        const cs = window.getComputedStyle(wrap);
-        navContainer.prepend(wrap);
-        wrap.style.cssText = this.originalCss;
-        gsap.set(wrap, {
-          scale: inverseScale,
-          transformOrigin: "top left",
-          force3D: false,
-          opacity: cs.opacity,
-          visibility: cs.visibility,
-        });
-        this.isMoved = false;
-      }
-    };
-
-    Utils.addEvent(window, "scroll", onScroll, { passive: true });
-    onScroll();
-  },
-};

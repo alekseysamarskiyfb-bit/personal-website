@@ -319,12 +319,12 @@ export const CTAAnimation = {
 
 export const ImageTrail = {
   config: {
-    minDistance: 30,
-    maxImages: 20,
+    minDistance: 14,
+    maxImages: 16,
     fadeOutDelay: 100,
     fadeOutInterval: 50,
-    imageWidth: 200,
-    imageHeight: 280,
+    imageWidth: 66,
+    imageHeight: 92,
     maxRotation: 30,
   },
   images: [] as string[],

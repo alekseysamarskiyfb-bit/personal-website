@@ -19,13 +19,12 @@ export default function Cta() {
       <div className="column cta-column" id="cta_column">
         <h2
           className="cta_heading"
-          data-tl-once
           data-tl-type="trigger"
           data-tl-trigger="#cta_column"
-          data-tl-start="top 90%"
+          data-tl-start="top 82%"
           data-tl-split="lines"
-          data-tl-from="{'yPercent': 100}"
-          data-tl-to="{'yPercent': 0, 'duration': 0.6, 'stagger': 0.1, 'delay': 0.3, 'ease': 'power2.out'}"
+          data-tl-from="{'yPercent': 105, 'opacity': 0, 'filter': 'blur(9px)'}"
+          data-tl-to="{'yPercent': 0, 'opacity': 1, 'filter': 'blur(0px)', 'duration': 1.05, 'stagger': 0.11, 'delay': 0.1, 'ease': 'expo.out'}"
         >
           Let&rsquo;s build the
           <br />
@@ -34,13 +33,12 @@ export default function Cta() {
 
         <p
           className="max-width-389 op80"
-          data-tl-once
           data-tl-type="trigger"
           data-tl-trigger="#cta_column"
-          data-tl-start="top 65%"
+          data-tl-start="top 74%"
           data-tl-split="lines"
-          data-tl-from="{'yPercent': 100}"
-          data-tl-to="{'yPercent': 0, 'duration': 0.6, 'stagger': 0.1, 'delay': 0.3, 'ease': 'power2.out'}"
+          data-tl-from="{'yPercent': 100, 'opacity': 0}"
+          data-tl-to="{'yPercent': 0, 'opacity': 1, 'duration': 0.75, 'stagger': 0.09, 'delay': 0.28, 'ease': 'expo.out'}"
         >
           Running paid and the creative can&rsquo;t keep up? Or starting a
           channel and want it built properly the first time? Either way, tell me

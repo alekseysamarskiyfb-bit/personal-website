@@ -87,13 +87,15 @@ const ENTRIES = [
 /* Milestones alternate across the centre line; the card's origin corner
    alternates with them, which is what makes the run zig-zag. */
 const NODES = ENTRIES.map((_, i) => ({
-  top: `${8 + i * 14}%`,
-  left: i % 2 === 0 ? "62%" : "38%",
+  top: `${7 + i * 13.6}%`,
+  /* A wide swing is what makes the run read as a zig-zag: at 62/38 the path
+     was near-vertical and the alternation barely registered. */
+  left: i % 2 === 0 ? "74%" : "26%",
   origin: i % 2 === 0 ? "bottom right" : "bottom left",
 }));
 
 /* Each card's reveal fires at its own point in the container's scroll. */
-const STARTS = ENTRIES.map((_, i) => `${-42 + i * 13}% top`);
+const STARTS = ENTRIES.map((_, i) => `${-42 + i * 12.5}% top`);
 
 export default function Journey() {
   return (
@@ -164,7 +166,7 @@ export default function Journey() {
               key={i}
               data-origin={NODES[i].origin}
               data-connect={`step-${i + 1}`}
-              data-offset={NODES[i].origin.includes("right") ? "-2.4vw, 0" : "2.4vw, 0"}
+              data-offset={NODES[i].origin.includes("right") ? "-2.8vw, 0" : "2.8vw, 0"}
               data-origin-mobile="top left"
               data-anchor-pos-mobile="top left"
               style={{ top: NODES[i].top, left: 0 }}

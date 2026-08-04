@@ -49,6 +49,31 @@ export default function Hero() {
       </div>
 
       <div className="hero-sticky">
+        {/* The portrait lives HERE, not in the rail. It is the one hero
+            element that never FLIPs, and inside .navigation it was trapped in
+            a different stacking context from the mark — no z-index within
+            either could put it in front. */}
+        <div className="profile-img-wrap">
+          <div className="profile-img-item">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              className="hero-profile-img"
+              src="/portrait-cutout.png"
+              alt="Oleksii Samarskyi"
+              width={1600}
+              height={2400}
+              decoding="async"
+              data-tl-desktop
+              data-tl-type="scroll"
+              data-tl-trigger=".hero"
+              data-tl-start="top top"
+              data-tl-end="70% top"
+              data-tl-from="{'filter': 'blur(0px)', 'opacity': 1}"
+              data-tl-to="{'filter': 'blur(90px)', 'opacity': 0.3}"
+            />
+          </div>
+        </div>
+
         {/* The mark ghost. Sits at the top at full bleed; the rail's mark is
             transformed onto it on load. */}
         <div className="hero-mark-slot" aria-hidden>
