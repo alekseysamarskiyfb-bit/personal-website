@@ -1,0 +1,378 @@
+/**
+ * SIDEBAR
+ *
+ * The fixed rail — and, structurally, the whole point of the design: this is
+ * not "the nav". It is the hero, folded up. Every element in here has an
+ * oversized invisible twin in the hero, and the ghost engine transforms these
+ * real elements onto those twins on load, then scrubs them home as you
+ * scroll. Nothing appears or disappears; it relocates.
+ *
+ * Consequences for this markup:
+ *   - The real <a> links live HERE, not in the hero. The hero only holds
+ *     transparent ghosts for them to be measured against.
+ *   - Each .nav-menu-item carries data-flip-start/end; the ghost engine reads
+ *     those off the nearest ancestor when it animates the link inside.
+ *   - .nav-*-bg panels start as the big hero glass cards and fade to nothing
+ *     as they land, revealing the sidebar's own panel underneath.
+ *   - .nav-container starts at opacity 0; the preloader reveals it at t=1.4.
+ */
+
+import { WordmarkSVG } from "./Wordmark";
+import { EMAIL, LINKEDIN, NAV_LINKS } from "./navData";
+import { IconArrowUpRight, IconCopy, IconCheck, IconLinkedIn, IconMail, IconLayers } from "./icons";
+
+export default function Sidebar() {
+  return (
+    <header
+      className="navigation"
+      /* Below the hero content until 53%, above it after — so hero cards
+         paint over the rail on the way in, and scroll under it on the way
+         out. duration 0.1 makes it a hard swap, not a fade. */
+      data-tl-desktop
+      data-tl-type="trigger"
+      data-tl-trigger=".hero"
+      data-tl-start="53% top"
+      data-tl-from="{'zIndex': 2}"
+      data-tl-to="{'zIndex': 100, 'duration': 0.1}"
+    >
+      <div className="nav-container">
+        {/* The portrait. Lives inside the rail so the sidebar's own scale
+            applies to it, and is reparented to <body> by the ProfileImage
+            module once the hero is half gone — the rail's transform would
+            otherwise trap its position:fixed. */}
+        <div
+          className="profile-img-wrap"
+          data-tl-desktop
+          data-tl-type="trigger"
+          data-tl-trigger=".hero"
+          data-tl-start="top 70%"
+        >
+          <div className="profile-img-item">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              className="hero-profile-img"
+              src="/portrait-cutout.png"
+              alt="Oleksii Samarskyi"
+              width={1600}
+              height={2400}
+              decoding="async"
+              data-tl-desktop
+              data-tl-type="scroll"
+              data-tl-trigger=".hero"
+              data-tl-start="top top"
+              data-tl-end="70% top"
+              data-tl-from="{'filter': 'blur(0px)', 'opacity': 1}"
+              data-tl-to="{'filter': 'blur(90px)', 'opacity': 0.3}"
+            />
+          </div>
+        </div>
+
+        {/* ---- panel 1: mark, socials, positioning line ------------------ */}
+        <div className="nav-top-layout">
+          <div
+            className="nav-top-bg"
+            data-tl-desktop
+            data-tl-type="scroll"
+            data-tl-trigger=".hero"
+            data-tl-start="34% top"
+            data-tl-end="38% top"
+            data-tl-from="{'scale': 0.5, 'opacity': 0}"
+            data-tl-to="{'scale': 1, 'opacity': 1}"
+          />
+
+          <div className="nav-top-item">
+            <div
+              className="nav-logo"
+              data-tl-desktop
+              data-tl-type="scroll"
+              data-tl-trigger=".hero"
+              data-tl-start="42% top"
+              data-tl-end="44% top"
+              data-tl-from="{'color': '#7c3aed', 'backgroundColor': 'rgba(124,58,237,0)'}"
+              data-tl-to="{'color': '#ffffff', 'backgroundColor': '#7c3aed'}"
+            >
+              <div
+                className="nav-logo-item"
+                data-flip-trigger=".hero"
+                data-flip-start="top top"
+                data-flip-end="44% top"
+              >
+                <WordmarkSVG className="nav-mark" />
+                <div className="mark-dot-wrap">
+                  <span
+                    className="mark-dot"
+                    data-tl-desktop
+                    data-tl-type="scroll"
+                    data-tl-trigger=".hero"
+                    data-tl-start="2% top"
+                    data-tl-end="5% top"
+                    data-tl-from="{'opacity': 0}"
+                    data-tl-to="{'opacity': 1}"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="social-wrap">
+              <a
+                className="social-link"
+                href={LINKEDIN}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+                data-tl-type="scroll"
+                data-tl-trigger=".hero"
+                data-tl-start="44% top"
+                data-tl-end="46% top"
+                data-tl-from="{'scale': 0.3, 'opacity': 0}"
+                data-tl-to="{'scale': 1, 'opacity': 1}"
+              >
+                <IconLinkedIn className="social-icon" />
+              </a>
+              <a
+                className="social-link"
+                href={`mailto:${EMAIL}`}
+                aria-label="Email"
+                data-tl-type="scroll"
+                data-tl-trigger=".hero"
+                data-tl-start="46% top"
+                data-tl-end="48% top"
+                data-tl-from="{'scale': 0.3, 'opacity': 0}"
+                data-tl-to="{'scale': 1, 'opacity': 1}"
+              >
+                <IconMail className="social-icon" />
+              </a>
+            </div>
+
+            {/* Mobile only — the rail collapses to a bar + drawer below 768. */}
+            <button
+              type="button"
+              className="mobile-menu"
+              aria-label="Menu"
+              aria-controls="nav-menu-wrap"
+            >
+              <span className="mobile-menu-icons" />
+              <span className="mobile-menu-icons" />
+            </button>
+          </div>
+
+          <p
+            className="nav-top-text"
+            data-tl-desktop
+            data-tl-type="scroll"
+            data-tl-trigger=".hero"
+            data-tl-split="lines"
+            data-tl-start="38% top"
+            data-tl-end="42% top"
+            data-tl-from="{'y': '100%'}"
+            data-tl-to="{'y': '0%'}"
+          >
+            Create. Test. Read the numbers. Iterate.
+          </p>
+        </div>
+
+        {/* ---- panel 2: the two stats ------------------------------------ */}
+        <div className="nav-stats-wrap">
+          <div
+            className="nav-top-bg"
+            data-tl-desktop
+            data-tl-type="scroll"
+            data-tl-trigger=".hero"
+            data-tl-start="35% top"
+            data-tl-end="39% top"
+            data-tl-from="{'scale': 0.5, 'opacity': 0}"
+            data-tl-to="{'scale': 1, 'opacity': 1}"
+          />
+
+          <div className="nav-stats-card">
+            <div
+              className="nav-stat-a-bg"
+              data-flip-trigger=".hero"
+              data-flip-start="top top"
+              data-flip-end="40% top"
+            />
+            <div className="nav-stat-icon-wrap">
+              <IconLayers
+                className="nav-stat-a-icon"
+                data-flip-trigger=".hero"
+                data-flip-start="top top"
+                data-flip-end="40% top"
+              />
+            </div>
+            <p
+              className="nav-stat-a-text"
+              data-flip-trigger=".hero"
+              data-flip-start="top top"
+              data-flip-end="40% top"
+              data-tl-type="scroll"
+              data-tl-trigger=".hero"
+              data-tl-start="20% top"
+              data-tl-end="22% top"
+              data-tl-from="{'color': '#ffffff'}"
+              data-tl-to="{'color': '#000000'}"
+            >
+              10+ Platforms
+            </p>
+          </div>
+
+          <div
+            className="nav-stats-sep"
+            data-tl-type="scroll"
+            data-tl-trigger=".hero"
+            data-tl-start="39% top"
+            data-tl-end="41% top"
+            data-tl-from="{'opacity': 0}"
+            data-tl-to="{'opacity': 1}"
+          />
+
+          <div className="nav-stats-card">
+            <div
+              className="nav-stat-b-bg"
+              data-flip-trigger=".hero"
+              data-flip-start="top top"
+              data-flip-end="40% top"
+            />
+            <div className="nav-stat-numb-wrap">
+              <span
+                className="nav-stat-b-numb"
+                data-flip-trigger=".hero"
+                data-flip-start="top top"
+                data-flip-end="40% top"
+              >
+                3+
+              </span>
+            </div>
+            <p
+              className="nav-stat-b-text"
+              data-flip-trigger=".hero"
+              data-flip-start="top top"
+              data-flip-end="40% top"
+              data-tl-type="scroll"
+              data-tl-trigger=".hero"
+              data-tl-start="20% top"
+              data-tl-end="22% top"
+              data-tl-from="{'color': '#ffffff'}"
+              data-tl-to="{'color': '#000000'}"
+            >
+              Years in performance
+            </p>
+          </div>
+        </div>
+
+        {/* ---- panels 3–6: menu, platforms, email, actions --------------- */}
+        <div className="nav-menu-wrap" id="nav-menu-wrap">
+          <nav className="nav-menu" aria-label="Primary">
+            <div
+              className="nav-menu-bg"
+              data-tl-desktop
+              data-tl-type="scroll"
+              data-tl-trigger=".hero"
+              data-tl-start="31% top"
+              data-tl-end="35% top"
+              data-tl-from="{'scale': 0.5, 'opacity': 0}"
+              data-tl-to="{'scale': 1, 'opacity': 1}"
+            />
+
+            {NAV_LINKS.map((link, i) => (
+              <div
+                className="nav-menu-item"
+                key={link.id}
+                /* Reverse-staggered windows: later items start earlier and
+                   end later, so they travel further and the row unpacks into
+                   the column in sequence rather than all at once. */
+                data-flip-trigger=".hero"
+                data-flip-start={`${7 - i}% top`}
+                data-flip-end={`${30 + i}% top`}
+              >
+                <div
+                  className="nav-item-bg"
+                  data-tl-desktop
+                  data-tl-type="scroll"
+                  data-tl-trigger=".hero"
+                  data-tl-start={`${28 + i}% top`}
+                  data-tl-end={`${30 + i}% top`}
+                  data-tl-from="{'scale': 0.5, 'opacity': 0}"
+                  data-tl-to="{'scale': 1, 'opacity': 1}"
+                />
+                <link.Icon
+                  className={`nav-item-icon${link.narrow ? " is-narrow" : ""}`}
+                  data-tl-desktop
+                  data-tl-type="scroll"
+                  data-tl-trigger=".hero"
+                  data-tl-start={`${29 + i}% top`}
+                  data-tl-end={`${31 + i}% top`}
+                  data-tl-from="{'scale': 0.2, 'opacity': 0}"
+                  data-tl-to="{'scale': 1, 'opacity': 1}"
+                />
+                <a
+                  className="hero-navigation-link"
+                  data-link-id={link.id}
+                  href={link.href}
+                  data-button-hover
+                >
+                  {link.label}
+                </a>
+              </div>
+            ))}
+          </nav>
+
+          <div
+            className="nav-platforms-wrap"
+            data-tl-desktop
+            data-tl-type="scroll"
+            data-tl-trigger=".hero"
+            data-tl-start="30% top"
+            data-tl-end="35% top"
+            data-tl-from="{'opacity': 0}"
+            data-tl-to="{'opacity': 1}"
+          >
+            <span className="nav-platforms-label">Shipped on</span>
+            <div className="nav-platforms-item">
+              <span className="platform-name">Meta</span>
+              <span className="platform-name">TikTok</span>
+              <span className="platform-name">Google</span>
+              <span className="platform-name">Native</span>
+            </div>
+          </div>
+
+          <div
+            className="nav-email-wrap"
+            data-tl-desktop
+            data-tl-type="scroll"
+            data-tl-trigger=".hero"
+            data-tl-start="33% top"
+            data-tl-end="38% top"
+            data-tl-from="{'opacity': 0}"
+            data-tl-to="{'opacity': 1}"
+          >
+            <div className="nav-email-item" role="button" tabIndex={0} aria-label={`Copy ${EMAIL}`}>
+              <span className="email-text">{EMAIL}</span>
+              <span className="clipboard-item" aria-hidden>
+                <IconCopy className="clipboard-glyph" />
+                <p>Copy to clipboard</p>
+                <IconCheck className="clipboard-icon" />
+              </span>
+            </div>
+          </div>
+
+          <div className="nav-button-wrap">
+            {/* Each button gets its own pre-sized slot: the logo FLIP type
+                lands every element at its parent's top-left, so two buttons
+                sharing one parent would stack. */}
+            <div className="nav-button-slot is-flip-slot">
+              <a className="nav-button" href="#contact" data-button-hover>
+                <p>Let&rsquo;s Talk</p>
+              </a>
+            </div>
+            <div className="nav-button-slot is-flip-slot">
+              <a className="nav-button-secondary" href="#work" data-button-hover>
+                <p>See Work</p>
+                <IconArrowUpRight className="nav-button-arrow" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+}

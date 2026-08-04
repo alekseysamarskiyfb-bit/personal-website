@@ -1,30 +1,19 @@
 import type { Config } from "tailwindcss";
 
+/**
+ * Tailwind is present for its preflight reset only. The design system is a
+ * fluid 1440 vw grid expressed in CSS custom properties (app/globals.css) —
+ * utility classes cannot express clamp()-wrapped vw arithmetic driven by
+ * animatable variables, which is the core of the layout.
+ */
 const config: Config = {
-  content: [
-    "./app/**/*.{ts,tsx}",
-    "./components/**/*.{ts,tsx}",
-  ],
+  content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}"],
   theme: {
     extend: {
-      colors: {
-        ink: "#0A0812",
-        "ink-2": "#130F1E",
-        "ink-3": "#1A1428",
-        paper: "#F2F1ED",
-        text: "#F3F1F8",
-        muted: "#948FA6",
-        signal: "#A855F7",
-        data: "#948FA6",
-        line: "#241E33",
-      },
       fontFamily: {
         display: ["var(--font-display)"],
         body: ["var(--font-body)"],
-        mono: ["var(--font-mono)"],
-      },
-      maxWidth: {
-        content: "1440px",
+        wordmark: ["var(--font-wordmark)"],
       },
     },
   },
