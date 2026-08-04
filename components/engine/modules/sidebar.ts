@@ -172,6 +172,10 @@ export const ButtonHover = {
 
         const cloneP = originalP.cloneNode(true) as HTMLElement;
         cloneP.classList.add("clone-p");
+        /* cloneNode copies inline styles, and CTAAnimation has already set
+           this label to opacity 0 / blur for its own reveal. Without the
+           reset the first hover rolls an invisible label into view. */
+        gsap.set(cloneP, { clearProps: "opacity,filter" });
         mask.appendChild(cloneP);
 
         originalTarget = originalP;
@@ -187,7 +191,13 @@ export const ButtonHover = {
       let showingA = true;
       let tl: gsap.core.Timeline | null = null;
 
-      Utils.addEvent(el, "mouseenter", () => {
+      /* The hover target can be an ancestor: a nav row should animate its
+         label when the pointer enters the pill, the icon or the padding —
+         not only when it lands on the six characters of text. */
+      const scopeSel = el.getAttribute("data-hover-scope");
+      const scope = (scopeSel && el.closest(scopeSel)) || el;
+
+      Utils.addEvent(scope, "mouseenter", () => {
         if (tl) tl.kill();
         tl = gsap.timeline();
 

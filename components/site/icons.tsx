@@ -125,3 +125,85 @@ export const IconClose = (p: P) => (
     <path d="M6.6 6.6l10.8 10.8M17.4 6.6 6.6 17.4" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
   </svg>
 );
+
+/* ==========================================================================
+   FEATURE GLYPHS
+   Filled, rounded, single-weight — the trait list reads as a set of marks
+   rather than a bullet list, which is what the reference does with its
+   iconography. Each carries a rounded outer plate so they sit on the same
+   optical square regardless of the glyph inside.
+   ========================================================================== */
+
+export const IconCreatives = (p: P) => (
+  <svg {...base(p)}>
+    <rect x="2.6" y="5.4" width="13.4" height="13.2" rx="3.2" fill="currentColor" opacity="0.35" />
+    <rect x="8" y="2.8" width="13.4" height="13.2" rx="3.2" fill="currentColor" />
+    <circle cx="12.2" cy="7.6" r="1.5" fill="var(--ground, #14120f)" />
+    <path d="M9 14.4l2.9-3.1 2.2 2.3 1.9-1.9 3.4 3.5v.6a1 1 0 0 1-1 1H10a1 1 0 0 1-1-1z" fill="var(--ground, #14120f)" />
+  </svg>
+);
+
+export const IconTrendUp = (p: P) => (
+  <svg {...base(p)}>
+    <rect x="2.4" y="2.4" width="19.2" height="19.2" rx="6" fill="currentColor" />
+    <path d="M6.8 15.4l3.5-3.6 2.5 2.5 4.4-4.8" stroke="var(--ground, #14120f)" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M14.4 9h3.3v3.2" stroke="var(--ground, #14120f)" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+export const IconPen = (p: P) => (
+  <svg {...base(p)}>
+    <rect x="2.4" y="2.4" width="19.2" height="19.2" rx="6" fill="currentColor" />
+    <path d="M8.2 15.9l.5-2.3 5.6-5.6 1.8 1.8-5.6 5.6z" fill="var(--ground, #14120f)" />
+    <path d="M15.1 7.1l1-1a1 1 0 0 1 1.4 0l.4.4a1 1 0 0 1 0 1.4l-1 1z" fill="var(--ground, #14120f)" />
+  </svg>
+);
+
+export const IconTeam = (p: P) => (
+  <svg {...base(p)}>
+    <rect x="2.4" y="2.4" width="19.2" height="19.2" rx="6" fill="currentColor" />
+    <circle cx="9.6" cy="10" r="2.2" fill="var(--ground, #14120f)" />
+    <circle cx="15.4" cy="10.6" r="1.7" fill="var(--ground, #14120f)" />
+    <path d="M5.6 16.8c0-2 1.8-3.3 4-3.3s4 1.3 4 3.3z" fill="var(--ground, #14120f)" />
+    <path d="M14.4 16.8c0-1.5-.5-2.3-1.2-2.8.7-.3 1.4-.4 2.2-.4 1.8 0 3 1 3 2.5v.7z" fill="var(--ground, #14120f)" />
+  </svg>
+);
+
+export const IconChip = (p: P) => (
+  <svg {...base(p)}>
+    <rect x="2.4" y="2.4" width="19.2" height="19.2" rx="6" fill="currentColor" />
+    <rect x="8.2" y="8.2" width="7.6" height="7.6" rx="2" fill="var(--ground, #14120f)" />
+    <path d="M11 5.4v2.2M13 5.4v2.2M11 16.4v2.2M13 16.4v2.2M5.4 11h2.2M5.4 13h2.2M16.4 11h2.2M16.4 13h2.2" stroke="var(--ground, #14120f)" strokeWidth="1.7" strokeLinecap="round" />
+  </svg>
+);
+
+export const IconShieldCheck = (p: P) => (
+  <svg {...base(p)}>
+    <rect x="2.4" y="2.4" width="19.2" height="19.2" rx="6" fill="currentColor" />
+    <path d="M12 5.9l4.7 1.9v3.6c0 3-2 5.2-4.7 6.2-2.7-1-4.7-3.2-4.7-6.2V7.8z" fill="var(--ground, #14120f)" />
+    <path d="M9.9 11.9l1.5 1.5 3-3.1" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+export const IconTelegram = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M21.2 4.3 2.9 11.4c-.9.35-.86 1.65.06 1.94l4.6 1.44 1.75 5.35c.22.66 1.06.85 1.54.35l2.4-2.5 4.6 3.38c.62.46 1.5.12 1.66-.63l3.2-14.9c.17-.8-.6-1.47-1.5-1.13z" fill="currentColor" />
+    <path d="M7.9 14.5 17.6 8 10.5 15.2l-.3 3.6z" fill="var(--ground, #14120f)" opacity="0.25" />
+  </svg>
+);
+
+export const IconInstagram = (p: P) => (
+  <svg {...base(p)}>
+    <rect x="3.1" y="3.1" width="17.8" height="17.8" rx="5.4" stroke="currentColor" strokeWidth="1.9" />
+    <circle cx="12" cy="12" r="4.1" stroke="currentColor" strokeWidth="1.9" />
+    <circle cx="17.1" cy="6.9" r="1.25" fill="currentColor" />
+  </svg>
+);
+
+/** ® set as a mark rather than a glyph, so it scales with the wordmark. */
+export const IconRegistered = (p: P) => (
+  <svg {...base(p)}>
+    <circle cx="12" cy="12" r="10.2" stroke="currentColor" strokeWidth="1.8" />
+    <path d="M9.4 17.2V6.9h3.4a3 3 0 0 1 0 6h-3.4m4 0 2.6 4.3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);

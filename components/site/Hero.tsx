@@ -16,14 +16,24 @@
 
 import { WordmarkSVG, WordmarkLetters } from "./Wordmark";
 import { NAV_LINKS } from "./navData";
-import { IconArrowUpRight, IconLayers } from "./icons";
+import {
+  IconArrowUpRight,
+  IconChip,
+  IconCreatives,
+  IconPen,
+  IconShieldCheck,
+  IconTeam,
+  IconTrendUp,
+} from "./icons";
 
+/* Each trait carries its own mark rather than a repeated bullet — the list
+   reads as a set of capabilities instead of a bulleted paragraph. */
 const TRAITS = [
-  "Performance Creative",
-  "Growth-minded",
-  "Team Lead",
-  "AI-assisted",
-  "Reliable",
+  { label: "Performance Creative", Icon: IconPen },
+  { label: "Growth-minded", Icon: IconTrendUp },
+  { label: "Team Lead", Icon: IconTeam },
+  { label: "AI-assisted", Icon: IconChip },
+  { label: "Reliable", Icon: IconShieldCheck },
 ];
 
 export default function Hero() {
@@ -77,9 +87,12 @@ export default function Hero() {
             <div className="hero-card hero-card-2">
               <div className="hero-stat-a-bg" />
               <div className="hero-stat-icon-wrap">
-                <IconLayers className="hero-stat-a-icon" />
+                <IconCreatives className="hero-stat-a-icon" />
               </div>
-              <p className="hero-stat-a-text">10+ Platforms</p>
+              <p className="hero-stat-a-text">
+                <span className="hero-stat-figure">20k+</span>
+                <span className="hero-stat-label">Creatives</span>
+              </p>
             </div>
 
             <div className="hero-card hero-card-1">
@@ -87,7 +100,9 @@ export default function Hero() {
               <div className="hero-stat-numb-wrap">
                 <span className="hero-stat-b-numb">3+</span>
               </div>
-              <p className="hero-stat-b-text">Years in performance</p>
+              <p className="hero-stat-b-text">
+                <span className="hero-stat-label">Years in performance</span>
+              </p>
             </div>
           </div>
 
@@ -110,7 +125,7 @@ export default function Hero() {
             <div className="hero-buttons-wrap" aria-hidden>
               <span className="hero-cta-button">Let&rsquo;s Talk</span>
               <span className="hero-button">
-                See Work
+                Portfolio
                 <IconArrowUpRight className="nav-button-arrow" />
               </span>
             </div>
@@ -128,9 +143,11 @@ export default function Hero() {
             data-tl-to="{'opacity': 0, 'filter': 'blur(14px)', 'y': '-1.6vw', 'scale': 0.94}"
           >
             {TRAITS.map((t) => (
-              <div className="hero-card-3-item" key={t}>
-                <span className="hero-card-3-dot" />
-                <span>{t}</span>
+              <div className="hero-card-3-item" key={t.label}>
+                <span className="hero-card-3-glyph" aria-hidden>
+                  <t.Icon />
+                </span>
+                <span>{t.label}</span>
               </div>
             ))}
           </div>

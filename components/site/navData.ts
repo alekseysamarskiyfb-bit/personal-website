@@ -2,7 +2,6 @@ import {
   IconFaq,
   IconHome,
   IconJourney,
-  IconLayers,
   IconQuote,
   IconSpark,
   IconWork,
@@ -16,6 +15,8 @@ export type NavLink = {
   Icon: (p: React.SVGProps<SVGSVGElement>) => JSX.Element;
   /** Narrower glyph — optically corrected so it reads at the same weight. */
   narrow?: boolean;
+  /** Renders with the gradient treatment reserved for the venture. */
+  feature?: boolean;
 };
 
 /**
@@ -26,12 +27,22 @@ export type NavLink = {
 export const NAV_LINKS: NavLink[] = [
   { id: "home", label: "Home", href: "#top", side: "left", Icon: IconHome },
   { id: "journey", label: "Journey", href: "#journey", side: "left", Icon: IconJourney },
-  { id: "work", label: "Work", href: "#work", side: "left", Icon: IconWork },
+  { id: "work", label: "Portfolio", href: "#portfolio", side: "left", Icon: IconWork },
   { id: "what", label: "What You Get", href: "#what-you-get", side: "right", Icon: IconSpark },
-  { id: "ways", label: "Ways to Work", href: "#ways", side: "right", Icon: IconLayers, narrow: true },
-  { id: "clients", label: "Clients", href: "#clients", side: "right", Icon: IconQuote },
+  { id: "velar", label: "Velar Studio", href: "#velar", side: "right", Icon: IconQuote, feature: true },
   { id: "faq", label: "FAQ", href: "#faq", side: "right", Icon: IconFaq },
 ];
 
 export const EMAIL = "oleksii.samarskyii@gmail.com";
 export const LINKEDIN = "https://www.linkedin.com/in/oleksii-samarskyi";
+
+/* ---------------------------------------------------------------------------
+   PLACEHOLDER HANDLES — replace before publishing.
+   The Telegram CTA is the site's primary conversion point, so these must
+   point at real accounts. Structure and styling are complete; only the
+   usernames below need changing.
+   --------------------------------------------------------------------------- */
+export const TELEGRAM_HANDLE = "oleksii";
+export const TELEGRAM = `https://t.me/${TELEGRAM_HANDLE}`;
+export const INSTAGRAM_HANDLE = "oleksii";
+export const INSTAGRAM = `https://instagram.com/${INSTAGRAM_HANDLE}`;

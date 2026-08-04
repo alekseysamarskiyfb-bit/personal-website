@@ -18,8 +18,18 @@
  */
 
 import { WordmarkSVG } from "./Wordmark";
-import { EMAIL, LINKEDIN, NAV_LINKS } from "./navData";
-import { IconArrowUpRight, IconCopy, IconCheck, IconLinkedIn, IconMail, IconLayers } from "./icons";
+import { EMAIL, INSTAGRAM, LINKEDIN, NAV_LINKS, TELEGRAM } from "./navData";
+import {
+  IconArrowUpRight,
+  IconCopy,
+  IconCheck,
+  IconCreatives,
+  IconInstagram,
+  IconLinkedIn,
+  IconMail,
+  IconRegistered,
+  IconTelegram,
+} from "./icons";
 
 export default function Sidebar() {
   return (
@@ -108,7 +118,9 @@ export default function Sidebar() {
                     data-tl-end="5% top"
                     data-tl-from="{'opacity': 0}"
                     data-tl-to="{'opacity': 1}"
-                  />
+                  >
+                    <IconRegistered />
+                  </span>
                 </div>
               </div>
             </div>
@@ -131,12 +143,42 @@ export default function Sidebar() {
               </a>
               <a
                 className="social-link"
-                href={`mailto:${EMAIL}`}
-                aria-label="Email"
+                href={TELEGRAM}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Telegram"
+                data-tl-type="scroll"
+                data-tl-trigger=".hero"
+                data-tl-start="45% top"
+                data-tl-end="47% top"
+                data-tl-from="{'scale': 0.3, 'opacity': 0}"
+                data-tl-to="{'scale': 1, 'opacity': 1}"
+              >
+                <IconTelegram className="social-icon" />
+              </a>
+              <a
+                className="social-link"
+                href={INSTAGRAM}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
                 data-tl-type="scroll"
                 data-tl-trigger=".hero"
                 data-tl-start="46% top"
                 data-tl-end="48% top"
+                data-tl-from="{'scale': 0.3, 'opacity': 0}"
+                data-tl-to="{'scale': 1, 'opacity': 1}"
+              >
+                <IconInstagram className="social-icon" />
+              </a>
+              <a
+                className="social-link"
+                href={`mailto:${EMAIL}`}
+                aria-label="Email"
+                data-tl-type="scroll"
+                data-tl-trigger=".hero"
+                data-tl-start="47% top"
+                data-tl-end="49% top"
                 data-tl-from="{'scale': 0.3, 'opacity': 0}"
                 data-tl-to="{'scale': 1, 'opacity': 1}"
               >
@@ -192,7 +234,7 @@ export default function Sidebar() {
               data-flip-end="40% top"
             />
             <div className="nav-stat-icon-wrap">
-              <IconLayers
+              <IconCreatives
                 className="nav-stat-a-icon"
                 data-flip-trigger=".hero"
                 data-flip-start="top top"
@@ -211,7 +253,7 @@ export default function Sidebar() {
               data-tl-from="{'color': '#ffffff'}"
               data-tl-to="{'color': '#000000'}"
             >
-              10+ Platforms
+              20k+ Creatives
             </p>
           </div>
 
@@ -304,11 +346,15 @@ export default function Sidebar() {
                   data-tl-from="{'scale': 0.2, 'opacity': 0}"
                   data-tl-to="{'scale': 1, 'opacity': 1}"
                 />
+                {/* The <a> stretches over the whole pill via ::after, so the
+                    entire row is the hit area and the hover target — hovering
+                    the icon or the padding animates the label too. */}
                 <a
-                  className="hero-navigation-link"
+                  className={`hero-navigation-link${link.feature ? " is-feature" : ""}`}
                   data-link-id={link.id}
                   href={link.href}
                   data-button-hover
+                  data-hover-scope=".nav-menu-item"
                 >
                   {link.label}
                 </a>
@@ -364,8 +410,8 @@ export default function Sidebar() {
               </a>
             </div>
             <div className="nav-button-slot is-flip-slot">
-              <a className="nav-button-secondary" href="#work" data-button-hover>
-                <p>See Work</p>
+              <a className="nav-button-secondary" href="#portfolio" data-button-hover>
+                <p>Portfolio</p>
                 <IconArrowUpRight className="nav-button-arrow" />
               </a>
             </div>

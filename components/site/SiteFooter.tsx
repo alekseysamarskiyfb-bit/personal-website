@@ -10,8 +10,8 @@
  * true auto height without measuring anything.
  */
 
-import { EMAIL, LINKEDIN } from "./navData";
-import { IconArrowUpRight } from "./icons";
+import { EMAIL, INSTAGRAM, LINKEDIN, TELEGRAM, TELEGRAM_HANDLE } from "./navData";
+import { IconArrowUpRight, IconInstagram, IconTelegram, IconLinkedIn, IconMail } from "./icons";
 
 const FAQS = [
   {
@@ -28,7 +28,7 @@ const FAQS = [
   },
   {
     q: "What's the fastest you can start?",
-    a: "Depends on the shape of the work. A creative sprint can usually start within a week or two; ongoing engagements are scheduled around existing commitments.",
+    a: "Depends on the shape of the work. A focused sprint can usually start within a week or two; ongoing engagements are scheduled around existing commitments. Telegram is the fastest way to ask.",
   },
   {
     q: "Do you take equity or rev-share?",
@@ -36,17 +36,17 @@ const FAQS = [
   },
   {
     q: "What is Velar Studio?",
-    a: "My own creative production venture — the same loop of create, test, read the numbers and iterate, run as a studio rather than as one freelancer.",
+    a: "My own creative production venture — the same loop of create, test, read the numbers and iterate, run as a studio rather than as one freelancer. There is a section on it above.",
   },
 ];
 
 export default function SiteFooter() {
   return (
     <footer className="footer section-inset" id="faq">
-      {/* Hover the mark to scatter work stills inside the letterforms. */}
+      {/* Hover the mark to scatter real ad creatives inside the letterforms. */}
       <div
         className="footer-logo"
-        data-trail-images="/portrait-cutout.png,/avatar.jpeg,/avatar-4k.jpeg"
+        data-trail-images="/work/creative-1.jpg,/work/creative-2.jpg,/work/creative-3.jpg,/work/creative-4.jpg,/work/creative-5.jpg,/work/creative-6.jpg,/work/creative-7.jpg,/work/creative-8.jpg"
       >
         <svg
           className="footer-logo-icon"
@@ -137,13 +137,23 @@ export default function SiteFooter() {
       <div className="footer-bottom">
         <div className="footer-menu-item">
           <span className="footer-menu-label">Elsewhere</span>
+          <a className="footer-link" href={TELEGRAM} target="_blank" rel="noopener noreferrer">
+            <IconTelegram className="footer-link-glyph" aria-hidden />
+            Telegram
+            <IconArrowUpRight className="footer-link-arrow" />
+          </a>
+          <a className="footer-link" href={INSTAGRAM} target="_blank" rel="noopener noreferrer">
+            <IconInstagram className="footer-link-glyph" aria-hidden />
+            Instagram
+            <IconArrowUpRight className="footer-link-arrow" />
+          </a>
           <a className="footer-link" href={LINKEDIN} target="_blank" rel="noopener noreferrer">
-            <span className="footer-link-dot" aria-hidden />
+            <IconLinkedIn className="footer-link-glyph" aria-hidden />
             LinkedIn
             <IconArrowUpRight className="footer-link-arrow" />
           </a>
           <a className="footer-link" href={`mailto:${EMAIL}`}>
-            <span className="footer-link-dot" aria-hidden />
+            <IconMail className="footer-link-glyph" aria-hidden />
             Email
             <IconArrowUpRight className="footer-link-arrow" />
           </a>

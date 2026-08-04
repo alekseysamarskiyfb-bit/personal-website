@@ -1,72 +1,99 @@
 /**
- * JOURNEY — the magnetic timeline.
+ * JOURNEY — the drawn timeline.
  *
- * Cards are absolutely positioned down a spine, then pinned by
- * MagneticPositions: each declares which of ITS corners sits on which anchor
- * point. Alternating bottom-left / bottom-right origins produce the zig-zag.
+ * Cards are absolutely positioned, then pinned by MagneticPositions: each
+ * declares which of ITS corners sits on which milestone. Alternating the
+ * milestone's x between 62% and 38% — and the card's origin corner with it —
+ * is what produces the zig-zag; the spine then curves between those points,
+ * drawn by TimelineSpine as you scroll.
  *
- * Reveal windows are staggered per card via data-tl-start, and the rail
- * itself advances in keyframed pulses that land on each card rather than
- * scrubbing linearly.
+ * Content is the real career history, one card per position rather than
+ * several roles compressed into one.
  */
 
 const ENTRIES = [
   {
-    year: "2023",
-    short: "23",
-    handle: "@affiliate",
-    ago: "3 years ago",
-    heading: "First real campaigns",
+    year: "23",
+    period: "Sep 2023 — May 2024",
+    role: "Junior Performance Designer",
+    org: "Affiliate Marketing Team",
     teaser:
-      "Junior performance designer. Static, video and animated creative for Sweepstakes and Crypto. No mentor, a lot of ads that didn't work — until some did.",
+      "Static, video and animated creative for Sweepstakes and Crypto. UGC-style ads and landing pages, straight into paid acquisition.",
     story:
-      "I started as a Junior Performance Designer, producing static, video and animated creatives for Sweepstakes and Crypto paid campaigns — UGC-style ads, landing pages, all of it. No mentor telling me the rules, just a lot of creatives that didn't work, until some did.",
-    origin: "bottom right",
+      "My first production seat. Static, video and animated creatives for Sweepstakes and Crypto campaigns, UGC-style advertising content and landing pages — creative made for paid acquisition across several verticals at once. No mentor telling me the rules, just a lot of ads that didn't work until some did.",
   },
   {
-    year: "2024",
-    short: "24",
-    handle: "@adprodigies",
-    ago: "2 years ago",
-    heading: "Learning to lead",
+    year: "24",
+    period: "May — Sep 2024",
+    role: "Creative Designer",
+    org: "Performance Marketing Team",
     teaser:
-      "Handed a team of 4 and the Search affiliate vertical. Running the review process taught me more about what converts than a year of solo production.",
+      "Search affiliate creative, and the first time I sat in review calls with the media buyers spending against it.",
     story:
-      "I was handed a team of 4 designers at ADPRODIGIES and put in charge of the Search affiliate vertical. Weekly creative review calls with media buyers, internal visual systems for the team, A/B-testing strategy — running that process taught me more about what actually converts than a year of solo production ever did.",
-    origin: "bottom left",
+      "Static and video creatives for Search affiliate campaigns. This was where creative review calls with media buyers became part of the job — producing performance-oriented assets for paid traffic and hearing, weekly, exactly which of them earned their placement.",
   },
   {
-    year: "2025",
-    short: "25",
-    handle: "@ai",
-    ago: "1 year ago",
-    heading: "Scaling with AI in the pipeline",
+    year: "24",
+    period: "Aug 2024 — Aug 2025",
+    role: "Team Lead · Performance Creative Designer",
+    org: "ADPRODIGIES",
     teaser:
-      "Prompt engineering and AI-generated assets went from experiment to daily workflow. The volume one person could ship kept climbing.",
+      "Led four designers across the Search affiliate vertical. Built the review process, the visual systems and the testing strategy.",
     story:
-      "Prompt engineering and AI-generated ad assets went from experiment to daily workflow. I kept producing across Traffic Place, ADPRODIGIES and a private media-buying team — Sweepstakes, iGaming, affiliate creative — while the volume and speed of what one person could ship kept climbing.",
-    origin: "bottom right",
+      "Leading a team of 4 designers within the Search affiliate vertical. Static, motion and AI-assisted advertising creatives; landing pages and internal visual systems for the team; weekly creative review calls with buyers and designers. Running the iteration workflow and the A/B testing strategy taught me more about what actually converts than a year of solo production ever did.",
   },
   {
-    year: "2026",
-    short: "26",
-    handle: "@velar",
-    ago: "Now",
-    heading: "Building something of my own",
+    year: "24",
+    period: "Nov 2024 — Jul 2025",
+    role: "Performance Creative Designer",
+    org: "Private Media Buying Team",
     teaser:
-      "Senior Performance Creative Designer — and founder of Velar Studio. Everything before this became the foundation for a real venture.",
+      "Static and video for affiliate campaigns, built directly alongside the buyers running them.",
     story:
-      "Senior Performance Creative Designer on a private affiliate team — and founder of Velar Studio. Everything up to this point, the failed creatives, the team lead seat, the AI-assisted pipelines, became the foundation for a real creative production venture, not just a portfolio.",
-    origin: "bottom left",
+      "Static and video creatives for affiliate campaigns, plus landing pages, banners and supporting assets. Working directly with media buyers through creative review meant every asset was made against a conversion target rather than a moodboard.",
+  },
+  {
+    year: "25",
+    period: "Aug — Nov 2025",
+    role: "Motion & Creative Designer",
+    org: "ADPRODIGIES",
+    teaser:
+      "iGaming motion at volume — and the point where AI-assisted assets moved from experiment to pipeline.",
+    story:
+      "Static, motion and animated creatives for iGaming campaigns. AI-assisted ad creatives and short-form video assets, produced inside high-volume creative pipelines where the constraint stopped being ideas and started being throughput.",
+  },
+  {
+    year: "25",
+    period: "Oct 2025 — Apr 2026",
+    role: "Performance Creative Designer",
+    org: "Traffic Place",
+    teaser:
+      "Sweepstakes creative built on prompt-engineering workflows, tested against paid social daily.",
+    story:
+      "Static and motion creatives for Sweepstakes campaigns, AI-generated advertising assets and UGC-style creative. Prompt engineering became a real production workflow here — and everything shipped straight into paid social testing iterations with the buyers.",
+  },
+  {
+    year: "25",
+    period: "Dec 2025 — Jun 2026",
+    role: "Senior Performance Creative Designer",
+    org: "Private Affiliate Team",
+    teaser:
+      "Full-stack creative ownership: AI and voice-over pipelines, landing pages, and the internal CRM the team works in.",
+    story:
+      "Static, motion and animated video creatives for affiliate campaigns. AI-assisted creative and UGC-style content, voice-over workflows and AI-generated content pipelines, landing pages and performance-oriented visual assets. I also designed the internal CRM interfaces used by both the designers and the media buyers — the tooling around the work, not just the work.",
   },
 ];
 
+/* Milestones alternate across the centre line; the card's origin corner
+   alternates with them, which is what makes the run zig-zag. */
+const NODES = ENTRIES.map((_, i) => ({
+  top: `${8 + i * 14}%`,
+  left: i % 2 === 0 ? "62%" : "38%",
+  origin: i % 2 === 0 ? "bottom right" : "bottom left",
+}));
+
 /* Each card's reveal fires at its own point in the container's scroll. */
-const STARTS = ["-45% top", "-15% top", "15% top", "45% top"];
-/* Cards magnet their BOTTOM corner onto these, so an anchor at 0% would hang
-   the whole card above the container and into the section header. Starting at
-   18% gives the first card room to sit inside its own run. */
-const TOPS = ["18%", "40%", "62%", "84%"];
+const STARTS = ENTRIES.map((_, i) => `${-42 + i * 13}% top`);
 
 export default function Journey() {
   return (
@@ -102,35 +129,30 @@ export default function Journey() {
           data-tl-from="{'yPercent': 100}"
           data-tl-to="{'yPercent': 0, 'duration': 0.6, 'stagger': 0.1, 'delay': 0.3, 'ease': 'power2.out'}"
         >
-          Not a resume — the actual path. Three years of ads that failed, ads
-          that worked, and learning to tell the difference before spending the
-          budget.
+          Not a resume — the actual path. Seven seats in three years, each one
+          teaching something the last one couldn&rsquo;t.
         </p>
       </div>
 
       <div className="about-wrap">
         <div className="about-card-container">
-          {/* The spine. Anchor points are invisible; cards magnet onto them. */}
+          {/* The spine. TimelineSpine measures the milestones after layout and
+              generates the curve through them, so the path always matches
+              wherever the cards actually landed. */}
           <div className="about-timeline-wrap" aria-hidden>
-            <div className="about-timeline-overflow">
-              <div
-                className="about-timeline-rail"
-                data-tl-desktop
-                data-tl-type="scroll"
-                data-tl-trigger=".about-card-container"
-                data-tl-start="top 90%"
-                data-tl-end="bottom 80%"
-                data-tl-from="{'height': '0%'}"
-                data-tl-to="{'keyframes': [{'height': '25%', 'duration': 2}, {'height': '50%', 'duration': 1.5}, {'height': '75%', 'duration': 2}, {'height': '100%', 'duration': 1.5}], 'ease': 'none'}"
-              />
-            </div>
+            <svg className="about-spine" xmlns="http://www.w3.org/2000/svg">
+              <path className="about-spine-track" fill="none" />
+              <path className="about-spine-path" fill="none" />
+              <g className="about-spine-nodes" />
+            </svg>
+
             <div className="about-timeline-position">
-              {ENTRIES.map((e, i) => (
+              {NODES.map((n, i) => (
                 <span
                   className="about-anchor"
-                  key={e.year}
+                  key={i}
                   data-connect={`step-${i + 1}`}
-                  style={{ top: TOPS[i] }}
+                  style={{ top: n.top, left: n.left }}
                 />
               ))}
             </div>
@@ -139,13 +161,13 @@ export default function Journey() {
           {ENTRIES.map((entry, i) => (
             <div
               className={`about-card-wrap ac-${i + 1}`}
-              key={entry.year}
-              data-origin={entry.origin}
+              key={i}
+              data-origin={NODES[i].origin}
               data-connect={`step-${i + 1}`}
-              data-offset={entry.origin.includes("right") ? "-1.6vw, 0" : "1.6vw, 0"}
+              data-offset={NODES[i].origin.includes("right") ? "-2.4vw, 0" : "2.4vw, 0"}
               data-origin-mobile="top left"
               data-anchor-pos-mobile="top left"
-              style={{ top: TOPS[i] }}
+              style={{ top: NODES[i].top, left: 0 }}
             >
               <div
                 className="about-card"
@@ -153,18 +175,21 @@ export default function Journey() {
                 data-tl-type="trigger"
                 data-tl-trigger=".about-card-container"
                 data-tl-start={STARTS[i]}
-                data-tl-from="{'y': '9%', 'opacity': 0, 'scale': 0.86, 'filter': 'blur(12px)'}"
-                data-tl-to="{'y': '0%', 'opacity': 1, 'scale': 1, 'filter': 'blur(0px)', 'duration': 1.25, 'delay': 0.25, 'ease': 'expo.out'}"
+                data-tl-from="{'y': '3.5%', 'opacity': 0, 'scale': 0.97, 'filter': 'blur(10px)'}"
+                data-tl-to="{'y': '0%', 'opacity': 1, 'scale': 1, 'filter': 'blur(0px)', 'duration': 1.45, 'delay': 0.2, 'ease': 'expo.out'}"
               >
-                <div
-                  className="about-card-year"
-                  data-number-count={entry.short}
-                  data-tl-desktop
-                  data-tl-trigger=".about-card-container"
-                  data-tl-start={STARTS[i]}
-                  data-tl-to="{'duration': 1.5, 'stagger': 0.1, 'delay': 0.2, 'ease': 'expo.out'}"
-                >
-                  {entry.short}
+                <div className="about-card-top">
+                  <div
+                    className="about-card-year"
+                    data-number-count={entry.year}
+                    data-tl-desktop
+                    data-tl-trigger=".about-card-container"
+                    data-tl-start={STARTS[i]}
+                    data-tl-to="{'duration': 1.5, 'stagger': 0.1, 'delay': 0.2, 'ease': 'expo.out'}"
+                  >
+                    {entry.year}
+                  </div>
+                  <span className="about-card-period">{entry.period}</span>
                 </div>
 
                 <h3
@@ -175,40 +200,27 @@ export default function Journey() {
                   data-tl-start={STARTS[i]}
                   data-tl-split="lines"
                   data-tl-from="{'yPercent': 100}"
-                  data-tl-to="{'yPercent': 0, 'duration': 0.6, 'stagger': 0.1, 'delay': 0.3, 'ease': 'expo.out'}"
+                  data-tl-to="{'yPercent': 0, 'duration': 0.6, 'stagger': 0.1, 'delay': 0.32, 'ease': 'expo.out'}"
                 >
-                  {entry.heading}
+                  {entry.role}
                 </h3>
 
+                <p className="about-card-org">{entry.org}</p>
+
                 <p
-                  className="op80"
+                  className="op80 about-card-teaser"
                   data-tl-desktop
                   data-tl-type="trigger"
                   data-tl-trigger=".about-card-container"
                   data-tl-start={STARTS[i]}
                   data-tl-split="lines"
                   data-tl-from="{'yPercent': 100}"
-                  data-tl-to="{'yPercent': 0, 'duration': 0.6, 'stagger': 0.1, 'delay': 0.4, 'ease': 'expo.out'}"
+                  data-tl-to="{'yPercent': 0, 'duration': 0.6, 'stagger': 0.08, 'delay': 0.42, 'ease': 'expo.out'}"
                 >
                   {entry.teaser}
                 </p>
 
                 <div className="about-card-bottom-layout">
-                  <div className="about-card-bottom-layout-left">
-                    <p
-                      className="about-card-bottom-text"
-                      data-tl-desktop
-                      data-tl-type="trigger"
-                      data-tl-trigger=".about-card-container"
-                      data-tl-start={STARTS[i]}
-                      data-tl-split="lines"
-                      data-tl-from="{'yPercent': 100}"
-                      data-tl-to="{'yPercent': 0, 'duration': 0.4, 'stagger': 0.1, 'delay': 0.6, 'ease': 'expo.out'}"
-                    >
-                      {entry.handle} · {entry.ago}
-                    </p>
-                  </div>
-
                   <button
                     type="button"
                     className="about-card-button"
@@ -218,7 +230,7 @@ export default function Journey() {
                     data-tl-trigger=".about-card-container"
                     data-tl-start={STARTS[i]}
                     data-tl-from="{'opacity': 0}"
-                    data-tl-to="{'opacity': 1, 'duration': 1.4, 'delay': 0.8, 'ease': 'expo.out'}"
+                    data-tl-to="{'opacity': 1, 'duration': 1.4, 'delay': 0.7, 'ease': 'expo.out'}"
                   >
                     Read more
                   </button>
@@ -238,7 +250,10 @@ export default function Journey() {
                       </span>
                     </button>
                   </div>
-                  <h3 className="popup-heading">{entry.heading}</h3>
+                  <h3 className="popup-heading">{entry.role}</h3>
+                  <p className="popup-meta">
+                    {entry.org} · {entry.period}
+                  </p>
                   <p className="popup-body">{entry.story}</p>
                 </div>
               </div>

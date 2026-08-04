@@ -10,7 +10,8 @@
  * a solid heading, the one place the type does something other than sit flat.
  */
 
-import { EMAIL } from "./navData";
+import { TELEGRAM, TELEGRAM_HANDLE } from "./navData";
+import { IconTelegram } from "./icons";
 
 export default function Cta() {
   return (
@@ -59,7 +60,7 @@ export default function Cta() {
                 <div className="cta-bubble cta-chat">
                   <p className="cta-text">
                     Send over what you&rsquo;re running and I&rsquo;ll tell you
-                    what I&rsquo;d change first.
+                    what I&rsquo;d change first. Telegram is fastest.
                   </p>
                 </div>
               </div>
@@ -68,8 +69,15 @@ export default function Cta() {
             {/* Slot 2 — the action */}
             <div className="cta-button-grid">
               <div className="cta-button-grid-item">
-                <a className="cta-bubble cta-button" href={`mailto:${EMAIL}`} data-button-hover>
-                  <p>{EMAIL}</p>
+                <a
+                  className="cta-bubble cta-button"
+                  href={TELEGRAM}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-button-hover
+                >
+                  <IconTelegram className="cta-button-icon" aria-hidden />
+                  <p>@{TELEGRAM_HANDLE}</p>
                 </a>
               </div>
             </div>

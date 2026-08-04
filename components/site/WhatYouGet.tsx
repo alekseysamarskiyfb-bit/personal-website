@@ -30,10 +30,10 @@ const CAPABILITIES = [
   },
   {
     id: "cap-brand",
-    label: "Brand",
+    label: "Direction",
     Icon: IconHome,
     varHover: 1.4,
-    body: "Logo, identity and creative direction — the systems layer underneath the ads, so scale doesn't mean drift.",
+    body: "Creative direction and the visual systems underneath the ads — templates and rules, so scale doesn't mean drift.",
   },
   {
     id: "cap-ai",

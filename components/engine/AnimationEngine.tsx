@@ -24,13 +24,14 @@ import { GhostEngine } from "./modules/ghostEngine";
 import { LenisInit, AnchorLinks } from "./modules/lenis";
 import { Sidebar, Clipboard, ButtonHover } from "./modules/sidebar";
 import { Preloader, ProfileImage } from "./modules/preloader";
-import { MagneticPositions, HorizontalScroll, ThemeSwitcher } from "./modules/scroll";
+import { MagneticPositions, HorizontalScroll } from "./modules/scroll";
+import { TimelineSpine } from "./modules/spine";
+import { HeroSnap } from "./modules/heroSnap";
 import {
   CardInteractions,
   TextReveal,
   CTAAnimation,
   ImageTrail,
-  Carousel,
   Faq,
 } from "./modules/interactions";
 import { MobileMenu, Popups } from "./modules/mobileMenu";
@@ -45,7 +46,6 @@ function initAll() {
   GhostEngine.init();
   StyleEngine.init();
   HorizontalScroll.init();
-  ThemeSwitcher.init();
   MobileMenu.init();
 
   CardInteractions.init();
@@ -57,7 +57,6 @@ function initAll() {
   ButtonHover.init();
   Faq.init();
 
-  Carousel.init();
   LenisInit.init();
 
   /* Scroll is locked through the intro so the reveal chain cannot be
@@ -70,13 +69,23 @@ function initAll() {
   TextReveal.init();
   AnchorLinks.init();
 
+  /* After Lenis exists: the settle is driven through it, not through
+     ScrollTrigger's own snap, which would fight it for the scroll position. */
+  HeroSnap.init();
+
   ScrollTrigger.refresh();
   STATE.initialized = true;
 
   /* Magnetic positioning runs LAST and on a delay: it solves against final
      layout, and every reveal above has to have established that layout first
      or the cards latch onto positions that are about to change. */
-  setTimeout(() => MagneticPositions.init(), CONFIG.magneticInitDelay);
+  setTimeout(() => {
+    MagneticPositions.init();
+    // The spine is generated FROM the milestones, so it can only be built
+    // once magnetic positioning has settled them.
+    TimelineSpine.build();
+    ScrollTrigger.refresh();
+  }, CONFIG.magneticInitDelay);
 }
 
 function destroyAll() {
@@ -92,6 +101,8 @@ function destroyAll() {
   HorizontalScroll.destroy();
   MagneticPositions.destroy();
   ImageTrail.destroy();
+  TimelineSpine.destroy();
+  HeroSnap.destroy();
   MobileMenu.destroy();
   LenisInit.destroy();
   STATE.initialized = false;

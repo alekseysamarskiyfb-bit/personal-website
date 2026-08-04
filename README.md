@@ -28,8 +28,8 @@ otherwise scramble.
   than grey plastic. Ink is `#F3EFE6`, never pure white.
 - **Accent** `#8F5CFF`, always flat, never a gradient (one exception: the
   text-clipped year in an expanded timeline card).
-- **One contrasting island** — Selected Work is the single lit block in a
-  dark page, and the rail inverts itself wherever it overlaps it.
+- **Uniformly dark.** No section alternates tone; contrast is carried by
+  surface elevation and the accent, not by flipping the ground.
 - **Depth** comes only from `backdrop-filter` + a translucent fill + a 1px
   top-light border. There are no box-shadows in the system.
 - **Spacing** is a fluid 1440 vw grid — nothing is authored in px. Above 768px
@@ -58,10 +58,23 @@ collapses to its resting state.
 
 ## Placeholder content — replace before publishing
 
-- **`components/site/Ways.tsx`** — the three engagement shapes are real, the
-  rates are not. Replace every `price` value.
-- **`components/site/Clients.tsx`** — `SLOTS` are structural placeholders. No
-  quote is attributed to a real person. Replace with real, permitted quotes or
-  delete the section.
-- **`components/site/SiteFooter.tsx`** — `data-trail-images` currently reuses
-  portrait/avatar files; swap in real work stills.
+- **`components/site/navData.ts`** — `TELEGRAM_HANDLE` and `INSTAGRAM_HANDLE`
+  are placeholders (`oleksii`). Telegram is the site's primary conversion
+  point, so these must be pointed at real accounts. They feed the sidebar
+  socials, the footer, and the CTA button.
+
+Everything else on the page is real: the Journey timeline is built from the
+CV, and the Portfolio cards are actual campaign creatives.
+
+## Sections
+
+Hero → Journey → Portfolio → What You Get → Velar Studio → Contact → FAQ.
+
+`Journey` reads one card per position. `TimelineSpine` generates the curve
+THROUGH the measured milestones rather than drawing a fixed column, so moving
+a milestone in the markup reshapes the path with no other edit.
+
+`HeroSnap` makes the hero→rail morph scroll-completed rather than
+scroll-length dependent: a short wheel gesture starts it and the remainder
+settles itself, in either direction. It drives Lenis directly — ScrollTrigger's
+own `snap` writes through its scroll setter and fights Lenis for ownership.

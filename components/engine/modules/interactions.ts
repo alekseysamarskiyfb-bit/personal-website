@@ -4,7 +4,6 @@
  *   TextReveal       — the tonal character scrub on the manifesto
  *   CTAAnimation     — the chat simulation
  *   ImageTrail       — the footer wordmark trail
- *   Carousel         — testimonials + custom drag cursor
  *   Faq              — accordion
  */
 
@@ -26,21 +25,44 @@ export const CardInteractions = {
     const cards = Utils.$$(".capa-card-item");
     if (!cards.length) return;
 
-    const letters = Utils.$$(".gsap-icon-letter");
-    if (letters.length) gsap.set(letters, { opacity: 0 });
-
     cards.forEach((card) => {
       const parent = card.closest(".capa-card") as HTMLElement | null;
+      const panel = Utils.$(".capa-card-bottom", card);
+      const body = Utils.$(".capa-card-text", card);
+
+      // Split once, up front. Splitting on hover would reflow mid-animation.
+      if (body && !body.dataset.split) {
+        const text = body.textContent || "";
+        body.textContent = "";
+        text.split(/(\s+)/).forEach((chunk) => {
+          if (/^\s+$/.test(chunk)) {
+            body.appendChild(document.createTextNode(chunk));
+            return;
+          }
+          const span = document.createElement("span");
+          span.className = "capa-word";
+          span.textContent = chunk;
+          body.appendChild(span);
+        });
+        body.dataset.split = "true";
+      }
+
+      if (panel) gsap.set(panel, { autoAlpha: 0, y: -8 });
+      gsap.set(Utils.$$(".capa-word", card), { opacity: 0, y: 6 });
+
+      let tl: gsap.core.Timeline | null = null;
 
       const open = () => {
         if (isMobile()) return;
-        if (parent) parent.style.zIndex = "10";
-        this.animateIn(card);
+        if (parent) parent.style.zIndex = "20";
+        tl?.kill();
+        tl = this.animateIn(card);
       };
       const close = () => {
         if (isMobile()) return;
-        this.animateOut(card);
-        if (parent) parent.style.zIndex = "5";
+        tl?.kill();
+        tl = this.animateOut(card);
+        if (parent) window.setTimeout(() => (parent.style.zIndex = "5"), 260);
       };
 
       Utils.addEvent(card, "mouseenter", open);
@@ -48,92 +70,67 @@ export const CardInteractions = {
       Utils.addEvent(card, "focusin", open);
       Utils.addEvent(card, "focusout", close);
 
-      // Touch: tap toggles in place rather than opening a modal, which keeps
-      // the chip anchored in the sentence it belongs to.
+      // Touch: tap toggles in place, keeping the chip in the sentence it
+      // belongs to rather than lifting it into a modal.
       Utils.addEvent(card, "click", () => {
         if (!isMobile()) return;
         const isOpen = card.classList.toggle("is-open");
-        if (isOpen) this.animateIn(card, true);
-        else this.animateOut(card);
+        tl?.kill();
+        tl = isOpen ? this.animateIn(card) : this.animateOut(card);
       });
     });
   },
 
-  animateIn(card: HTMLElement, mobile = false) {
-    const bottom = Utils.$(".capa-card-bottom", card);
-    const icons = Utils.$$("[data-var-hover]", card);
-    const letters = Utils.$$(".gsap-icon-letter", card);
+  /**
+   * The previous version tweened padding through CSS variables. That changes
+   * the chip's measured box every frame, MagneticPositions re-solves against
+   * the new box, and the two fight — which is the shake. Nothing here touches
+   * layout: the chip scales (a transform), and the panel is absolutely
+   * positioned so expanding it cannot move anything.
+   */
+  animateIn(card: HTMLElement) {
+    const panel = Utils.$(".capa-card-bottom", card);
+    const words = Utils.$$(".capa-word", card);
     const tl = gsap.timeline();
 
-    tl.to(card, {
-      "--card-text": 1,
-      "--card-pad-y": mobile ? 2.61 : 1.35,
-      "--card-pad-x": mobile ? 1.35 : 1.25,
-      duration: 0.65,
-      ease: "power3.out",
-    });
+    tl.to(card, { scale: 1.035, duration: 0.5, ease: "expo.out" }, 0);
 
-    if (bottom) tl.to(bottom, { gridTemplateRows: "1fr", duration: 0.65, ease: "power3.out" }, "<");
-
-    icons.forEach((icon) =>
+    if (panel) {
       tl.to(
-        icon,
-        {
-          "--card-icon": parseFloat(icon.dataset.varHover || "1") || 1,
-          duration: 0.65,
-          ease: "power3.out",
-        },
-        "<"
-      )
-    );
+        panel,
+        { autoAlpha: 1, y: 0, duration: 0.5, ease: "expo.out" },
+        0.04
+      );
+    }
 
-    if (letters.length) {
-      // Kill in-flight tweens first — a fast in/out cycle otherwise leaves
-      // future-staggered letters stranded visible.
-      gsap.killTweensOf(letters);
-      tl.fromTo(
-        letters,
-        { opacity: 0 },
-        { opacity: 1, duration: 0.6, stagger: 0.1, ease: "power2.out", overwrite: true },
-        "<"
+    if (words.length) {
+      gsap.killTweensOf(words);
+      // Word-by-word, fast and even — it reads as the sentence arriving
+      // rather than as a block fading in.
+      tl.to(
+        words,
+        { opacity: 1, y: 0, duration: 0.34, stagger: 0.026, ease: "power2.out", overwrite: true },
+        0.12
       );
     }
     return tl;
   },
 
   animateOut(card: HTMLElement) {
-    const bottom = Utils.$(".capa-card-bottom", card);
-    const icons = Utils.$$("[data-var-hover]", card);
-    const letters = Utils.$$(".gsap-icon-letter", card);
+    const panel = Utils.$(".capa-card-bottom", card);
+    const words = Utils.$$(".capa-word", card);
     const tl = gsap.timeline();
 
-    if (bottom) tl.to(bottom, { gridTemplateRows: "0fr", duration: 0.65, ease: "power2.out" });
-
-    tl.to(
-      card,
-      { "--card-text": 0, "--card-pad-y": 1, "--card-pad-x": 1, duration: 0.65, ease: "power2.out" },
-      "<"
-    );
-
-    icons.forEach((icon) =>
-      tl.to(icon, { "--card-icon": 1, duration: 0.65, ease: "power2.out" }, "<")
-    );
-
-    if (letters.length) {
-      gsap.killTweensOf(letters);
-      // Reverse stagger on exit: letters retract in the order they'd recede.
+    if (words.length) {
+      gsap.killTweensOf(words);
       tl.to(
-        letters,
-        {
-          opacity: 0,
-          duration: 0.3,
-          stagger: { each: 0.05, from: "end" },
-          ease: "power2.out",
-          overwrite: true,
-        },
-        "<"
+        words,
+        { opacity: 0, y: 6, duration: 0.18, stagger: { each: 0.012, from: "end" }, overwrite: true },
+        0
       );
     }
+    if (panel) tl.to(panel, { autoAlpha: 0, y: -8, duration: 0.28, ease: "power2.in" }, 0.04);
+    tl.to(card, { scale: 1, duration: 0.42, ease: "expo.out" }, 0);
     return tl;
   },
 };
@@ -440,197 +437,6 @@ export const ImageTrail = {
     this.trail.forEach((i) => i.remove());
     this.trail = [];
     this.index = 0;
-  },
-};
-
-/* ==========================================================================
-   CAROUSEL + DRAG CURSOR
-   Hand-written rather than pulled from a library, matching the reference's
-   Swiper configuration: one slide per view, 14px gap, 500ms, resistance
-   0.85 past the ends. The native cursor is suppressed and replaced by a
-   fixed indicator whose arrows scale with drag direction.
-   ========================================================================== */
-
-export const Carousel = {
-  index: 0,
-  count: 0,
-  track: null as HTMLElement | null,
-  root: null as HTMLElement | null,
-  dragWrap: null as HTMLElement | null,
-  dragging: false,
-  startX: 0,
-  startY: 0,
-  lastDirection: null as "left" | "right" | null,
-  pointerId: null as number | null,
-
-  init() {
-    this.root = Utils.$(".swiper");
-    this.track = Utils.$(".swiper-wrapper");
-    this.dragWrap = Utils.$(".drag-wrap");
-    if (!this.root || !this.track) return;
-
-    this.count = Utils.$$(".swiper-slide", this.track).length;
-    if (!this.count) return;
-
-    this.buildBullets();
-    this.goTo(0, false);
-
-    Utils.addEvent(window, "resize", () => this.goTo(this.index, false));
-
-    if (this.dragWrap) gsap.set(this.dragWrap, { opacity: 0, scale: 0.8, xPercent: -50, yPercent: -50 });
-
-    const root = this.root;
-    Utils.addEvent(root, "pointerdown", ((e: PointerEvent) => this.onDown(e)) as EventListener);
-    Utils.addEvent(window, "pointermove", ((e: PointerEvent) => this.onMove(e)) as EventListener);
-    Utils.addEvent(window, "pointerup", ((e: PointerEvent) => this.onUp(e)) as EventListener);
-
-    Utils.addEvent(root, "mouseenter", ((e: MouseEvent) => {
-      if (isMobile()) return;
-      this.showCursor();
-      this.moveCursor(e);
-    }) as EventListener);
-    Utils.addEvent(root, "mousemove", ((e: MouseEvent) => this.moveCursor(e)) as EventListener);
-    Utils.addEvent(root, "mouseleave", () => {
-      // Never hide mid-drag — pointerup decides, or the indicator vanishes
-      // the moment the drag crosses the edge.
-      if (!this.dragging) this.hideCursor();
-    });
-
-    // Keyboard parity for a drag-only control.
-    Utils.addEvent(root, "keydown", ((e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft") this.goTo(this.index - 1);
-      if (e.key === "ArrowRight") this.goTo(this.index + 1);
-    }) as EventListener);
-  },
-
-  buildBullets() {
-    const pagination = Utils.$(".swiper-pagination");
-    if (!pagination) return;
-    pagination.innerHTML = "";
-    for (let i = 0; i < this.count; i++) {
-      const b = document.createElement("button");
-      b.className = "swiper-bullet";
-      b.type = "button";
-      b.setAttribute("aria-label", `Go to testimonial ${i + 1}`);
-      b.addEventListener("click", () => this.goTo(i));
-      pagination.appendChild(b);
-    }
-  },
-
-  slideStep() {
-    const slide = Utils.$(".swiper-slide", this.track as HTMLElement);
-    return slide ? slide.getBoundingClientRect().width + 14 : 0;
-  },
-
-  goTo(i: number, animate = true) {
-    this.index = Math.max(0, Math.min(this.count - 1, i));
-    const x = -this.index * this.slideStep();
-    gsap.to(this.track, {
-      x,
-      duration: animate && !prefersReducedMotion() ? 0.5 : 0,
-      ease: "power3.out",
-    });
-    Utils.$$(".swiper-bullet").forEach((b, bi) =>
-      b.classList.toggle("is-active", bi === this.index)
-    );
-  },
-
-  onDown(e: PointerEvent) {
-    if (e.button !== 0) return;
-    this.dragging = true;
-    this.pointerId = e.pointerId;
-    this.startX = e.clientX;
-    this.startY = e.clientY;
-    this.lastDirection = null;
-    if (this.dragWrap) {
-      const l = Utils.$(".drag-left-icon", this.dragWrap);
-      const r = Utils.$(".drag-right-icon", this.dragWrap);
-      if (l) gsap.set(l, { scale: 1 });
-      if (r) gsap.set(r, { scale: 1 });
-      this.dragWrap.classList.add("is-dragging");
-    }
-  },
-
-  onMove(e: PointerEvent) {
-    if (!this.dragging || e.pointerId !== this.pointerId) return;
-    this.moveCursor(e);
-
-    const dx = e.clientX - this.startX;
-    const dy = Math.abs(e.clientY - this.startY);
-
-    // Mostly-horizontal only, so a vertical page scroll doesn't flip arrows.
-    if (Math.abs(dx) > 5 && Math.abs(dx) > dy * 0.5) {
-      const dir = dx < 0 ? "left" : "right";
-      if (dir !== this.lastDirection) {
-        this.lastDirection = dir;
-        this.setDirection(dir);
-      }
-    }
-
-    // Resistance past the ends, matching the reference's 0.85 ratio.
-    const base = -this.index * this.slideStep();
-    let next = base + dx;
-    const min = -(this.count - 1) * this.slideStep();
-    if (next > 0) next = dx * (1 - 0.85);
-    else if (next < min) next = min + (next - min) * (1 - 0.85);
-    gsap.set(this.track, { x: next });
-  },
-
-  onUp(e: PointerEvent) {
-    if (!this.dragging) return;
-    this.dragging = false;
-    const dx = e.clientX - this.startX;
-    const threshold = this.slideStep() * 0.2;
-
-    if (dx < -threshold) this.goTo(this.index + 1);
-    else if (dx > threshold) this.goTo(this.index - 1);
-    else this.goTo(this.index);
-
-    this.resetArrows();
-
-    if (this.root) {
-      const r = this.root.getBoundingClientRect();
-      const inside =
-        e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
-      if (inside) this.dragWrap?.classList.remove("is-dragging");
-      else this.hideCursor();
-    }
-    this.pointerId = null;
-  },
-
-  setDirection(dir: "left" | "right") {
-    if (!this.dragWrap) return;
-    const l = Utils.$(".drag-left-icon", this.dragWrap);
-    const r = Utils.$(".drag-right-icon", this.dragWrap);
-    if (!l || !r) return;
-    const lead = dir === "left" ? l : r;
-    const trail = dir === "left" ? r : l;
-    gsap.to(lead, { scale: 1.5, duration: 0.2, ease: "back.out(2)" });
-    gsap.to(trail, { scale: 0.8, duration: 0.2, ease: "power2.out" });
-  },
-
-  resetArrows() {
-    if (!this.dragWrap) return;
-    const icons = Utils.$$(".drag-left-icon, .drag-right-icon", this.dragWrap);
-    gsap.to(icons, { scale: 1, duration: 0.3, ease: "power2.out" });
-    this.lastDirection = null;
-  },
-
-  showCursor() {
-    if (!this.dragWrap || isMobile()) return;
-    gsap.to(this.dragWrap, { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" });
-    this.dragWrap.classList.add("is-ready");
-  },
-
-  hideCursor() {
-    if (!this.dragWrap) return;
-    gsap.to(this.dragWrap, { opacity: 0, scale: 0.8, duration: 0.3, ease: "power2.in" });
-    this.dragWrap.classList.remove("is-dragging", "is-ready");
-  },
-
-  moveCursor(e: MouseEvent | PointerEvent) {
-    if (!this.dragWrap) return;
-    gsap.set(this.dragWrap, { x: e.clientX, y: e.clientY, xPercent: -50, yPercent: -50 });
   },
 };
 

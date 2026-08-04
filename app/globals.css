@@ -554,7 +554,7 @@ button:focus-visible {
 /* ---- panel 1: mark, socials, positioning line ---------------------------- */
 .nav-top-layout {
   position: relative;
-  z-index: 7;
+  z-index: 7;   /* above .profile-img-wrap (6) */
   display: flex;
   flex-flow: column;
   justify-content: space-between;
@@ -580,8 +580,10 @@ button:focus-visible {
   justify-content: center;
   align-items: flex-start;
   gap: 0.2vw;
-  width: 5.2vw;
-  padding: 0.5vw 0.55vw;
+  /* Right padding matches the left, measured to the ® rather than to the
+     wordmark box, so the pill is optically even. */
+  width: 5.9vw;
+  padding: 0.5vw 1.3vw 0.5vw 0.55vw;
   border-radius: var(--s8);
   color: var(--accent);
 }
@@ -605,20 +607,26 @@ button:focus-visible {
   position: absolute;
   /* Sits tight to the mark's top-right, the way a registered symbol would.
      Any further out and it reads as an unrelated dot. */
-  inset: -0.1vw -0.62vw auto auto;
+  /* The ® sits inboard by the same optical gap the wordmark has on the left,
+     so the lockup reads as one centred unit inside the accent pill. */
+  inset: -0.16vw -0.95vw auto auto;
   z-index: 100;
   display: flex;
-  width: 0.42vw;
-  height: 0.42vw;
+  width: 0.78vw;
+  height: 0.78vw;
 }
 
 .mark-dot {
-  display: block;
+  display: flex;
   width: 100%;
   height: 100%;
-  border-radius: 50%;
-  background-color: currentColor;
+  color: currentColor;
   opacity: 0;
+}
+
+.mark-dot svg {
+  width: 100%;
+  height: 100%;
 }
 
 .social-wrap {
@@ -743,6 +751,7 @@ button:focus-visible {
   flex: none;
   font-size: clamp(0.625rem, 1.04vw, 1.5rem);
   font-weight: 500;
+  color: var(--ink);
 }
 
 .nav-stats-sep {
@@ -761,7 +770,7 @@ button:focus-visible {
 
 .nav-menu {
   position: relative;
-  z-index: 8;
+  z-index: 8;   /* above .profile-img-wrap (6) */
   display: flex;
   flex-flow: column;
   justify-content: space-between;
@@ -821,6 +830,46 @@ button:focus-visible {
   width: var(--s14);
 }
 
+/* Stretches the anchor over the whole row: every nav item is clickable
+   across its full pill, not only on its label. */
+.nav-menu-item > .hero-navigation-link::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 0 calc(var(--s10) * -1 - var(--s16));
+  width: 100vw;
+  max-width: 235px;
+}
+
+/* The venture gets the one gradient treatment on the site.
+   Painted on the INNERMOST text holders, not on the link: ButtonHover wraps
+   the label in spans and SplitText wraps those in .word, so a gradient
+   clipped to the link itself has no text of its own left to clip to — the
+   item renders blank. */
+.hero-navigation-link.is-feature span,
+.hero-navigation-link.is-feature .word {
+  background-image: linear-gradient(96deg, #d9c6ff, #a87bff 45%, var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.nav-menu-item:hover .hero-navigation-link.is-feature span,
+.nav-menu-item:hover .hero-navigation-link.is-feature .word {
+  background-image: linear-gradient(96deg, #ffffff, #efe6ff);
+}
+
+/* A quiet marker so the item is distinguishable without relying on colour
+   alone — the gradient reads as decoration to anyone who cannot see it. */
+.nav-menu-item:has(.is-feature) .nav-item-bg {
+  border-color: rgba(143, 92, 255, 0.35);
+  background-image: linear-gradient(
+    92deg,
+    rgba(143, 92, 255, 0.16),
+    rgba(143, 92, 255, 0.02)
+  );
+}
+
 /* Optical correction: at 16px these glyphs sit beside 18px uppercase labels,
    and a 1.7 stroke on a 24-unit grid renders ~1.1px — visibly lighter than
    the type. CSS wins over the presentation attribute. */
@@ -840,7 +889,7 @@ button:focus-visible {
    those ghosts; scrolling scrubs them back into this column. */
 .hero-navigation-link {
   position: relative;
-  z-index: 1;
+  z-index: 3;
   overflow: hidden;
   text-transform: uppercase;
   font-family: var(--font-display), Arial, sans-serif;
@@ -1032,8 +1081,12 @@ button:focus-visible {
   justify-content: center;
   align-items: flex-start;
   width: 100%;
-  min-height: 300vh;
-  padding-bottom: 180vh;
+  /* 220vh is the shortest hero in which the 53% morph still completes while
+     the sticky frame is pinned (0.53H <= H - 100vh requires H >= 213vh).
+     Shorter than the reference's 300vh because HeroSnap settles the
+     remainder — the distance no longer has to be walked by hand. */
+  min-height: 220vh;
+  padding-bottom: 105vh;
   pointer-events: none;
   overflow: hidden;
 }
@@ -1064,7 +1117,8 @@ button:focus-visible {
   align-items: center;
   width: 100%;
   height: 100vh;
-  padding-bottom: var(--s40);
+  /* Equal optical margin on all three sides of the mark. */
+  padding: var(--s40) var(--s40) var(--s40);
   pointer-events: none;
 }
 
@@ -1079,9 +1133,12 @@ button:focus-visible {
    row below simply starts lower to suit. */
 .hero-mark-slot {
   position: relative;
-  width: 82vw;
+  z-index: 1;   /* behind the portrait */
+  /* Full container width, with the top margin equal to the side margins so
+     the mark is optically centred in its own frame. */
+  width: 100%;
   margin: 0 auto;
-  --mark-w: 82vw;
+  --mark-w: calc(100vw - var(--s40) * 2);
 }
 
 .mark-ghost,
@@ -1115,9 +1172,9 @@ button:focus-visible {
   display: flex;
   justify-content: center;
   width: 100%;
-  padding: 0 2.78vw;
+  padding: 0 var(--s40);
   pointer-events: none;
-  --mark-w: 82vw;
+  --mark-w: calc(100vw - var(--s40) * 2);
 }
 
 .mark-preload {
@@ -1131,8 +1188,8 @@ button:focus-visible {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 93.06vw;
-  margin: var(--s30) auto 0;
+  width: 100%;
+  margin: var(--s34) auto 0;
 }
 
 .hero-links-ghost-wrapper {
@@ -1177,7 +1234,7 @@ button:focus-visible {
   /* Absolute inside the sticky frame, not fixed to the viewport: a fixed band
      never scrolls away and bled over every section below the hero. */
   position: absolute;
-  bottom: 15%;
+  bottom: 12%;
   z-index: 30;
   left: var(--s40);
   right: var(--s40);
@@ -1186,7 +1243,7 @@ button:focus-visible {
      an auto-height wrap collapses to 0 and .hero-card-3's percentage inset
      resolves against nothing. 26vw is the stacked height of the two stat
      ghosts plus their gap. */
-  height: 20vw;
+  height: 17vw;
   margin: 0 auto;
   pointer-events: none;
 }
@@ -1221,23 +1278,21 @@ button:focus-visible {
   flex-flow: column;
   justify-content: flex-start;
   align-items: center;
-  gap: var(--s8);
-  padding: var(--s18);
-  border-radius: var(--s8);
+  gap: var(--s12);
+  padding: var(--s20);
+  border-radius: var(--s10);
   color: var(--ink);
-  text-align: center;
   font-family: var(--font-display), Arial, sans-serif;
   font-weight: 500;
   line-height: 1.1;
   opacity: 0;
 }
 
-.hero-card-2 {
-  width: 12.5vw;
-}
-
+.hero-card-2,
 .hero-card-1 {
-  width: 10.5vw;
+  width: 13vw;
+  align-items: flex-start;
+  text-align: left;
 }
 
 .hero-stat-a-bg,
@@ -1264,7 +1319,7 @@ button:focus-visible {
 }
 
 .hero-stat-a-icon {
-  width: 4.6vw;
+  width: 2.9vw;
   height: auto;
   color: var(--accent);
 }
@@ -1272,7 +1327,7 @@ button:focus-visible {
 .hero-stat-b-numb {
   display: block;
   color: var(--accent);
-  font-size: 4.6vw;
+  font-size: 2.9vw;
   font-weight: 700;
   line-height: 0.9;
   letter-spacing: -0.04em;
@@ -1282,7 +1337,34 @@ button:focus-visible {
 .hero-stat-b-text {
   position: relative;
   z-index: 1;
-  font-size: clamp(0.75rem, 1.18vw, 1.5rem);
+  display: flex;
+  flex-flow: column;
+  gap: 0.15em;
+}
+
+/* The figure carries the weight; the label is a quiet caption under it.
+   Setting both at one size is what made this card read as compressed. */
+.hero-stat-figure {
+  font-family: var(--font-display), Arial, sans-serif;
+  font-size: clamp(1.4rem, 2.15vw, 2.6rem);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+
+.hero-stat-label {
+  font-family: var(--font-body), Arial, sans-serif;
+  font-size: clamp(0.62rem, 0.9vw, 1.05rem);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: 0.02em;
+  color: var(--ink-70);
+}
+
+.hero-stat-icon-wrap,
+.hero-stat-numb-wrap {
+  align-items: center;
 }
 
 /* ---- headline + buttons -------------------------------------------------- */
@@ -1357,7 +1439,7 @@ button:focus-visible {
   flex-flow: column;
   justify-content: flex-start;
   align-items: flex-start;
-  gap: var(--s12);
+  gap: var(--s16);
   padding: var(--s24) var(--s34) var(--s24) var(--s24);
   background-color: var(--glass-hero);
   border: 1px solid var(--hairline);
@@ -1380,12 +1462,17 @@ button:focus-visible {
   gap: var(--s10);
 }
 
-.hero-card-3-dot {
+.hero-card-3-glyph {
   flex: none;
-  width: var(--s18);
-  height: var(--s18);
-  border-radius: 50%;
-  background-color: var(--accent);
+  display: flex;
+  width: var(--s28);
+  height: var(--s28);
+  color: var(--accent);
+}
+
+.hero-card-3-glyph svg {
+  width: 100%;
+  height: 100%;
 }
 
 /* ---- ground paragraphs --------------------------------------------------- */
@@ -1425,10 +1512,10 @@ button:focus-visible {
 .profile-img-wrap {
   position: fixed;
   inset: 0;
-  /* Behind every rail element. The portrait is a sibling of the nav links
-     inside .nav-container, and at z-index 10 it painted over the links that
-     have been flown into the hero row — cropping them against the head. */
-  z-index: 1;
+  /* Above the wordmark, below the rail's own controls. The mark reads as
+     the backdrop the portrait stands in front of — the depth cue the whole
+     hero rests on. */
+  z-index: 6;
   display: flex;
   justify-content: center;
   align-items: flex-end;
@@ -1472,7 +1559,7 @@ button:focus-visible {
 .about-section {
   position: relative;
   z-index: 200;
-  margin-top: -130vh;
+  margin-top: -78vh;
   padding-bottom: var(--s216);
 }
 
@@ -1489,8 +1576,11 @@ button:focus-visible {
   display: flex;
   flex-flow: column;
   width: 100%;
-  /* Reserves the run the absolutely-positioned cards are magnetised into. */
-  height: 260vh;
+  /* Reserves the run the cards are magnetised into. Seven milestones sit 14%
+     apart, so the container has to be tall enough that 14% clears a card's
+     own height — at 260vh the step was 327px against ~380px cards and they
+     collided. */
+  height: 340vh;
   padding-bottom: var(--s72);
 }
 
@@ -1498,13 +1588,14 @@ button:focus-visible {
   position: absolute;
   inset: 0;
   z-index: 0;
+  pointer-events: none;
   width: 100%;
   height: 100%;
 }
 
 .about-timeline-position {
   position: relative;
-  z-index: 6;   /* nodes read above the cards that meet them */
+  z-index: 0;
   width: 100%;
   height: 100%;
 }
@@ -1761,33 +1852,26 @@ button:focus-visible {
 .work_section {
   position: relative;
   min-height: 400vh;
-  /* The one lit block in a dark page. Ink flips with it. */
-  color: var(--paper-ink);
-}
-
-.work_section .label.is-secondary {
-  border-color: rgba(20, 18, 15, 0.28);
-  color: var(--paper-ink);
-}
-
-.work_section .h2-style-white {
-  color: var(--paper-ink);
+  color: var(--ink);
 }
 
 .work-top-text {
-  color: rgba(20, 18, 15, 0.7);
+  color: var(--ink-70);
 }
 
 .work-sticky {
   position: sticky;
   bottom: 0;
   display: flex;
+  /* Top-aligned, on the same rhythm as every other section, so the heading
+     lands where the eye already expects it — and the track has real air
+     above it before the horizontal scroll takes over. */
   justify-content: flex-start;
-  align-items: center;
+  align-items: flex-start;
   width: 100%;
   min-height: 100vh;
-  padding: 3vw var(--edge) 3vw var(--gutter);
-  background-image: var(--light-grad);
+  padding: var(--s216) var(--edge) var(--s72) var(--gutter);
+  background-color: var(--ground);
   overflow: hidden;
 }
 
@@ -1826,8 +1910,42 @@ button:focus-visible {
   width: clamp(17rem, 27vw, 30rem);
   aspect-ratio: 3 / 4;
   border-radius: var(--s12);
-  background-image: linear-gradient(165deg, #d9d4c6, #c3bdac);
+  background-color: var(--surface-sunk);
   overflow: hidden;
+}
+
+/* Real creative fills the card; the scrim below keeps the caption legible. */
+.work-card-media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s var(--ease-out), filter 0.45s var(--ease-out);
+}
+
+/* Hovering one card recedes the others — the set stays visible, the focus
+   is unambiguous. Applied to the CHILDREN because GSAP owns the card's own
+   opacity and transform from the reveal. */
+.work-track:hover .work-card .work-card-media {
+  filter: brightness(0.42) saturate(0.65);
+}
+
+.work-track:hover .work-card .work-card-content {
+  opacity: 0.42;
+}
+
+.work-track .work-card:hover .work-card-media {
+  filter: brightness(1.02) saturate(1.04);
+  transform: scale(1.045);
+}
+
+.work-track .work-card:hover .work-card-content {
+  opacity: 1;
+}
+
+.work-card-content {
+  transition: opacity 0.45s var(--ease-out);
 }
 
 .work-card-content {
@@ -1864,8 +1982,8 @@ button:focus-visible {
 
 .work-label {
   padding: 0.345vw var(--s10);
-  background-color: rgba(20, 18, 15, 0.62);
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  background-color: rgba(12, 11, 9, 0.66);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 5.14vw;
   -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
@@ -1959,9 +2077,11 @@ button:focus-visible {
 
 .what_you_get_section {
   position: relative;
-  min-height: 100vh;
-  padding: var(--s216) 6.39vw var(--s216) var(--gutter);
-  overflow: hidden;
+  min-height: auto;
+  padding: var(--s144) 6.39vw var(--s216) var(--gutter);
+  /* Anchor links land with the heading in view rather than below the fold. */
+  scroll-margin-top: var(--s40);
+  overflow: visible;
 }
 
 .what_you_get-text {
@@ -2007,34 +2127,21 @@ button:focus-visible {
    inside clamp(), so the fluid vw system survives while GSAP drives one
    unitless number per axis. */
 .capa-card-item {
+  position: relative;
   display: flex;
   flex-flow: column;
   align-items: flex-start;
   width: auto;
-  padding-top: clamp(
-    calc(0.5rem * var(--card-pad-y)),
-    calc(0.7vw * var(--card-pad-y)),
-    calc(0.9rem * var(--card-pad-y))
-  );
-  padding-bottom: clamp(
-    calc(0.5rem * var(--card-pad-y)),
-    calc(0.7vw * var(--card-pad-y)),
-    calc(0.9rem * var(--card-pad-y))
-  );
-  padding-left: clamp(
-    calc(0.75rem * var(--card-pad-x)),
-    calc(1vw * var(--card-pad-x)),
-    calc(1.25rem * var(--card-pad-x))
-  );
-  padding-right: clamp(
-    calc(0.75rem * var(--card-pad-x)),
-    calc(1vw * var(--card-pad-x)),
-    calc(1.25rem * var(--card-pad-x))
-  );
+  /* Fixed padding. Tweening this through a variable changed the chip's
+     measured box every frame, which MagneticPositions then re-solved
+     against — the two fighting is what produced the shake. */
+  padding: var(--s12) var(--s18);
   background-color: var(--surface-alt);
-  border: 1px solid var(--hairline);
-  border-radius: var(--s9);
+  border: 1px solid var(--hairline-ink);
+  border-radius: var(--s10);
+  transform-origin: center center;
   cursor: default;
+  will-change: transform;
 }
 
 .capa-card-top-item {
@@ -2048,11 +2155,7 @@ button:focus-visible {
 
 .capa-icon {
   flex: none;
-  width: clamp(
-    calc(1.1rem * var(--card-icon)),
-    calc(1.5vw * var(--card-icon)),
-    calc(2rem * var(--card-icon))
-  );
+  width: clamp(1.05rem, 1.45vw, 1.9rem);
   height: auto;
 }
 
@@ -2064,156 +2167,38 @@ button:focus-visible {
   white-space: nowrap;
 }
 
+/* Absolutely positioned: expanding it cannot move the chip, the sentence,
+   or any neighbour — so nothing re-solves and nothing shakes. */
 .capa-card-bottom {
-  display: grid;
-  grid-template-rows: 0fr;
-  width: clamp(
-    calc(9rem * var(--card-text)),
-    calc(13vw * var(--card-text)),
-    calc(16rem * var(--card-text))
-  );
-  overflow: hidden;
+  position: absolute;
+  top: calc(100% + var(--s8));
+  left: 0;
+  width: clamp(15rem, 19vw, 23rem);
+  padding: var(--s16) var(--s18);
+  background-color: var(--surface-alt);
+  border: 1px solid var(--hairline-ink);
+  border-radius: var(--s10);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  pointer-events: none;
+  opacity: 0;
 }
 
 .capa-card-bottom-layout {
   overflow: hidden;
 }
 
+.capa-word {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
 .capa-card-text {
-  padding-top: var(--s10);
   font-family: var(--font-body), Arial, sans-serif;
   font-size: clamp(0.625rem, 0.9vw, 1.05rem);
   font-weight: 400;
   line-height: 1.4;
   letter-spacing: 0;
-}
-
-/* ==========================================================================
-   WAYS TO WORK
-   ========================================================================== */
-
-.sevice_section {
-  padding-top: var(--s216);
-  padding-bottom: var(--s216);
-}
-
-.service-wrap {
-  display: flex;
-  gap: var(--s34);
-  margin-top: var(--s60);
-  padding: var(--s13) var(--s34) var(--s13) var(--s13);
-  background-color: var(--surface-sunk);
-  border: 1px solid var(--hairline);
-  border-radius: var(--s10);
-}
-
-.service-card {
-  display: flex;
-  flex-flow: column;
-  width: 22.22vw;
-  padding-top: var(--s20);
-  padding-bottom: var(--s20);
-}
-
-/* The featured tier is a nested, inset, darker panel — a card inside the
-   card. The slab's asymmetric padding exists to let it sit nearly flush. */
-.service-card.is-first {
-  width: 24.86vw;
-  padding: var(--s20) var(--s32);
-  background-color: var(--surface-alt);
-  border: 1px solid var(--hairline);
-  border-radius: var(--s8);
-}
-
-.service-top-content {
-  width: 100%;
-  margin-bottom: var(--s50);
-}
-
-.service-card-top-item {
-  display: flex;
-  align-items: center;
-  gap: var(--s10);
-  margin-bottom: var(--s40);
-}
-
-.service-card-heading {
-  font-family: var(--font-display), Arial, sans-serif;
-  font-size: clamp(1rem, 1.53vw, 1.75rem);
-  font-weight: 600;
-  line-height: 1.1;
-  letter-spacing: -0.018em;
-}
-
-/* align-items: flex-end puts the rate and its unit on a shared baseline. */
-.service-price-item {
-  display: flex;
-  align-items: flex-end;
-  gap: var(--s6);
-  margin-bottom: var(--s32);
-  font-family: var(--font-display), Arial, sans-serif;
-  font-size: clamp(1.4rem, 2.15vw, 2.6rem);
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: -0.035em;
-}
-
-.services-hours-text {
-  padding-bottom: 1%;
-  font-family: var(--font-body), Arial, sans-serif;
-  font-size: clamp(0.625rem, 0.97vw, 1.5rem);
-  opacity: 0.6;
-}
-
-.service-blurb {
-  font-size: clamp(0.625rem, 0.97vw, 1.25rem);
-  line-height: 1.5;
-}
-
-.service-list {
-  display: flex;
-  flex-flow: column;
-  gap: var(--s8);
-  margin-top: var(--s40);
-}
-
-.service-list-item {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--s10);
-  width: 100%;
-  font-size: clamp(0.625rem, 0.97vw, 1.25rem);
-  line-height: 1.4;
-}
-
-/* Hollow ring, not a filled dot — the accent stays a highlight. */
-.service-list-bullet-icon {
-  flex: none;
-  width: var(--s12);
-  height: var(--s12);
-  margin-top: 0.35em;
-  border: var(--s2) solid var(--accent);
-  border-radius: 50%;
-}
-
-.service-bottom-content {
-  width: 100%;
-  margin-top: auto;
-}
-
-.service-footnote {
-  font-size: clamp(0.625rem, 0.9vw, 1.1rem);
-  line-height: 1.4;
-}
-
-.service-placeholder-note {
-  margin-top: var(--s24);
-  font-size: clamp(0.625rem, 0.83vw, 1rem);
-  opacity: 0.45;
-}
-
-.service-placeholder-note code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 /* ==========================================================================
@@ -2315,205 +2300,6 @@ button:focus-visible {
   height: var(--s10);
   border-radius: 50%;
   background-color: var(--ink-50);
-}
-
-/* ==========================================================================
-   CLIENTS — carousel + drag cursor
-   ========================================================================== */
-
-.testimonial_section {
-  position: relative;
-  padding-top: var(--s144);
-  padding-bottom: var(--s144);
-  overflow: hidden;
-}
-
-.swiper-main-wrap {
-  display: flex;
-  flex-flow: column;
-  align-items: flex-end;
-  width: calc(100% + var(--edge));
-  margin-top: var(--s24);
-}
-
-/* Deliberately narrow and left-aligned so the next card peeks — the
-   affordance is the composition, not a chevron. */
-.swiper {
-  align-self: flex-start;
-  width: 33.13vw;
-  overflow: visible;
-  cursor: none;
-}
-
-.swiper:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 6px;
-}
-
-.swiper-wrapper {
-  display: flex;
-  align-items: stretch;
-  width: 100%;
-  gap: 14px;
-  will-change: transform;
-}
-
-.swiper-slide {
-  flex: none;
-  width: 100%;
-  align-self: stretch;
-}
-
-.swiper-card {
-  display: flex;
-  flex-flow: column;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: var(--s50);
-  height: 100%;
-  margin: 0;
-  padding: var(--s24);
-  background-color: var(--surface);
-  border: 1px solid var(--hairline);
-  border-radius: var(--s12);
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
-}
-
-.swiper-card-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  width: 100%;
-  margin-bottom: var(--s24);
-}
-
-.swiper-heading {
-  max-width: 85%;
-  color: var(--ink);
-  font-family: var(--font-display), Arial, sans-serif;
-  font-size: clamp(1.15rem, 1.86vw, 2.1rem);
-  font-weight: 600;
-  line-height: 1.12;
-  letter-spacing: -0.028em;
-  text-wrap: balance;
-}
-
-.swiper-quote-icon {
-  flex: none;
-  width: var(--s30);
-  height: var(--s30);
-  color: var(--accent);
-}
-
-.swiper-body {
-  margin: 0;
-  line-height: 1.5;
-}
-
-.swiper-card-bottom {
-  display: flex;
-  align-items: center;
-  gap: var(--s14);
-  width: 100%;
-}
-
-.client-img {
-  flex: none;
-  width: var(--s64);
-  height: var(--s64);
-  border-radius: 50%;
-  background-color: transparent;
-  border: 1px dashed var(--hairline-ink);
-}
-
-.client-info {
-  display: flex;
-  flex-flow: column;
-  gap: var(--s4);
-  line-height: 1;
-}
-
-.client-name {
-  font-family: var(--font-display), Arial, sans-serif;
-  font-weight: 600;
-}
-
-.client-text-small,
-.client-text-link {
-  color: var(--ink-70);
-  font-size: clamp(0.625rem, 0.97vw, 1.25rem);
-}
-
-.client-text-link {
-  text-decoration: underline;
-}
-
-.swiper-pagination {
-  display: flex;
-  gap: var(--s6);
-  margin-top: 1vw;
-  margin-right: var(--edge);
-  padding: var(--s10);
-  background-color: var(--surface);
-  border: 1px solid var(--hairline);
-  border-radius: var(--s8);
-}
-
-.swiper-bullet {
-  width: var(--s18);
-  height: var(--s4);
-  background-color: var(--ink-30);
-  border-radius: 2.64vw;
-  transition: background-color var(--dur-base) var(--ease-out),
-    width var(--dur-base) var(--ease-out);
-}
-
-.swiper-bullet.is-active {
-  width: var(--s36);
-  background-color: var(--accent);
-}
-
-/* The replacement cursor. */
-.drag-wrap {
-  position: fixed;
-  inset: 0 auto auto 0;
-  z-index: 100;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: clamp(0.15rem, 0.278vw, 0.333rem);
-  color: #403f3c;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.drag-circle {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: clamp(2.55rem, 4.722vw, 5.665rem);
-  height: clamp(2.55rem, 4.722vw, 5.665rem);
-  background-color: var(--accent);
-  border-radius: 50%;
-  color: var(--accent-ink);
-  text-transform: uppercase;
-  font-family: var(--font-body), Arial, sans-serif;
-  font-size: clamp(0.525rem, 0.972vw, 1.166rem);
-  font-weight: 700;
-  line-height: 1;
-}
-
-.drag-circle-span {
-  height: clamp(0.525rem, 0.972vw, 1.166rem);
-  overflow: hidden;
-}
-
-.drag-left-icon,
-.drag-right-icon {
-  width: clamp(0.5rem, 0.9vw, 1.1rem);
-  height: clamp(0.5rem, 0.9vw, 1.1rem);
-  color: var(--accent);
 }
 
 /* ==========================================================================
@@ -3347,6 +3133,47 @@ button:focus-visible {
     padding: 0 5.33vw 4.27vw;
   }
 
+  .velar-panel {
+    padding: 10.7vw 5.33vw;
+    border-radius: 5.33vw;
+  }
+
+  .velar-panel-top {
+    grid-template-columns: 1fr;
+    gap: 8vw;
+    padding-bottom: 8vw;
+  }
+
+  .velar-pillars {
+    grid-template-columns: 1fr;
+    gap: 6.4vw;
+    margin-top: 8vw;
+  }
+
+  .velar-panel-foot {
+    flex-flow: column;
+    align-items: flex-start;
+    gap: 5.33vw;
+    margin-top: 10vw;
+  }
+
+  .velar-cta {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .capa-card-bottom {
+    position: static;
+    width: 100%;
+    margin-top: 3.2vw;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .work_section {
+    background-color: var(--ground);
+  }
+
   .footer-bottom {
     flex-flow: column;
     align-items: flex-start;
@@ -3376,6 +3203,14 @@ button:focus-visible {
   }
 
   .work-top-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .velar-pillars {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .velar-panel-top {
     grid-template-columns: 1fr;
   }
 }
@@ -3441,6 +3276,18 @@ button:focus-visible {
     overflow-x: auto;
     padding-left: var(--gutter);
   }
+
+  .about-spine-path {
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+
+  .capa-card-bottom {
+    position: static;
+    width: 100%;
+    margin-top: var(--s10);
+    opacity: 1 !important;
+  }
 }
 
 /* ==========================================================================
@@ -3461,4 +3308,285 @@ button:focus-visible {
   /* Matches .main-wrap and is later in the document, so it layers above the
      main content but still passes under the rail. */
   z-index: 20;
+}
+
+/* ==========================================================================
+   VELAR STUDIO — the venture panel
+   The page's one deliberate crescendo. This is the only place the accent is
+   the subject rather than a highlight, so it carries more weight here than
+   anywhere else: a raised plate, a bloom behind it, and the wordmark on its
+   own darker field because the supplied art is white-on-transparent.
+   ========================================================================== */
+
+.velar_section {
+  position: relative;
+  padding-top: var(--s216);
+  padding-bottom: var(--s216);
+}
+
+.velar-panel {
+  position: relative;
+  margin-top: var(--s34);
+  padding: var(--s72) var(--s60);
+  background-image: linear-gradient(
+    158deg,
+    rgba(143, 92, 255, 0.14),
+    rgba(38, 35, 30, 0.72) 42%,
+    rgba(38, 35, 30, 0.72)
+  );
+  border: 1px solid rgba(143, 92, 255, 0.22);
+  border-radius: var(--s30);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  overflow: hidden;
+}
+
+/* Bloom, not a gradient fill — it reads as light in the panel rather than
+   as a coloured rectangle. */
+.velar-glow {
+  position: absolute;
+  top: -35%;
+  left: -8%;
+  width: 55%;
+  height: 120%;
+  background: radial-gradient(
+    closest-side,
+    rgba(143, 92, 255, 0.4),
+    rgba(143, 92, 255, 0) 72%
+  );
+  filter: blur(28px);
+  pointer-events: none;
+}
+
+.velar-panel-top {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: center;
+  gap: var(--s60);
+  padding-bottom: var(--s60);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.velar-lockup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--s40) var(--s34);
+  background-color: rgba(10, 9, 8, 0.55);
+  border: 1px solid var(--hairline);
+  border-radius: var(--s22);
+}
+
+.velar-wordmark {
+  width: 100%;
+  height: auto;
+}
+
+.velar-lede {
+  font-family: var(--font-display), Arial, sans-serif;
+  font-size: clamp(1.15rem, 1.74vw, 2rem);
+  font-weight: 500;
+  line-height: 1.32;
+  letter-spacing: -0.022em;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+.velar-pillars {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--s34);
+  margin: var(--s60) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.velar-pillar {
+  display: flex;
+  flex-flow: column;
+  align-items: flex-start;
+  gap: var(--s12);
+}
+
+.velar-pillar-icon {
+  display: flex;
+  width: var(--s44);
+  height: var(--s44);
+  color: var(--accent);
+}
+
+.velar-pillar-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.velar-pillar-title {
+  font-family: var(--font-display), Arial, sans-serif;
+  font-size: clamp(0.95rem, 1.32vw, 1.5rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.velar-pillar-body {
+  font-size: clamp(0.7rem, 0.94vw, 1.1rem);
+  line-height: 1.5;
+  color: var(--ink-70);
+}
+
+.velar-panel-foot {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--s34);
+  margin-top: var(--s72);
+  padding-top: var(--s34);
+  border-top: 1px solid var(--hairline);
+}
+
+.velar-foot-note {
+  font-size: clamp(0.7rem, 0.94vw, 1.1rem);
+  color: var(--ink-50);
+}
+
+.velar-cta {
+  display: flex;
+  align-items: center;
+  gap: var(--s12);
+  flex: none;
+  padding: var(--s16) var(--s30);
+  background-color: var(--accent);
+  color: var(--accent-ink);
+  border-radius: var(--s12);
+  font-family: var(--font-display), Arial, sans-serif;
+  font-size: clamp(0.8rem, 1.04vw, 1.2rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition: background-color var(--dur-base) var(--ease-out);
+}
+
+.velar-cta:hover {
+  background-color: var(--accent-deep);
+}
+
+.velar-cta-arrow {
+  width: var(--s18);
+  height: var(--s18);
+}
+
+/* ==========================================================================
+   TIMELINE SPINE — generated path
+   ========================================================================== */
+
+/* Behind the cards. An S-curve through alternating milestones necessarily
+   crosses the middle of the run, so it has to read as a thread the cards sit
+   on rather than a line drawn over their faces. */
+.about-spine {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* The unlit route, so the run reads as a path before it is drawn. */
+.about-spine-track {
+  stroke: var(--hairline-ink);
+  stroke-width: 2;
+}
+
+.about-spine-path {
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+.about-spine-node {
+  fill: var(--ground);
+  stroke: var(--hairline-ink);
+  stroke-width: 2;
+  transition: fill 0.45s var(--ease-out), stroke 0.45s var(--ease-out),
+    r 0.45s var(--ease-out);
+}
+
+.about-spine-node.is-active {
+  fill: var(--accent);
+  stroke: var(--accent);
+  r: 8.5;
+}
+
+/* The HTML anchors are magnetic targets only — the SVG draws the nodes. */
+.about-anchor::after {
+  display: none;
+}
+
+/* ==========================================================================
+   JOURNEY CARD — CV detail
+   ========================================================================== */
+
+/* Baseline alignment let the period's own line box hang below the year's
+   short (0.86) leading and clip into the heading beneath it. Centring on the
+   numeral's optical middle keeps the pair as one unit. */
+.about-card-top {
+  display: flex;
+  align-items: center;
+  gap: var(--s16);
+  width: 100%;
+  margin-bottom: var(--s10);
+}
+
+.about-card-period {
+  font-family: var(--font-body), Arial, sans-serif;
+  font-size: clamp(0.58rem, 0.8vw, 0.95rem);
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-50);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.about-card-org {
+  margin-bottom: var(--s12);
+  font-family: var(--font-display), Arial, sans-serif;
+  font-size: clamp(0.75rem, 1vw, 1.15rem);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--accent);
+}
+
+.about-card-teaser {
+  font-size: clamp(0.75rem, 0.97vw, 1.15rem);
+  line-height: 1.55;
+  color: var(--ink-70);
+}
+
+.popup-meta {
+  margin-bottom: var(--s16);
+  font-size: clamp(0.62rem, 0.86vw, 1rem);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-50);
+}
+
+/* ==========================================================================
+   CTA — Telegram
+   ========================================================================== */
+
+.cta-button-icon {
+  flex: none;
+  width: var(--s24);
+  height: var(--s24);
+}
+
+.footer-link-glyph {
+  flex: none;
+  width: var(--s18);
+  height: var(--s18);
+  color: var(--accent);
 }
