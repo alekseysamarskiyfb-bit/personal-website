@@ -97,7 +97,7 @@ export const Clipboard = {
             );
           }
           gsap.to(item, {
-            backgroundColor: "#7c3aed",
+            backgroundColor: "#8f5cff",
             color: "#ffffff",
             duration: 0.3,
             ease: "power2.out",

@@ -23,16 +23,23 @@ otherwise scramble.
 
 ## Design system
 
-- **Ground** `#D5CFBE` warm bone. There is no white background anywhere.
-- **Accent** `#7C3AED`, always flat, never a gradient (one exception: the
+- **Ground** `#14120F` warm near-black — the warmth of the original bone
+  palette carried to the dark end, so surfaces read as unlit paper rather
+  than grey plastic. Ink is `#F3EFE6`, never pure white.
+- **Accent** `#8F5CFF`, always flat, never a gradient (one exception: the
   text-clipped year in an expanded timeline card).
+- **One contrasting island** — Selected Work is the single lit block in a
+  dark page, and the rail inverts itself wherever it overlaps it.
 - **Depth** comes only from `backdrop-filter` + a translucent fill + a 1px
   top-light border. There are no box-shadows in the system.
 - **Spacing** is a fluid 1440 vw grid — nothing is authored in px. Above 768px
   the layout zooms rather than reflowing; below it there is a separate design.
-- **Motion** — text slides from behind a mask, objects arrive with blur + scale
-  + alpha together. Nothing simply fades. `expo.out` for arrivals,
-  `power1.inOut` for scrubbed morphs.
+- **Motion** — text slides from behind a mask, objects arrive with blur +
+  scale + alpha together. Nothing simply fades, and nothing simply cuts:
+  hero elements that do not become part of the rail dissolve with blur as
+  they leave. `expo.out` for arrivals, `power1.inOut` for scrubbed morphs,
+  and a single shared easing token (`--ease-out`) for CSS transitions so
+  hovers do not read as browser defaults beside GSAP curves.
 
 ## Engine modules
 

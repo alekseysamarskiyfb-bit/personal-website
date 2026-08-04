@@ -88,8 +88,8 @@ export default function Sidebar() {
               data-tl-trigger=".hero"
               data-tl-start="42% top"
               data-tl-end="44% top"
-              data-tl-from="{'color': '#7c3aed', 'backgroundColor': 'rgba(124,58,237,0)'}"
-              data-tl-to="{'color': '#ffffff', 'backgroundColor': '#7c3aed'}"
+              data-tl-from="{'color': '#8f5cff', 'backgroundColor': 'rgba(143,92,255,0)'}"
+              data-tl-to="{'color': '#ffffff', 'backgroundColor': '#8f5cff'}"
             >
               <div
                 className="nav-logo-item"
@@ -331,7 +331,6 @@ export default function Sidebar() {
               <span className="platform-name">Meta</span>
               <span className="platform-name">TikTok</span>
               <span className="platform-name">Google</span>
-              <span className="platform-name">Native</span>
             </div>
           </div>
 

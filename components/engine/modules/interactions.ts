@@ -158,15 +158,17 @@ export const TextReveal = {
     if (!chars.length) return;
 
     if (prefersReducedMotion()) {
-      gsap.set(chars, { color: "#000000", opacity: 1, y: 0 });
+      gsap.set(chars, { color: "#f3efe6", opacity: 1, y: 0 });
       return;
     }
 
     gsap.fromTo(
       chars,
-      { color: "#e0dfc5", opacity: 0.1, y: 5 },
+      // Starts at the ground's own tone — invisible against it — and resolves
+      // to full ink. A tonal reveal, not a fade.
+      { color: "#221f1a", opacity: 0.12, y: 5 },
       {
-        color: "#000000",
+        color: "#f3efe6",
         opacity: 1,
         y: 0,
         force3D: true,

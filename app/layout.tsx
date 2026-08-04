@@ -1,12 +1,15 @@
 import type { Metadata, Viewport } from "next";
-import { Anton, Archivo, Inter } from "next/font/google";
+import { Anton, Instrument_Sans, Inter } from "next/font/google";
 import "./globals.css";
 
-/* Display face — the "TR 3 A" role in the spec: a tight editorial grotesk
-   carrying every structural element (headings, buttons, card headings,
-   prices, numerals, nav links). Archivo is the closest freely-licensed
-   match at the required 400/500/700. */
-const display = Archivo({
+/* Display face — the "TR 3 A" role: a tight editorial grotesque carrying
+   every structural element (headings, buttons, card headings, prices,
+   numerals, nav links).
+   Instrument Sans over Archivo: Archivo's letterforms widen and soften above
+   ~60px, which is exactly where this design does its talking. Instrument Sans
+   stays narrow and precise at display size, which is what makes the reference's
+   headings read editorial rather than merely large. */
+const display = Instrument_Sans({
   subsets: ["latin"],
   variable: "--font-display",
   weight: ["400", "500", "600", "700"],

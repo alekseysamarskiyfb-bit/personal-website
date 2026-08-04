@@ -92,7 +92,16 @@ export default function Hero() {
           </div>
 
           <div className="hero-content-layout">
-            <h1 className="hero-heading">
+            <h1
+              className="hero-heading"
+              data-tl-desktop
+              data-tl-type="scroll"
+              data-tl-trigger=".hero"
+              data-tl-start="1% top"
+              data-tl-end="15% top"
+              data-tl-from="{'opacity': 1, 'filter': 'blur(0px)', 'y': '0vw', 'scale': 1}"
+              data-tl-to="{'opacity': 0, 'filter': 'blur(16px)', 'y': '-2.5vw', 'scale': 0.965}"
+            >
               Performance Creative,
               <br />
               That Converts.
@@ -108,7 +117,16 @@ export default function Hero() {
           </div>
 
           {/* Genuinely hero: revealed by the preloader, scrubbed away at 5–20%. */}
-          <div className="hero-card-3">
+          <div
+            className="hero-card-3"
+            data-tl-desktop
+            data-tl-type="scroll"
+            data-tl-trigger=".hero"
+            data-tl-start="3% top"
+            data-tl-end="18% top"
+            data-tl-from="{'opacity': 1, 'filter': 'blur(0px)', 'y': '0vw', 'scale': 1}"
+            data-tl-to="{'opacity': 0, 'filter': 'blur(14px)', 'y': '-1.6vw', 'scale': 0.94}"
+          >
             {TRAITS.map((t) => (
               <div className="hero-card-3-item" key={t}>
                 <span className="hero-card-3-dot" />
@@ -121,12 +139,30 @@ export default function Hero() {
         {/* Ground row. Both paragraphs mask-reveal at the end of the intro
             and slide out again in the first 10% of scroll. */}
         <div className="hero-container">
-          <p className="hero-left-text">
+          <p
+            className="hero-left-text"
+            data-tl-desktop
+            data-tl-type="scroll"
+            data-tl-trigger=".hero"
+            data-tl-start="2% top"
+            data-tl-end="13% top"
+            data-tl-from="{'opacity': 1, 'filter': 'blur(0px)', 'y': '0vw'}"
+            data-tl-to="{'opacity': 0, 'filter': 'blur(10px)', 'y': '-1vw'}"
+          >
             The performance creative.
             <br />
             That&rsquo;s Oleksii.
           </p>
-          <p className="hero-right-text">
+          <p
+            className="hero-right-text"
+            data-tl-desktop
+            data-tl-type="scroll"
+            data-tl-trigger=".hero"
+            data-tl-start="3% top"
+            data-tl-end="14% top"
+            data-tl-from="{'opacity': 1, 'filter': 'blur(0px)', 'y': '0vw'}"
+            data-tl-to="{'opacity': 0, 'filter': 'blur(10px)', 'y': '-1vw'}"
+          >
             3+ years of static, motion and AI-assisted creative for paid
             acquisition. Founder of Velar Studio.
           </p>

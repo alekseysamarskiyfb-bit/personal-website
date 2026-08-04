@@ -199,7 +199,7 @@ export const GhostEngine = {
       vars.scaleY = sY;
       vars.transformOrigin = "top left";
       // Must match --glass-hero, or the card changes tone as it lands.
-      vars.backgroundColor = "rgba(104, 96, 84, 0.34)";
+      vars.backgroundColor = "rgba(255, 252, 244, 0.09)";
       vars.opacity = 1;
 
       /* Per-corner ELLIPTICAL radius compensation. Under a non-uniform scale

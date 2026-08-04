@@ -63,7 +63,10 @@ const ENTRIES = [
 
 /* Each card's reveal fires at its own point in the container's scroll. */
 const STARTS = ["-45% top", "-15% top", "15% top", "45% top"];
-const TOPS = ["0%", "24%", "48%", "72%"];
+/* Cards magnet their BOTTOM corner onto these, so an anchor at 0% would hang
+   the whole card above the container and into the section header. Starting at
+   18% gives the first card room to sit inside its own run. */
+const TOPS = ["18%", "40%", "62%", "84%"];
 
 export default function Journey() {
   return (
@@ -139,6 +142,7 @@ export default function Journey() {
               key={entry.year}
               data-origin={entry.origin}
               data-connect={`step-${i + 1}`}
+              data-offset={entry.origin.includes("right") ? "-1.6vw, 0" : "1.6vw, 0"}
               data-origin-mobile="top left"
               data-anchor-pos-mobile="top left"
               style={{ top: TOPS[i] }}
@@ -149,8 +153,8 @@ export default function Journey() {
                 data-tl-type="trigger"
                 data-tl-trigger=".about-card-container"
                 data-tl-start={STARTS[i]}
-                data-tl-from="{'y': '10%', 'opacity': 0, 'scale': 0.6}"
-                data-tl-to="{'y': '0%', 'opacity': 1, 'scale': 1, 'duration': 1.1, 'delay': 0.3, 'ease': 'expo.out'}"
+                data-tl-from="{'y': '9%', 'opacity': 0, 'scale': 0.86, 'filter': 'blur(12px)'}"
+                data-tl-to="{'y': '0%', 'opacity': 1, 'scale': 1, 'filter': 'blur(0px)', 'duration': 1.25, 'delay': 0.25, 'ease': 'expo.out'}"
               >
                 <div
                   className="about-card-year"

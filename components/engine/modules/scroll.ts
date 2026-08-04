@@ -258,7 +258,7 @@ export const HorizontalScroll = {
 
     const cards = Utils.$$(".work-card");
     if (cards.length) {
-      gsap.set(cards, { y: "10%", opacity: 0, scale: 0.6 });
+      gsap.set(cards, { y: "9%", opacity: 0, scale: 0.88, filter: "blur(14px)" });
 
       const wrapRight = wrap.getBoundingClientRect().right;
       const inView: HTMLElement[] = [];
@@ -277,9 +277,10 @@ export const HorizontalScroll = {
               y: "0%",
               opacity: 1,
               scale: 1,
-              duration: 1.1,
+              filter: "blur(0px)",
+              duration: 1.25,
               ease: "expo.out",
-              stagger: 0.1,
+              stagger: 0.12,
             }),
         });
       }
@@ -289,7 +290,8 @@ export const HorizontalScroll = {
           y: "0%",
           opacity: 1,
           scale: 1,
-          duration: 1.1,
+          filter: "blur(0px)",
+          duration: 1.25,
           ease: "expo.out",
           scrollTrigger: {
             trigger: card,
@@ -323,45 +325,55 @@ type ThemeGroup = {
 export const ThemeSwitcher = {
   states: {} as Record<string, "light" | "dark">,
 
+  /* Inverted: the rail is dark by default and flips LIGHT wherever it
+     overlaps the lit work island. Values are literals rather than var()
+     because GSAP interpolates colours, and it cannot tween between two
+     custom-property references. */
   groups: [
     {
       selector: ".nav-top-layout",
       dark: {
-        ".nav-top-layout": { color: "rgba(255,255,255,0.9)" },
+        ".nav-top-layout": { color: "#f3efe6" },
         ".nav-top-layout > .nav-top-bg": {
-          borderColor: "rgba(255,255,255,0.1)",
-          backgroundColor: "rgba(29,29,29,0.9)",
+          borderColor: "rgba(255,255,255,0.09)",
+          backgroundColor: "rgba(38,35,30,0.72)",
         },
-        ".social-link": { backgroundColor: "#393939", color: "#ffffff", borderColor: "rgba(255,255,255,0.1)" },
+        ".social-link": {
+          backgroundColor: "#23201b",
+          color: "#f3efe6",
+          borderColor: "rgba(255,255,255,0.14)",
+        },
       },
       light: {
-        ".nav-top-layout": { color: "#000000" },
+        ".nav-top-layout": { color: "#14120f" },
         ".nav-top-layout > .nav-top-bg": {
-          borderColor: "rgba(255,255,255,0.2)",
-          backgroundColor: "rgba(223,222,206,0.8)",
+          borderColor: "rgba(20,18,15,0.1)",
+          backgroundColor: "rgba(255,255,255,0.66)",
         },
-        ".social-link": { backgroundColor: "#ebeada", color: "#000000", borderColor: "rgba(0,0,0,0.1)" },
+        ".social-link": {
+          backgroundColor: "#ebe7db",
+          color: "#14120f",
+          borderColor: "rgba(20,18,15,0.1)",
+        },
       },
     },
     {
       selector: ".nav-stats-wrap",
       dark: {
-        ".nav-stats-wrap": { color: "rgba(255,255,255,0.9)" },
+        ".nav-stats-wrap": { color: "#f3efe6" },
         ".nav-stats-wrap .nav-top-bg": {
-          borderColor: "rgba(255,255,255,0.1)",
-          backgroundColor: "rgba(29,29,29,0.6)",
+          borderColor: "rgba(255,255,255,0.09)",
+          backgroundColor: "rgba(38,35,30,0.72)",
         },
-        ".nav-stats-sep": { backgroundColor: "rgba(255,255,255,0.15)" },
-        ".nav-stat-a-icon, .nav-stat-b-numb": { color: "#9b6bff" },
+        ".nav-stats-sep": { backgroundColor: "rgba(255,255,255,0.14)" },
       },
       light: {
-        ".nav-stats-wrap": { color: "#000000" },
+        ".nav-stats-wrap": { color: "#14120f" },
         ".nav-stats-wrap .nav-top-bg": {
-          borderColor: "rgba(255,255,255,0.2)",
-          backgroundColor: "rgba(223,222,206,0.8)",
+          borderColor: "rgba(20,18,15,0.1)",
+          backgroundColor: "rgba(255,255,255,0.66)",
         },
-        ".nav-stats-sep": { backgroundColor: "rgba(0,0,0,0.1)" },
-        ".nav-stat-a-icon, .nav-stat-b-numb": { color: "#7c3aed" },
+        ".nav-stats-sep": { backgroundColor: "rgba(20,18,15,0.12)" },
       },
     },
     {
@@ -370,36 +382,42 @@ export const ThemeSwitcher = {
       // real overlap before it commits to the flip.
       threshold: 0.35,
       dark: {
-        ".nav-menu": { color: "rgba(255,255,255,0.9)" },
+        ".nav-menu": { color: "#f3efe6" },
         ".nav-menu-bg": {
-          borderColor: "rgba(255,255,255,0.1)",
-          backgroundColor: "rgba(29,29,29,0.6)",
+          borderColor: "rgba(255,255,255,0.09)",
+          backgroundColor: "rgba(38,35,30,0.72)",
         },
-        ".nav-item-bg": { borderColor: "rgba(255,255,255,0.03)", backgroundColor: "rgba(57,57,57,0.9)" },
+        ".nav-item-bg": {
+          borderColor: "rgba(255,255,255,0.06)",
+          backgroundColor: "#23201b",
+        },
       },
       light: {
-        ".nav-menu": { color: "#000000" },
+        ".nav-menu": { color: "#14120f" },
         ".nav-menu-bg": {
-          borderColor: "rgba(255,255,255,0.2)",
-          backgroundColor: "rgba(223,222,206,0.8)",
+          borderColor: "rgba(20,18,15,0.1)",
+          backgroundColor: "rgba(255,255,255,0.66)",
         },
-        ".nav-item-bg": { borderColor: "rgba(0,0,0,0.1)", backgroundColor: "#ebeada" },
+        ".nav-item-bg": {
+          borderColor: "rgba(20,18,15,0.07)",
+          backgroundColor: "#ebe7db",
+        },
       },
     },
     {
       selector: ".nav-platforms-wrap",
       dark: {
         ".nav-platforms-wrap": {
-          color: "rgba(255,255,255,0.9)",
-          borderColor: "rgba(255,255,255,0.1)",
-          backgroundColor: "rgba(29,29,29,0.6)",
+          color: "#f3efe6",
+          borderColor: "rgba(255,255,255,0.09)",
+          backgroundColor: "rgba(38,35,30,0.72)",
         },
       },
       light: {
         ".nav-platforms-wrap": {
-          color: "#000000",
-          borderColor: "rgba(255,255,255,0.2)",
-          backgroundColor: "rgba(223,222,206,0.8)",
+          color: "#14120f",
+          borderColor: "rgba(20,18,15,0.1)",
+          backgroundColor: "rgba(255,255,255,0.66)",
         },
       },
     },
@@ -407,33 +425,33 @@ export const ThemeSwitcher = {
       selector: ".nav-email-wrap",
       dark: {
         ".nav-email-wrap": {
-          borderColor: "rgba(255,255,255,0.1)",
-          backgroundColor: "rgba(29,29,29,0.6)",
+          borderColor: "rgba(255,255,255,0.09)",
+          backgroundColor: "rgba(38,35,30,0.72)",
         },
-        ".nav-email-item": { backgroundColor: "rgba(94,94,94,0.5)", color: "rgba(255,255,255,0.9)" },
+        ".nav-email-item": { backgroundColor: "#23201b", color: "#f3efe6" },
       },
       light: {
         ".nav-email-wrap": {
-          borderColor: "rgba(255,255,255,0.2)",
-          backgroundColor: "rgba(223,222,206,0.8)",
+          borderColor: "rgba(20,18,15,0.1)",
+          backgroundColor: "rgba(255,255,255,0.66)",
         },
-        ".nav-email-item": { backgroundColor: "#ebeada", color: "#000000" },
+        ".nav-email-item": { backgroundColor: "#ebe7db", color: "#14120f" },
       },
     },
     {
       selector: ".nav-button-secondary",
       dark: {
         ".nav-button-secondary": {
-          backgroundColor: "#393939",
-          color: "#ffffff",
-          borderColor: "rgba(255,255,255,0.1)",
+          backgroundColor: "#23201b",
+          color: "#f3efe6",
+          borderColor: "rgba(255,255,255,0.14)",
         },
       },
       light: {
         ".nav-button-secondary": {
-          backgroundColor: "#ebeada",
-          color: "#000000",
-          borderColor: "rgba(0,0,0,0.1)",
+          backgroundColor: "#ebe7db",
+          color: "#14120f",
+          borderColor: "rgba(20,18,15,0.1)",
         },
       },
     },
@@ -441,12 +459,14 @@ export const ThemeSwitcher = {
 
   init() {
     if (isMobile()) return;
-    const darkSections = Utils.$$('[data-theme="dark"]');
-    if (!darkSections.length) return;
+    // data-theme marks the section whose tone DIFFERS from the page ground.
+    const invertedSections = Utils.$$("[data-theme]");
+    if (!invertedSections.length) return;
 
-    this.groups.forEach((g) => (this.states[g.selector] = "light"));
+    // Rail rests dark now; "light" is the state it flips INTO.
+    this.groups.forEach((g) => (this.states[g.selector] = "dark"));
 
-    darkSections.forEach((section) => {
+    invertedSections.forEach((section) => {
       ScrollTrigger.create({
         trigger: section,
         start: "top bottom",
@@ -475,21 +495,23 @@ export const ThemeSwitcher = {
         overlaps = !(n.bottom < s.top || n.top > s.bottom);
       }
 
-      if (overlaps && current === "light") {
-        this.apply(group.dark);
-        this.states[group.selector] = "dark";
-      } else if (!overlaps && current === "dark") {
+      // Overlapping the lit island means the rail must go light.
+      if (overlaps && current === "dark") {
         this.apply(group.light);
         this.states[group.selector] = "light";
+      } else if (!overlaps && current === "light") {
+        this.apply(group.dark);
+        this.states[group.selector] = "dark";
       }
     });
   },
 
+  /** Back to the page's own tone once the island is off screen. */
   resetAll() {
     this.groups.forEach((g) => {
-      if (this.states[g.selector] === "dark") {
-        this.apply(g.light);
-        this.states[g.selector] = "light";
+      if (this.states[g.selector] === "light") {
+        this.apply(g.dark);
+        this.states[g.selector] = "dark";
       }
     });
   },
