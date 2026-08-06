@@ -53,7 +53,7 @@ confirmed even (lead reaches full ink while tail is still at 0.12, then
 catches up). Journey re-checked for regression from the StyleEngine change:
 still `0000000` -> `1111111` in lockstep with the spine.
 `tsc --noEmit` clean; `next build` clean at 152 kB.
-Ref: pending
+Ref: e92d85e
 
 ## 2026-08-06 · change · Phase 4 — Journey redesign
 By: alekseysamarskiyfb-bit
