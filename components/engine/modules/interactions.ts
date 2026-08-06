@@ -21,6 +21,48 @@ import { CONFIG, Utils, isMobile, prefersReducedMotion } from "../core";
    ========================================================================== */
 
 export const CardInteractions = {
+  /**
+   * Make each inline gap exactly as wide as the chip that lands in it, and
+   * decide which way that chip's panel should open.
+   *
+   * The gaps were a flat 9vw while the chips are auto-width and their labels
+   * run from "Team" to "AI pipeline" — short chips left a visible hole in the
+   * sentence, long ones overhung the following word. Measured instead, so the
+   * copy closes around whatever the chip turns out to be.
+   *
+   * Runs BEFORE MagneticPositions solves: changing an anchor's width reflows
+   * the paragraph, which moves every anchor after it.
+   */
+  sizeAnchors() {
+    // Below the collapse point the chips stack under the copy and the inline
+    // anchors are display:none, so there is no gap to reserve.
+    if (isMobile()) return;
+
+    const section = Utils.$(".what_you_get_section");
+    if (!section) return;
+    const mid = section.getBoundingClientRect().width * 0.55;
+
+    Utils.$$(".capa-card").forEach((card) => {
+      const id = card.getAttribute("data-connect");
+      const anchor = document.querySelector<HTMLElement>(
+        `.capa-anchor[data-connect="${id}"]`
+      );
+      const item = Utils.$(".capa-card-item", card);
+      if (!anchor || !item) return;
+
+      /* offsetWidth, not getBoundingClientRect: the chip may already be
+         mid-reveal at scale 0.6, and a scaled rect would reserve a gap that
+         is too small and then leave the chip overlapping the next word. */
+      anchor.style.width = `${item.offsetWidth}px`;
+
+      /* The detail panel is up to 23rem wide and hangs from the chip's left
+         edge, so for chips in the right of the column it ran off the page.
+         Those open leftwards instead. */
+      const centre = anchor.getBoundingClientRect().left + item.offsetWidth / 2;
+      card.classList.toggle("is-right", centre > mid);
+    });
+  },
+
   init() {
     const cards = Utils.$$(".capa-card-item");
     if (!cards.length) return;
@@ -162,8 +204,47 @@ export const TextReveal = {
 
     if (prefersReducedMotion()) {
       gsap.set(chars, { color: "#f3efe6", opacity: 1, y: 0 });
+      Utils.$$(".capa-card").forEach((c) => c.classList.add("is-revealed"));
+      Utils.$(".capa-cards-wrap")?.classList.add("is-armed");
       return;
     }
+
+    /* Where each capability chip sits in the reading, as a fraction of the
+       character run. The chips are pinned INSIDE this sentence, so the honest
+       trigger for one is the moment the tonal reveal reaches the words it
+       belongs to — not a hand-picked scroll percentage, and not a
+       ScrollTrigger of its own on a 1px inline anchor. */
+    const anchors = Utils.$$(".capa-anchor", target);
+    const chipAt = anchors
+      .map((a) => {
+        const id = a.getAttribute("data-connect");
+        const chip = document.querySelector<HTMLElement>(`.capa-card[data-connect="${id}"]`);
+        if (!chip) return null;
+        const before = chars.filter(
+          (c) => a.compareDocumentPosition(c) & Node.DOCUMENT_POSITION_PRECEDING
+        ).length;
+        return { chip, at: before / Math.max(1, chars.length) };
+      })
+      .filter(Boolean) as { chip: HTMLElement; at: number }[];
+
+    const wrap = Utils.$(".capa-cards-wrap");
+    // Armed only once this is in charge — otherwise a failure here would leave
+    // every chip permanently invisible. Same fail-open rule as the timeline.
+    if (chipAt.length) wrap?.classList.add("is-armed");
+
+    const revealChips = (p: number) => {
+      chipAt.forEach(({ chip, at }) => {
+        if (p >= at - 0.04) chip.classList.add("is-revealed");
+      });
+    };
+
+    /* Spread the stagger across the whole run rather than fixing it per
+       character. At a flat 0.1 the ~200 characters of this paragraph asked for
+       20s of stagger inside one scrub window, so the opening words carried
+       nearly all the visible motion and the tail barely moved before the
+       window ended. Scaling by the count keeps the reveal even at any copy
+       length — the sentence writes itself on at a constant rate. */
+    const spread = 3.2;
 
     gsap.fromTo(
       chars,
@@ -176,9 +257,16 @@ export const TextReveal = {
         y: 0,
         force3D: true,
         duration: 0.5,
-        stagger: 0.1,
+        stagger: spread / Math.max(1, chars.length),
         ease: "power1.out",
-        scrollTrigger: { trigger: target, start: "top 92%", end: "top 25%", scrub: 1 },
+        scrollTrigger: {
+          trigger: target,
+          start: "top 88%",
+          end: "top 32%",
+          scrub: 1,
+          onUpdate: (self) => revealChips(self.progress),
+          onRefresh: (self) => revealChips(self.progress),
+        },
       }
     );
   },
@@ -186,11 +274,27 @@ export const TextReveal = {
   split(element: HTMLElement) {
     const processNode = (node: Node, container: Node) => {
       if (node.nodeType === Node.TEXT_NODE) {
-        (node.textContent || "").split("").forEach((char) => {
-          const span = document.createElement("span");
-          span.className = "anim-char";
-          span.textContent = char;
-          container.appendChild(span);
+        /* Characters are wrapped WORD BY WORD, not one flat run.
+           Every .anim-char is an inline-block, so a flat run gives the browser
+           a break opportunity between any two letters — "brand thin / king",
+           "repeat / ed." It only showed once the measure narrowed, but it was
+           always latent. Each word becomes one nowrap box; the spaces between
+           them stay real text nodes, so they remain the only break points. */
+        (node.textContent || "").split(/( )/).forEach((token) => {
+          if (!token) return;
+          if (token === " ") {
+            container.appendChild(document.createTextNode(token));
+            return;
+          }
+          const word = document.createElement("span");
+          word.className = "anim-word";
+          token.split("").forEach((char) => {
+            const span = document.createElement("span");
+            span.className = "anim-char";
+            span.textContent = char;
+            word.appendChild(span);
+          });
+          container.appendChild(word);
         });
       } else if (node.nodeType === Node.ELEMENT_NODE) {
         const el = node as HTMLElement;

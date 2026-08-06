@@ -57,14 +57,31 @@ export default function WhatYouGet() {
       <div className="column flex-center text-center">
         <p
           className="label"
+          data-tl-once
           data-tl-type="trigger"
-          data-tl-trigger=".what_you_get-text"
-          data-tl-start="top 100%"
+          data-tl-trigger=".what_you_get_section"
+          data-tl-start="top 78%"
           data-tl-from="{'width': '0vw', 'opacity': 0}"
           data-tl-to="{'width': 'auto', 'opacity': 1, 'duration': 0.7, 'ease': 'expo.inOut'}"
         >
           Capabilities overview
         </p>
+
+        {/* Restores the label -> heading -> lede component every other section
+            runs. Without it this block opened straight into the manifesto and
+            read as a stray paragraph rather than as a section. */}
+        <h2
+          className="h2-style margin-bottom-s"
+          data-tl-once
+          data-tl-type="trigger"
+          data-tl-trigger=".what_you_get_section"
+          data-tl-start="top 78%"
+          data-tl-split="lines"
+          data-tl-from="{'yPercent': 100}"
+          data-tl-to="{'yPercent': 0, 'duration': 0.7, 'stagger': 0.09, 'delay': 0.25, 'ease': 'expo.out'}"
+        >
+          What you actually get
+        </h2>
 
         <p className="what_you_get-text">
           Creative, testing and brand thinking combined&nbsp;
@@ -96,11 +113,12 @@ export default function WhatYouGet() {
               tabIndex={0}
               role="button"
               aria-label={cap.label}
-              data-tl-type="trigger"
-              data-tl-trigger=".what_you_get-text"
-              data-tl-start={`top ${[80, 63, 47, 39, 25][i]}%`}
-              data-tl-from="{'scale': 0.5, 'opacity': 0}"
-              data-tl-to="{'scale': 1, 'opacity': 1}"
+              /* No trigger of its own. TextReveal adds .is-revealed to the
+                 card as the tonal scrub reaches the words this chip sits
+                 between, so the chip arrives exactly where the reader is —
+                 which is the whole point of pinning it inline. The old
+                 hard-coded 80/63/47/39/25 percentages of the paragraph had no
+                 relationship to the chip's place in the sentence. */
             >
               <div className="capa-card-top-item">
                 <cap.Icon className="capa-icon" data-var-hover={cap.varHover} />

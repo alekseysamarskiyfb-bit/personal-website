@@ -1,9 +1,20 @@
 # Work — Production polish pass
 
-**Status:** Phases 1–4 complete and verified. Phases 4b, 5, 6 outstanding.
-**Next action:** Phase 4b — the What You Get redesign. Start with 4b.1, the
-hard break: `.what_you_get-text` has a 760px `clamp()` floor inside a container
-that offers 744px at 1024, so it overflows at every tablet width.
+**Status:** Phases 1–4b complete and verified. Phases 5 and 6 outstanding.
+**Next action:** Phase 5 — motion consistency. Start with 5.1, the unbounded
+`MagneticPositions` rAF loop: 12 pairs re-solved every frame forever, each
+doing a `getBoundingClientRect` plus `DOMMatrix(getComputedStyle().transform)`,
+never idling. Note 5.4 is already done — `immediateRender` landed in 4b.
+
+**Established pattern for scroll-linked reveals** (used by the Journey spine
+and the What You Get chips, and the model for anything similar):
+ 1. One scrub owns the progress.
+ 2. Dependent elements derive their state from that progress, so nothing can
+    appear before the thing that leads to it.
+ 3. Reveal one-way — no toggling back, which is what reads as a replay.
+ 4. The hidden state is gated behind an `.is-armed` class the owning module
+    sets once it is actually in charge, so any failure fails OPEN (elements
+    visible but unanimated) rather than leaving content permanently invisible.
 
 ### Motion verification (resolved 2026-08-06)
 

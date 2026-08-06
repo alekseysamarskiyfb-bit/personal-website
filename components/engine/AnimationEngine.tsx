@@ -89,6 +89,10 @@ function initAll() {
      layout, and every reveal above has to have established that layout first
      or the cards latch onto positions that are about to change. */
   setTimeout(() => {
+    /* Before the solver: this rewrites the inline anchors' widths, which
+       reflows the manifesto and moves every anchor after the one it changed.
+       Solving first would pin the chips to positions that are about to move. */
+    CardInteractions.sizeAnchors();
     MagneticPositions.init();
     // The spine is generated FROM the milestones, so it can only be built
     // once magnetic positioning has settled them.

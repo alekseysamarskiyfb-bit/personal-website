@@ -2,6 +2,59 @@
 
 Newest first.
 
+## 2026-08-07 · change · Phase 4b — What You Get redesign
+By: alekseysamarskiyfb-bit
+Why: the idea (capability chips pinned inside the sentence) is good, the
+execution was not. It overflowed the page at every tablet width, the chip gaps
+did not match the chips, the panel could leave the viewport, the chips had no
+affordance, the section had no heading, and the reveals had no relationship to
+the reading.
+How:
+ - `.what_you_get-text` width `clamp(760px, 62.24vw, 1120px)` -> `min(100%,
+   21ch)`. The 760px FLOOR was wider than the room the section leaves at 1024
+   (744px), so the paragraph broke out of the page. A measure, not a pixel
+   count.
+ - Restored the label -> heading -> lede component every other section runs.
+ - Inline gaps are MEASURED from their chip (`CardInteractions.sizeAnchors()`,
+   run before the solver because rewriting an anchor's width reflows the
+   paragraph). Verified all five anchors match their chip exactly; the flat 9vw
+   gap left holes after short chips and overhang after long ones.
+ - Chips right of centre open their panel leftwards, plus a viewport-aware
+   max-width, so a 23rem panel no longer runs off the page.
+ - Affordance: `cursor: pointer`, hover and focus-visible states. They were
+   `role="button" tabIndex=0` with `cursor: default` and no hover.
+ - Chip reveals now derive from the tonal scrub's own progress: each chip's
+   position in the character run is measured, and it arrives as the reveal
+   reaches the words it sits between. Replaces hard-coded 80/63/47/39/25
+   percentages that had no relationship to the sentence. Fail-open behind
+   `.is-armed`, same rule as the timeline.
+ - Tonal scrub stagger scaled by character count. A flat 0.1 across ~200 chars
+   asked for 20s of stagger in one scrub window, so the opening carried all the
+   motion and the tail barely moved.
+Two defects found while verifying, both pre-existing and both wider than this
+section:
+ - `TextReveal` wrapped every character in an inline-block with no word
+   grouping, so the browser could break a line between any two letters —
+   "brand thin / king", "repeat / ed." Latent until the measure narrowed.
+   Characters are now grouped per word inside a nowrap box, with real text
+   nodes between words as the only break points.
+ - `StyleEngine` never set `immediateRender`, and GSAP defaults it to FALSE
+   for a ScrollTrigger tween with no scrub. So every trigger-type reveal on the
+   page sat at its natural appearance, then SNAPPED to its from-state the
+   moment the trigger fired and animated up from there. That snap is a direct
+   cause of the reported "noticeable jumps". Now rendered at creation, so an
+   element starts hidden and only ever moves one way.
+Verified with a real ticker at 1440 / 1280 / 1024 / 390: zero horizontal
+overflow everywhere; measure capped (880 of 1046 at 1440, 782 of 929 at 1280);
+heading present; anchors match chips exactly where inline; panel inside the
+viewport; no console errors. Chip reveal order confirmed progressive —
+`00000` before the section, `11100` mid-paragraph, `11111` after. Tonal scrub
+confirmed even (lead reaches full ink while tail is still at 0.12, then
+catches up). Journey re-checked for regression from the StyleEngine change:
+still `0000000` -> `1111111` in lockstep with the spine.
+`tsc --noEmit` clean; `next build` clean at 152 kB.
+Ref: pending
+
 ## 2026-08-06 · change · Phase 4 — Journey redesign
 By: alekseysamarskiyfb-bit
 Why: the timeline worked but read thin. Reveals fired off-screen, all seven

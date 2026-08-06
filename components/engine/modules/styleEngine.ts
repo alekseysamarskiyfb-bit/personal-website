@@ -216,6 +216,14 @@ export const StyleEngine = {
     } else {
       if (!tweenConfig.duration) tweenConfig.duration = 0.5;
       if (!tweenConfig.ease) tweenConfig.ease = "power1.inOut";
+      /* immediateRender is what makes a reveal a reveal.
+         GSAP defaults it to FALSE for a ScrollTrigger tween with no scrub, so
+         the from-state was never applied: the element sat at its natural
+         appearance, then snapped to `from` and animated up the moment its
+         trigger fired. That snap is the visible "jump" — every trigger-type
+         reveal on the page had it. Rendering the from-state at creation means
+         the element starts hidden and only ever moves one way. */
+      tweenConfig.immediateRender = true;
       tweenConfig.scrollTrigger = {
         trigger,
         start,

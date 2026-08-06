@@ -2239,7 +2239,14 @@ button:focus-visible {
 }
 
 .what_you_get-text {
-  width: clamp(760px, 62.24vw, 1120px);
+  /* Was clamp(760px, 62.24vw, 1120px). The 760px FLOOR was wider than the room
+     the section leaves at any tablet width — at 1024 the padding leaves 744px —
+     so the paragraph broke out of the page. Sized in `ch` against its own type
+     instead: a measure, not a pixel count, so it cannot outgrow its container. */
+  /* ~21ch of a display face is roughly 38 characters a line — a measure that
+     reads at 62px. 26ch resolved wider than the column, so the cap never bit
+     and the manifesto ran the full width. */
+  width: min(100%, 21ch);
   margin-top: var(--s40);
   font-family: var(--font-display), Arial, sans-serif;
   font-size: clamp(2.75rem, 4.3vw, 5rem);
@@ -2252,6 +2259,13 @@ button:focus-visible {
 .anim-char {
   display: inline-block;
   white-space: pre;
+}
+
+/* Holds a word's characters together. Without it each inline-block character
+   is its own break opportunity and words split across lines mid-word. */
+.anim-word {
+  display: inline-block;
+  white-space: nowrap;
 }
 
 /* Inline anchor: reserves the gap a chip is pinned into. */
@@ -2267,6 +2281,23 @@ button:focus-visible {
   display: flex;
   align-items: flex-start;
   height: 0;
+}
+
+/* Arrival, driven by .is-revealed which TextReveal sets from the tonal scrub's
+   own progress. Gated on .is-armed so a failure upstream leaves the chips
+   visible rather than permanently hidden — same rule as the timeline cards. */
+.capa-cards-wrap.is-armed .capa-card .capa-card-item {
+  opacity: 0;
+  transform: scale(0.6);
+  filter: blur(6px);
+  transition: opacity 0.6s var(--ease-out), transform 0.75s var(--ease-out),
+    filter 0.6s var(--ease-out);
+}
+
+.capa-cards-wrap.is-armed .capa-card.is-revealed .capa-card-item {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0px);
 }
 
 .capa-card {
@@ -2294,8 +2325,25 @@ button:focus-visible {
   border: 1px solid var(--hairline-ink);
   border-radius: var(--s10);
   transform-origin: center center;
-  cursor: default;
+  /* These are interactive — role="button", tabIndex 0, and they open a panel.
+     `cursor: default` with no hover treatment on the chip itself told the
+     reader they were decoration, so nobody discovered them. */
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
   will-change: transform;
+}
+
+.capa-card-item:hover,
+.capa-card-item:focus-visible {
+  background-color: var(--surface-hover);
+  border-color: var(--accent);
+}
+
+/* The focus ring is the global one; this adds the same lift the pointer gets,
+   so keyboard and mouse land on the same state. */
+.capa-card-item:focus-visible {
+  outline-offset: 4px;
 }
 
 .capa-card-top-item {
@@ -2328,6 +2376,8 @@ button:focus-visible {
   top: calc(100% + var(--s8));
   left: 0;
   width: clamp(15rem, 19vw, 23rem);
+  /* Never wider than the room actually left beside the chip. */
+  max-width: calc(100vw - var(--gutter) - var(--s40));
   padding: var(--s16) var(--s18);
   background-color: var(--surface-alt);
   border: 1px solid var(--hairline-ink);
@@ -2336,6 +2386,14 @@ button:focus-visible {
   backdrop-filter: blur(14px);
   pointer-events: none;
   opacity: 0;
+}
+
+/* Chips in the right of the column open their panel leftwards, so a 23rem
+   panel hanging off a chip near the right edge stays on the page.
+   CardInteractions.sizeAnchors() decides which chips these are. */
+.capa-card.is-right .capa-card-bottom {
+  left: auto;
+  right: 0;
 }
 
 .capa-card-bottom-layout {
