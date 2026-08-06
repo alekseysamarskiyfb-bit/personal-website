@@ -77,6 +77,11 @@ export const GhostEngine = {
       ".nav-stat-b-bg",
       ".nav-stat-b-numb",
       ".nav-stat-b-text",
+      /* The button ghosts are real anchors — below 768 they ARE the hero's
+         buttons. Leaving the desktop autoAlpha:0 on them meant resizing down
+         to mobile produced two invisible buttons. */
+      ".hero-cta-button",
+      ".hero-button",
     ].forEach((sel) => {
       const el = Utils.$(sel);
       if (el) gsap.set(el, { clearProps: "all" });
@@ -291,9 +296,14 @@ export const GhostEngine = {
 
     /* ---- PHASE 2: apply -------------------------------------------------
        The button ghosts are styled like real buttons so they can be measured
-       as such, then hidden — the REAL buttons fly onto them. */
-    gsap.set(".hero-cta-button", { opacity: 0 });
-    gsap.set(".hero-button", { opacity: 0 });
+       as such, then hidden — the REAL buttons fly onto them.
+
+       autoAlpha rather than opacity: these are real anchors now (they are the
+       hero's actual buttons below 768, where this module early-returns), so on
+       desktop they must leave the tab order and the accessibility tree too —
+       an invisible focusable link is a keyboard trap. */
+    gsap.set(".hero-cta-button", { autoAlpha: 0 });
+    gsap.set(".hero-button", { autoAlpha: 0 });
 
     measurements.forEach((m) => this.applyAnimation(m));
 

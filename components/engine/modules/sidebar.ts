@@ -128,6 +128,14 @@ export const ButtonHover = {
     if (isMobile() || prefersReducedMotion()) return;
 
     Utils.$$("[data-button-hover]").forEach((el) => {
+      /* A resize rebuilds every module, and this one REWRITES the label into
+         an original + clone pair. Run twice and the clone gets cloned: the
+         label stacks duplicates and the swap distance is measured off the
+         wrong box. The marker makes the rewrite happen exactly once per
+         element for the life of the page. */
+      if (el.dataset.hoverBound === "true") return;
+      el.dataset.hoverBound = "true";
+
       const isTextLink = el.tagName === "A" && !el.querySelector("p");
 
       let originalTarget: HTMLElement;
@@ -179,8 +187,7 @@ export const ButtonHover = {
       const splitA = new SplitText(originalTarget, { type: "words", wordsClass: "word" });
       const splitB = new SplitText(cloneTarget, { type: "words", wordsClass: "word" });
 
-      const h = originalTarget.offsetHeight;
-      gsap.set(splitB.words, { y: h });
+      gsap.set(splitB.words, { y: originalTarget.offsetHeight });
 
       let showingA = true;
       let tl: gsap.core.Timeline | null = null;
@@ -194,6 +201,11 @@ export const ButtonHover = {
       const run = () => {
         if (tl) tl.kill();
         tl = gsap.timeline();
+
+        /* Measured per hover, not once at init: the label's height is on the
+           vw grid, so a resize changes it and a cached value would roll the
+           words to the wrong place. */
+        const h = originalTarget.offsetHeight;
 
         const out = showingA ? splitA.words : splitB.words;
         const incoming = showingA ? splitB.words : splitA.words;
@@ -211,9 +223,15 @@ export const ButtonHover = {
 
       /* Both targets. The row is the hit area while the link sits in the
          rail; once the ghost engine has flown the link into the hero the row
-         is still back in the rail, so the link needs its own listener too. */
-      Utils.addEvent(el, "mouseenter", run);
-      if (scope && scope !== el) Utils.addEvent(scope, "mouseenter", run);
+         is still back in the rail, so the link needs its own listener too.
+
+         Bound natively rather than through Utils.addEvent: the DOM rewrite
+         above happens once for the life of the page, so these listeners must
+         outlive the destroy/rebuild cycle a resize triggers. Routing them
+         through the teardown registry would strip them on the first resize
+         and never restore them, since the guard above skips the rebuild. */
+      el.addEventListener("mouseenter", run);
+      if (scope && scope !== el) scope.addEventListener("mouseenter", run);
     });
   },
 };

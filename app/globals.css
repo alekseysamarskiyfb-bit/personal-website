@@ -289,9 +289,22 @@ p {
   z-index: 1001;
 }
 
+/* z-index 20 puts every section above the resting rail (z 9), which is what
+   lets the hero's floating cards and the portrait paint over it on the way in.
+   The cost is that this wrapper also HIT-TESTS above the rail — and the rail
+   holds the real nav links and buttons, which the ghost engine has flown into
+   the hero. So the wrapper itself is made transparent to the pointer and each
+   section re-enables itself; the hero stays transparent, because everything
+   visible inside it is either a ghost or the rail's own element showing
+   through from underneath. */
 .main-wrap {
   position: relative;
   z-index: 20;
+  pointer-events: none;
+}
+
+.main-wrap > *:not(.hero) {
+  pointer-events: auto;
 }
 
 /* Every content section clears the fixed 267px rail with a 302px inset. */
@@ -788,9 +801,18 @@ button:focus-visible {
   font-size: clamp(0.75rem, 1vw, 1.5rem);
 }
 
+/* The ROW is decoration; the anchor inside it is the target.
+   While the ghost engine has the links flown out into the hero, the rows stay
+   behind at their resting positions in the rail — and the hero row's left
+   items land right on top of them. A hit-testable row then answers for a link
+   that is no longer inside it, so clicking "Home" in the hero reached a
+   different item's pill. The anchor's ::after below still gives the full-pill
+   hit area, and it travels with the anchor, which is the behaviour we want in
+   both states. */
 .nav-menu-item {
   position: relative;
   z-index: 2;
+  pointer-events: none;
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -807,6 +829,7 @@ button:focus-visible {
   position: absolute;
   inset: 0;
   z-index: 0;
+  pointer-events: none;   /* decoration, like .nav-menu-bg */
   width: 100%;
   height: 100%;
   background-color: var(--surface-solid);
@@ -838,7 +861,12 @@ button:focus-visible {
 }
 
 /* Stretches the anchor over the whole row: every nav item is clickable
-   across its full pill, not only on its label. */
+   across its full pill, not only on its label. The row itself is
+   pointer-transparent, so this is the item's entire hit area. */
+.nav-menu-item > .hero-navigation-link {
+  pointer-events: auto;
+}
+
 .nav-menu-item > .hero-navigation-link::after {
   content: "";
   position: absolute;
@@ -1150,6 +1178,25 @@ button:focus-visible {
   pointer-events: auto;
 }
 
+/* GHOSTS ARE NEVER HIT-TESTABLE.
+   Every "ghost" is a transparent measurement target that sits exactly where a
+   real rail element has been flown to. Left hit-testable, each one silently
+   swallows the clicks meant for the element it is standing in for — which is
+   why the hero nav row looked live but did nothing. The `> *` rules above and
+   in .hero-cards-wrap out-specify a plain class selector, so these have to
+   match that weight to win. */
+.hero-sticky > .hero-navigation-wrap,
+.hero-sticky > .hero-mark-slot,
+.hero-cards-wrap > .hero-cards-left,
+.hero-cards-wrap > .hero-content-layout {
+  pointer-events: none;
+}
+
+/* The headline is real copy — it stays selectable. */
+.hero-content-layout .hero-heading {
+  pointer-events: auto;
+}
+
 /* ---- the mark ------------------------------------------------------------
    94.44vw keeps the reference's full-bleed signature. With a 7-letter
    condensed name that computes ~49% of viewport height rather than the
@@ -1278,10 +1325,6 @@ button:focus-visible {
 
 /* Once a later section has scrolled over the band, its buttons must stop
    swallowing clicks through the covering section. */
-.hero-cards-wrap > * {
-  pointer-events: auto;
-}
-
 .hero-cards-wrap > * {
   pointer-events: auto;
 }
@@ -2358,6 +2401,9 @@ button:focus-visible {
 
 .faq-column-main {
   padding-top: var(--s72);
+  /* The nav's FAQ target. Leave the padding above it out of the landing, so
+     the "FAQ" label sits just below the top edge rather than flush with it. */
+  scroll-margin-top: var(--s40);
 }
 
 .faq-column {
@@ -2758,6 +2804,15 @@ button:focus-visible {
   .hero-stat-a-text,
   .hero-stat-b-text {
     font-size: clamp(0.75rem, 3.4vw, 1rem);
+  }
+
+  /* Below 768 the ghost engine early-returns, so nothing in the hero is a
+     ghost — these are the real cards and the real buttons. Undo the
+     desktop rule that makes them transparent to the pointer. */
+  .main-wrap > .hero,
+  .hero-cards-wrap > .hero-content-layout,
+  .hero-cards-wrap > .hero-cards-left {
+    pointer-events: auto;
   }
 
   .hero-content-layout {

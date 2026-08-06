@@ -146,10 +146,16 @@ export const CardInteractions = {
 export const TextReveal = {
   init() {
     const target = Utils.$(".what_you_get-text");
-    if (!target || Utils.isSplit(target)) return;
+    if (!target) return;
 
-    this.split(target);
-    Utils.markSplit(target);
+    /* Split once, re-attach always. The split is destructive and must not
+       repeat — but bailing out entirely when already split meant a resize
+       (which kills every ScrollTrigger) left the paragraph frozen at whatever
+       tone it had scrubbed to, with nothing driving it again. */
+    if (!Utils.isSplit(target)) {
+      this.split(target);
+      Utils.markSplit(target);
+    }
 
     const chars = Utils.$$(".anim-char", target);
     if (!chars.length) return;

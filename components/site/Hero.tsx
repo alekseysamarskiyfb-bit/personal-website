@@ -147,12 +147,19 @@ export default function Hero() {
               That Converts.
             </h1>
 
-            <div className="hero-buttons-wrap" aria-hidden>
-              <span className="hero-cta-button">Let&rsquo;s Talk</span>
-              <span className="hero-button">
+            {/* Real anchors, not spans. On desktop the ghost engine hides
+                these (autoAlpha, so they leave the tab order too) and the
+                rail's own buttons fly onto them. Below 768 the ghost engine
+                early-returns and these ARE the hero's buttons — as <span>s
+                they were visible, styled and completely dead. */}
+            <div className="hero-buttons-wrap">
+              <a className="hero-cta-button" href="#contact">
+                Let&rsquo;s Talk
+              </a>
+              <a className="hero-button" href="#portfolio">
                 Portfolio
                 <IconArrowUpRight className="nav-button-arrow" />
-              </span>
+              </a>
             </div>
           </div>
 

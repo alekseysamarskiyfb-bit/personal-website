@@ -42,7 +42,7 @@ const FAQS = [
 
 export default function SiteFooter() {
   return (
-    <footer className="footer section-inset" id="faq">
+    <footer className="footer section-inset" id="footer">
       {/* Hover the mark to scatter real ad creatives inside the letterforms. */}
       <div
         className="footer-logo"
@@ -79,7 +79,10 @@ export default function SiteFooter() {
         </svg>
       </div>
 
-      <div className="column faq-column-main">
+      {/* The FAQ anchor lives HERE, not on the <footer>. The footer opens with
+          the full-bleed decorative wordmark, so "FAQ" in the nav scrolled to a
+          screen of letterforms with the questions still below the fold. */}
+      <div className="column faq-column-main" id="faq">
         <p
           className="label"
           data-tl-once

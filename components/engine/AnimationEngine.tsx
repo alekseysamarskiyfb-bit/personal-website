@@ -24,7 +24,7 @@ import { GhostEngine } from "./modules/ghostEngine";
 import { LenisInit, AnchorLinks } from "./modules/lenis";
 import { Sidebar, Clipboard, ButtonHover } from "./modules/sidebar";
 import { Preloader } from "./modules/preloader";
-import { MagneticPositions, HorizontalScroll } from "./modules/scroll";
+import { MagneticPositions, HorizontalScroll, ThemeSwitcher } from "./modules/scroll";
 import { TimelineSpine } from "./modules/spine";
 import { HeroSnap } from "./modules/heroSnap";
 import {
@@ -46,6 +46,10 @@ function initAll() {
   GhostEngine.init();
   StyleEngine.init();
   HorizontalScroll.init();
+  /* Inverts the rail over the lit work island. Must come after
+     HorizontalScroll, which is what establishes that section's final height —
+     the switcher's triggers are built from it. */
+  ThemeSwitcher.init();
   MobileMenu.init();
 
   CardInteractions.init();
@@ -67,6 +71,12 @@ function initAll() {
 
   TextReveal.init();
   AnchorLinks.init();
+
+  /* A rebuild (resize) must not replay the intro, but it MUST land the page in
+     the state the intro ends in — the rail's opacity, the nav links' pointer
+     events and the hero's reveals all live there. Without this, every resize
+     left the page blank. */
+  if (STATE.introPlayed) Preloader.rest();
 
   /* After Lenis exists: the settle is driven through it, not through
      ScrollTrigger's own snap, which would fight it for the scroll position. */
@@ -128,6 +138,12 @@ export default function AnimationEngine() {
           // but its timeline only starts after measurement — see its header.
           Preloader.init();
           initAll();
+          /* Set AFTER initAll, so this first pass plays the intro rather than
+             skipping straight to its end state. Every later rebuild sees the
+             flag and applies the resting state instead. Set unconditionally:
+             mobile and reduced motion never play an intro, but a later resize
+             into desktop still needs the resting state applied. */
+          STATE.introPlayed = true;
         });
       });
     };

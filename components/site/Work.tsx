@@ -25,7 +25,7 @@ const CARDS = [
 
 export default function Work() {
   return (
-    <section className="work_section" id="portfolio">
+    <section className="work_section" id="portfolio" data-theme="dark">
       <div className="work-sticky-support" aria-hidden />
 
       <div className="work-sticky">

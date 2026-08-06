@@ -23,6 +23,61 @@ import { CONFIG, STATE, Utils, isMobile, prefersReducedMotion } from "../core";
 export const Preloader = {
   timeline: null as gsap.core.Timeline | null,
 
+  /**
+   * The intro's END STATE, applied instantly.
+   *
+   * The intro is a one-time narrative, but the state it leaves behind is not:
+   * `.nav-container` is `opacity: 0` in CSS and ONLY this reveal turns it on.
+   * A window resize tears down and rebuilds every module, which killed this
+   * timeline without anything restoring what it had already set — so any
+   * resize left the rail invisible and the hero half-dressed, permanently.
+   *
+   * Replaying the intro on resize would be its own defect, so the two are
+   * separated: init() tells the story once, rest() puts the page in the state
+   * the story ends in. Idempotent, and safe to call mid-intro.
+   */
+  rest() {
+    const wrapper = Utils.$(".mark-preload-wrap");
+    const navContainer = Utils.$(".nav-container");
+    const navLogoItem = Utils.$(".nav-logo-item");
+    const heroHeading = Utils.$(".hero-heading");
+    const heroLeftText = Utils.$(".hero-left-text");
+    const heroRightText = Utils.$(".hero-right-text");
+
+    if (wrapper) gsap.set(wrapper, { display: "none" });
+    if (navContainer) gsap.set(navContainer, { autoAlpha: 1 });
+    // t=0 of the intro hides this; a resize before t=2 would strand it.
+    if (navLogoItem) gsap.set(navLogoItem, { clearProps: "display" });
+
+    const objects = [
+      Utils.$(".profile-img-item"),
+      Utils.$(".hero-card-3"),
+      Utils.$(".nav-button"),
+      Utils.$(".nav-button-secondary"),
+      ...Utils.$$(
+        ".nav-stat-a-bg, .nav-stat-a-icon, .nav-stat-a-text, .nav-stat-b-bg, .nav-stat-b-numb, .nav-stat-b-text"
+      ),
+    ].filter(Boolean) as HTMLElement[];
+    if (objects.length) gsap.set(objects, { autoAlpha: 1, scale: 1, filter: "none" });
+
+    const copy = [heroHeading, heroLeftText, heroRightText].filter(Boolean) as HTMLElement[];
+    if (copy.length) {
+      gsap.set(copy, { visibility: "visible", autoAlpha: 1 });
+      // Whether or not a split survived the teardown, land its lines.
+      const lines = copy.flatMap((el) => Utils.$$(".line", el));
+      if (lines.length)
+        gsap.set(lines, { yPercent: 0, autoAlpha: 1, scale: 1, filter: "none" });
+    }
+
+    const navSeps = Utils.$$(".hero-navigation-sep");
+    if (navSeps.length) gsap.set(navSeps, { autoAlpha: 1, height: "0.8vw" });
+
+    const navLinks = Utils.$$(".hero-navigation-link");
+    if (navLinks.length) gsap.set(navLinks, { autoAlpha: 1, pointerEvents: "auto" });
+    const inners = Utils.$$(".nav-link-mask-inner");
+    if (inners.length) gsap.set(inners, { yPercent: 0 });
+  },
+
   init() {
     if (isMobile()) return;
 
@@ -43,23 +98,10 @@ export const Preloader = {
     const navButton = Utils.$(".nav-button");
     const navButtonSecondary = Utils.$(".nav-button-secondary");
 
-    /* Reduced motion: land everything on its resting state, skip the show. */
+    /* Reduced motion: land everything on its resting state, skip the show.
+       Same end state a resize needs, so it is the same code path. */
     if (prefersReducedMotion()) {
-      gsap.set(wrapper, { display: "none" });
-      gsap.set(navContainer, { autoAlpha: 1 });
-      gsap.set(
-        [profileImgItem, heroCard3, navButton, navButtonSecondary],
-        { autoAlpha: 1, scale: 1, filter: "none" }
-      );
-      gsap.set([heroHeading, heroLeftText, heroRightText], { visibility: "visible", autoAlpha: 1 });
-      gsap.set(navSeps, { autoAlpha: 1, height: "0.8vw" });
-      gsap.set(navLinks, { autoAlpha: 1 });
-      gsap.set(
-        Utils.$$(
-          ".nav-stat-a-bg, .nav-stat-a-icon, .nav-stat-a-text, .nav-stat-b-bg, .nav-stat-b-numb, .nav-stat-b-text"
-        ),
-        { autoAlpha: 1, filter: "none" }
-      );
+      this.rest();
       return;
     }
 

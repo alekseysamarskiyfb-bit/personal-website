@@ -54,6 +54,13 @@ export const STATE: {
     options?: boolean | AddEventListenerOptions;
   }[];
   initialized: boolean;
+  /**
+   * True once the intro has been shown (or deliberately skipped — mobile,
+   * reduced motion). Survives destroyAll, because a resize must NOT replay the
+   * intro: it re-runs every module, and without this flag the rail's
+   * `opacity: 0` was never turned back on and the page stayed blank.
+   */
+  introPlayed: boolean;
 } = {
   sidebarScale: 1,
   workTween: null,
@@ -61,6 +68,7 @@ export const STATE: {
   splitInstances: [],
   eventListeners: [],
   initialized: false,
+  introPlayed: false,
 };
 
 export const isMobile = () => window.innerWidth < MOBILE_BREAKPOINT;

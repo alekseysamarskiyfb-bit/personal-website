@@ -463,8 +463,15 @@ export const ThemeSwitcher = {
     const invertedSections = Utils.$$("[data-theme]");
     if (!invertedSections.length) return;
 
-    // Rail rests dark now; "light" is the state it flips INTO.
-    this.groups.forEach((g) => (this.states[g.selector] = "dark"));
+    /* Rail rests dark now; "light" is the state it flips INTO.
+       The apply() is not redundant on a rebuild: this module tweens INLINE
+       colours, which survive the teardown. Resetting only the bookkeeping
+       would leave the rail painted light while the code believed it was
+       dark, and the next flip would never fire. */
+    this.groups.forEach((g) => {
+      this.states[g.selector] = "dark";
+      this.apply(g.dark);
+    });
 
     invertedSections.forEach((section) => {
       ScrollTrigger.create({
