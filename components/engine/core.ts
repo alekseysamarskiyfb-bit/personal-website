@@ -12,7 +12,22 @@
 
 import type Lenis from "lenis";
 
-export const MOBILE_BREAKPOINT = 768;
+/**
+ * The COLLAPSED-LAYOUT breakpoint, not a phone breakpoint.
+ *
+ * Below this the fixed rail is replaced by a top bar and a drawer — and every
+ * desktop-only module has to opt out on exactly the same line the CSS does.
+ * The ghost engine flies the RAIL's elements into the hero; if the rail has
+ * collapsed but the engine still runs, it animates elements that no longer
+ * occupy the positions it measured.
+ *
+ * Raised from 768 to 1100: between those widths the desktop layout was merely
+ * being scaled down on the vw grid, which left a 142–204px rail holding a
+ * 24-character email address, and body copy pinned at its 12px clamp floor
+ * inside containers that kept shrinking. Must stay in sync with the
+ * `max-width: 1099px` block in globals.css.
+ */
+export const MOBILE_BREAKPOINT = 1100;
 
 export const CONFIG = {
   /** Vertical breathing room subtracted before the sidebar auto-scales. */

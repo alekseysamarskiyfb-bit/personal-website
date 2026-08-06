@@ -1,10 +1,17 @@
 # Work — Production polish pass
 
-**Status:** Phases 1 and 2 complete and verified. Phases 3–6 outstanding.
-**Next action:** Phase 3 — responsiveness. Start with 3.1, the missing tablet
-band: decide the boundary where the rail collapses to the mobile top-bar +
-drawer, and move `MOBILE_BREAKPOINT` to match it so CSS and JS opt out on the
-same line.
+**Status:** Phases 1–3 complete and verified. Phases 4, 4b, 5, 6 outstanding.
+**Next action:** Phase 4 — the Journey redesign. Start with 4.2, re-deriving
+the card reveal triggers from each card's own position: the current starts run
+`-42%` to `+33%` against a 470vh container, so the first cards have already
+played before the section is in view.
+
+**Breakpoints (Phase 3):** collapse point is **1100**. `MOBILE_BREAKPOINT` in
+core.ts and the `max-width: 1099px` block in globals.css must always agree —
+the ghost engine animates the rail's own elements and cannot run once the rail
+has collapsed. Bands: phone <768, tablet 768–1099, desktop >=1100. Both
+breakpoint blocks live at the END of globals.css; putting them earlier silently
+kills their overrides against the component sections.
 
 **Measured mark geometry (Phase 2):** Anton at 173px — `OLEKSII` 464.01 wide,
 `SAMARSKYI` 737.19 wide, cap ascent 150.02 for both. Box is now 737 x 150,

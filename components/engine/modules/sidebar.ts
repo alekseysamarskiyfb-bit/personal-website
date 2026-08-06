@@ -25,6 +25,12 @@ export const Sidebar = {
     const sidebar = Utils.$(".nav-container");
     if (!sidebar) return;
 
+    /* Height only, deliberately. Scaling by measured WIDTH looks tempting for
+       the same reason, but scrollWidth here is not the rail's own content
+       width: the ghost engine lays the rail's children out at HERO size (the
+       mark alone goes to ~1048px inside a 237px rail), so the ratio evaluates
+       to ~0.19 and collapses the rail to a fifth of itself. The rail's width
+       problem belongs to the elements that cannot shrink — see .email-text. */
     const availableHeight = window.innerHeight - CONFIG.sidebarPadding;
     STATE.sidebarScale = Math.min(1, availableHeight / sidebar.scrollHeight);
 
@@ -33,7 +39,6 @@ export const Sidebar = {
       transformOrigin: "top left",
       force3D: false,
     });
-
   },
 };
 

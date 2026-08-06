@@ -2,6 +2,60 @@
 
 Newest first.
 
+## 2026-08-06 · change · Phase 3 — responsiveness
+By: alekseysamarskiyfb-bit
+Why: there was no tablet or laptop design. Two media queries existed — a good
+phone design under 768 and a five-rule patch for 768–1100 — so everything from
+768 to 1440 was the desktop layout scaled on the vw grid. Body copy hit its
+12px clamp floor and stopped shrinking while its vw container kept going, which
+is the reported "compressed text"; at 768 the fixed rail was 142px wide and
+still held a 24-character email.
+How:
+ - Raised the collapse point to 1100 and made CSS and JS agree on it:
+   `MOBILE_BREAKPOINT` 768 -> 1100, and the phone block's boundary 767 -> 1099.
+   They must match — the ghost engine flies the RAIL's elements into the hero,
+   so it cannot run once the rail has collapsed.
+ - The collapsed block is authored on a 375 reference. Proportional values are
+   left to grow; fixed-purpose CHROME is now capped with `min()` (a 10.5vw
+   burger is 39px on a phone and 115px at 1099). 9 chrome rules capped by hand,
+   46 spacing declarations capped by sweep at 1.6x their phone rendering, plus
+   `--band` for section rhythm and caps on the work card, the ® ghost and the
+   story sheet.
+ - New tablet band 768–1099: two-column FAQ, pillars, capability chips, work
+   header, Velar header and hero traits; measure capped in `ch` so a paragraph
+   never runs the full 1099px; buttons size to their labels.
+ - `--bar-h` is now DECLARED (`min(16.8vw, 78px)`) and the bar is given exactly
+   that height, so the drawer is correct by construction. The old hand-set 14vw
+   was 52px against a 63px bar, so the drawer had always opened underneath the
+   bar and clipped its own first item.
+ - Fixed stylesheet ORDER: the breakpoint blocks sat before the Velar, Journey
+   and CTA sections, so their overrides were dead — `.velar-pillars` rendered
+   four 71px columns on a 390px phone. Both blocks now come last.
+ - Fixed a resize defect this surfaced: killing a ScrollTrigger does not kill
+   its tween, so `clearProps` was undone on the next tick and crossing from
+   desktop into the collapsed layout stranded the rail's mark at hero size — a
+   1048px wordmark in a 190px slot, 266px off the right edge. `GhostEngine`
+   now kills tweens before clearing.
+ - Desktop fixes: `.hero-container` 93.06vw -> 100% (it was wider than the
+   padded box it sits in, pushing the ground paragraphs under the rail);
+   `.hero-card-*` given a 168px floor so "Years in performance" stopped
+   wrapping to three clipped lines; `.about-card-wrap` floor 370px -> 300px so
+   the zig-zag stops crossing its own centre line; phone trait glyphs sized in
+   `em` (they were 1.94vw — under 8px next to 17px labels); stat cards stretch
+   to equal heights.
+Not done: folding viewport WIDTH into `Sidebar.scale()`. Tried and reverted —
+`scrollWidth` there is not the rail's own content width, because the ghost
+engine has laid its children out at hero size, so the ratio evaluated to 0.19
+and collapsed the rail to a fifth of itself. Moot anyway: with the breakpoint
+at 1100 the rail is never narrower than 204px, and `.email-text` already
+ellipsises.
+Verified: `tsc --noEmit` clean; `next build` clean, first-load JS unchanged at
+151 kB. In-browser at 390 / 768 / 834 / 1024 / 1099 / 1100 / 1280 / 1920 —
+zero horizontal overflow and zero elements past the right edge at every width;
+bar height matches drawer offset exactly at every collapsed width; the 1099 /
+1100 boundary flips cleanly with the rail at 204px and the hero intact.
+Ref: pending
+
 ## 2026-08-06 · change · Phase 2 — SAMARSKYI mark rename
 By: alekseysamarskiyfb-bit
 Why: the decorative wordmark had to read SAMARSKYI rather than OLEKSII, in the
@@ -37,7 +91,7 @@ Verified: `tsc --noEmit` clean; `next build` clean, first-load JS unchanged at
 mark text SAMARSKYI in real Anton, 9 preloader letters, footer viewBox
 `0 0 737 150`; hover clone now exactly one line below the original on all six
 nav items, and the doubled labels are gone from the rendered rail.
-Ref: pending
+Ref: 2d9625d
 
 ## 2026-08-06 · fix · Phase 1 — hero interaction correctness
 By: alekseysamarskiyfb-bit

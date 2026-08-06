@@ -1372,7 +1372,10 @@ button:focus-visible {
 
 .hero-card-2,
 .hero-card-1 {
-  width: 13vw;
+  /* The label inside is clamped with a px floor, so at a fixed 13vw the text
+     stopped shrinking while its box kept going — "Years in performance" wrapped
+     to three clipped lines below ~1100px. The box now has a floor of its own. */
+  width: max(13vw, 168px);
   align-items: flex-start;
   text-align: left;
 }
@@ -1566,7 +1569,11 @@ button:focus-visible {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  width: 93.06vw;
+  /* 100%, not 93.06vw. The sticky frame already insets by --s40 on each side,
+     so a viewport-width value is WIDER than the box it sits in — the two
+     ground paragraphs were pushed out under the rail as the viewport
+     narrowed. */
+  width: 100%;
   margin: auto auto 0;
   padding-bottom: var(--s12);
 }
@@ -1732,7 +1739,11 @@ button:focus-visible {
   position: absolute;
   left: 0;
   z-index: 5;
-  width: clamp(370px, 29.58vw, 600px);
+  /* The 370px floor was wider than half the content column below ~1250px, so
+     the two sides of the zig-zag crossed the centre line and overlapped each
+     other and the spine. The floor now sits under that crossing point; the
+     collapsed layout takes over before it can bind. */
+  width: clamp(300px, 29.58vw, 600px);
   /* MagneticPositions writes the transform; hidden until it has solved once
      so no card is ever seen at its unsolved position. */
   visibility: hidden;
@@ -2579,743 +2590,9 @@ button:focus-visible {
   line-height: 1.5;
 }
 
-/* ==========================================================================
-   MOBILE — a separate design, not a squeezed one.
-   Above 768px the layout ZOOMS on the vw grid and never reflows. Below it,
-   every desktop-only module early-returns in JS (ghost engine, preloader,
-   horizontal scroll, theme switcher, image trail, magnetic rAF loop) and
-   this block rebuilds the page on a 375 reference.
-   ========================================================================== */
 
-.mobile-menu,
-.mobile-hero-only {
-  display: none;
-}
 
-@media screen and (max-width: 767px) {
-  :root {
-    --gutter: 5.33vw;
-    --edge: 5.33vw;
-  }
 
-  body {
-    font-size: clamp(0.95rem, 4.27vw, 1.15rem);
-  }
-
-  /* ---- rail becomes a top bar + drawer ---------------------------------- */
-  .navigation {
-    position: fixed;
-    inset: 0 0 auto 0;
-    width: 100%;
-    height: auto;
-    padding: 0;
-    z-index: 90;
-  }
-
-  .nav-container {
-    opacity: 1;
-    display: block;
-    transform: none !important;
-  }
-
-  .profile-img-wrap {
-    display: none;
-  }
-
-  .nav-top-layout {
-    flex-flow: row;
-    align-items: center;
-    gap: 0;
-    margin: 0;
-    padding: 3.2vw var(--edge);
-    background-color: rgba(20, 18, 15, 0.86);
-    -webkit-backdrop-filter: blur(18px);
-    backdrop-filter: blur(18px);
-    border-bottom: 1px solid var(--hairline);
-  }
-
-  .nav-top-bg,
-  .nav-menu-bg {
-    display: none;
-  }
-
-  .nav-logo,
-  .nav-logo-item {
-    width: auto;
-  }
-
-  /* Widened from 24vw with the nine-glyph mark: the cap height is the width
-     divided by the aspect, so holding the width would have shrunk the mark in
-     the bar from ~29px to ~18px. 34vw restores the old cap height. */
-  .nav-logo-item {
-    width: 34vw;
-    --mark-w: 34vw;
-    aspect-ratio: var(--mark-aspect);
-  }
-
-  .nav-top-text,
-  .nav-stats-wrap,
-  .nav-platforms-wrap {
-    display: none;
-  }
-
-  .mobile-menu {
-    position: relative;
-    display: flex;
-    flex-flow: column;
-    justify-content: center;
-    align-items: center;
-    gap: 1.6vw;
-    width: 10.5vw;
-    height: 10.5vw;
-    margin-left: auto;
-  }
-
-  .mobile-menu-icons {
-    display: block;
-    width: 6.4vw;
-    height: 2px;
-    background-color: var(--ink);
-    border-radius: 2px;
-  }
-
-  /* The hero cards are real panels on mobile, not ghosts. */
-  .hero-card,
-  .hero-card-3 {
-    color: var(--ink);
-  }
-
-  /* Drawer reveals by clip-path from the top, so it wipes down rather than
-     sliding a whole panel over the page. */
-  .nav-menu-wrap {
-    position: fixed;
-    inset: 14vw 0 auto 0;
-    max-height: calc(100vh - 14vw);
-    padding: var(--edge) var(--edge) 10vw;
-    background-color: var(--ground);
-    border-bottom: 1px solid var(--hairline);
-    overflow-y: auto;
-    clip-path: inset(0 0 100% 0);
-    pointer-events: none;
-  }
-
-  .nav-menu {
-    gap: 2.13vw;
-    margin-bottom: 5.33vw;
-    padding: 0;
-  }
-
-  .nav-menu-item {
-    height: 13.3vw;
-    padding: 0 4.27vw;
-    font-size: clamp(1rem, 4.8vw, 1.3rem);
-  }
-
-  .nav-item-bg,
-  .nav-item-icon,
-  .nav-button,
-  .nav-button-secondary {
-    opacity: 1 !important;
-  }
-
-  .nav-item-icon {
-    width: 5.3vw;
-  }
-
-  .nav-email-wrap {
-    height: 13.3vw;
-    margin-bottom: 3.2vw;
-  }
-
-  .email-text {
-    font-size: clamp(0.8rem, 3.7vw, 1rem);
-  }
-
-  .nav-button-slot {
-    height: 13.3vw;
-  }
-
-  .nav-button-wrap {
-    gap: 3.2vw;
-  }
-
-  /* ---- hero ------------------------------------------------------------- */
-  .hero {
-    min-height: auto;
-    padding-top: 22vw;
-    padding-bottom: 16vw;
-    overflow: hidden;
-  }
-
-  .hero-sticky {
-    position: static;
-    height: auto;
-    padding-bottom: 0;
-  }
-
-  .mark-preload-wrap {
-    display: none;
-  }
-
-  .hero-mark-slot {
-    width: 89.33vw;
-    --mark-w: 89.33vw;
-  }
-
-  .mark-ghost {
-    opacity: 1;   /* on mobile it IS the mark — nothing FLIPs onto it */
-  }
-
-  .mark-dot-ghost {
-    top: 1vw;
-    right: -3vw;
-    width: 4.5vw;
-    height: 4.5vw;
-    background-color: var(--accent);
-    opacity: 1;
-  }
-
-  .hero-navigation-wrap {
-    display: none;
-  }
-
-  .hero-cards-wrap {
-    position: static;
-    width: 100%;
-    height: auto;
-    margin-top: 8vw;
-    padding: 0 var(--edge);
-  }
-
-  .hero-cards-left {
-    position: static;
-    flex-flow: row;
-    gap: 3.2vw;
-    width: 100%;
-  }
-
-  .hero-card {
-    flex: 1;
-    width: auto;
-    padding: 4.8vw 3.2vw;
-    background-color: var(--surface);
-    border: 1px solid var(--hairline);
-    color: var(--ink);
-    opacity: 1;
-  }
-
-  .hero-stat-a-bg,
-  .hero-stat-b-bg {
-    display: none;
-  }
-
-  .hero-stat-a-icon,
-  .hero-stat-b-numb {
-    width: 12vw;
-    font-size: 12vw;
-  }
-
-  .hero-stat-a-text,
-  .hero-stat-b-text {
-    font-size: clamp(0.75rem, 3.4vw, 1rem);
-  }
-
-  /* Below 768 the ghost engine early-returns, so nothing in the hero is a
-     ghost — these are the real cards and the real buttons. Undo the
-     desktop rule that makes them transparent to the pointer. */
-  .main-wrap > .hero,
-  .hero-cards-wrap > .hero-content-layout,
-  .hero-cards-wrap > .hero-cards-left {
-    pointer-events: auto;
-  }
-
-  .hero-content-layout {
-    position: static;
-    margin-top: 8vw;
-  }
-
-  .hero-heading {
-    visibility: visible;
-    color: var(--ink);
-    font-size: clamp(2.1rem, 10.7vw, 3.2rem);
-    text-align: left;
-    padding: 0 var(--edge);
-  }
-
-  .hero-buttons-wrap {
-    display: flex;
-    width: 100%;
-    padding: 0 var(--edge);
-    margin-top: 6.4vw;
-  }
-
-  .hero-cta-button,
-  .hero-button {
-    flex: 1;
-    opacity: 1 !important;
-    padding: 3.7vw 4.27vw;
-    font-size: clamp(0.85rem, 3.7vw, 1.05rem);
-  }
-
-  .hero-card-3 {
-    position: static;
-    width: 100%;
-    margin-top: 8vw;
-    background-color: var(--surface);
-    color: var(--ink);
-    opacity: 1;
-    padding: 5.3vw;
-  }
-
-  .hero-container {
-    flex-flow: column;
-    align-items: flex-start;
-    gap: 5.3vw;
-    width: 100%;
-    margin-top: 10vw;
-    padding: 0 var(--edge);
-  }
-
-  .hero-left-text,
-  .hero-right-text {
-    visibility: visible;
-    width: 100%;
-    text-align: left;
-  }
-
-  /* ---- journey ---------------------------------------------------------- */
-  .about-section {
-    margin-top: 0;
-    padding: 21.3vw var(--edge);
-  }
-
-  .about-card-container {
-    height: auto;
-    gap: 5.33vw;
-    padding-bottom: 0;
-  }
-
-  .about-timeline-wrap {
-    display: none;
-  }
-
-  .about-card-wrap {
-    position: static !important;
-    width: 100%;
-    visibility: visible !important;
-    transform: none !important;
-    margin-bottom: 5.33vw;
-  }
-
-  .about-card {
-    padding: 6.4vw 5.33vw;
-  }
-
-  .about-card-year {
-    font-size: clamp(3.5rem, 18vw, 5.5rem);
-  }
-
-  .about-card-heading {
-    font-size: clamp(1.2rem, 6.4vw, 1.8rem);
-  }
-
-  .about-card-bottom-layout {
-    margin-top: 8vw;
-  }
-
-  .about-card-button {
-    padding: 2.4vw 4.27vw;
-    font-size: clamp(0.75rem, 3.4vw, 0.95rem);
-  }
-
-  .popup-card-wrap {
-    position: fixed;
-    inset: auto 4vw 4vw;
-    width: auto;
-    z-index: 200;
-  }
-
-  .popup-card {
-    padding: 6.4vw 5.33vw;
-    border-radius: 4.3vw;
-  }
-
-  .popup-heading {
-    font-size: clamp(1.4rem, 7.5vw, 2rem);
-  }
-
-  .popup-close {
-    width: 11vw;
-    height: 11vw;
-  }
-
-  .popup-close-icon {
-    width: 5vw;
-    height: 5vw;
-  }
-
-  /* ---- work: native swipe, no pinning ----------------------------------- */
-  .work_section {
-    min-height: auto;
-  }
-
-  .work-sticky-support {
-    display: none;
-  }
-
-  .work-sticky {
-    position: static;
-    min-height: auto;
-    padding: 21.3vw 0;
-  }
-
-  .work-top-layout {
-    grid-template-columns: 1fr;
-    gap: 6.4vw;
-    margin-bottom: 12vw;
-    padding: 0 var(--edge);
-  }
-
-  .work-track-wrap {
-    width: 100%;
-    padding: 0 var(--edge);
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .work-track {
-    gap: 6.4vw;
-    transform: none !important;
-  }
-
-  .work-card {
-    width: 82.67vw;
-    scroll-snap-align: center;
-    opacity: 1 !important;
-    transform: none !important;
-  }
-
-  .work-card-content {
-    padding: 5.33vw;
-  }
-
-  .work-label {
-    padding: 1.33vw 2.67vw;
-    font-size: clamp(0.7rem, 3vw, 0.9rem);
-  }
-
-  .work-card-heading {
-    font-size: clamp(1.3rem, 6.4vw, 1.8rem);
-  }
-
-  .work-card-arrow-wrap {
-    width: 11vw;
-    height: 11vw;
-  }
-
-  .work-card-arrow,
-  .work-card-arrow-2,
-  .work-card-arrow-icon {
-    width: 4.8vw;
-    height: 4.8vw;
-  }
-
-  /* ---- what you get: chips stack under the copy ------------------------- */
-  .what_you_get_section {
-    min-height: auto;
-    padding: 21.3vw var(--edge);
-  }
-
-  .what_you_get-text {
-    width: 100%;
-    font-size: clamp(1.9rem, 9vw, 2.8rem);
-    letter-spacing: -0.02em;
-  }
-
-  .capa-anchor {
-    display: none;
-  }
-
-  .capa-cards-wrap {
-    flex-flow: column;
-    gap: 3.2vw;
-    height: auto;
-    width: 100%;
-    margin-top: 10vw;
-  }
-
-  .capa-card {
-    position: static !important;
-    width: 100%;
-    visibility: visible !important;
-    transform: none !important;
-  }
-
-  .capa-card-item {
-    width: 100%;
-    padding: 4.27vw 5.33vw;
-  }
-
-  .capa-card-bottom {
-    width: 100%;
-  }
-
-  .capa-icon {
-    width: 7vw;
-  }
-
-  .capa-card-label {
-    font-size: clamp(0.95rem, 4.3vw, 1.15rem);
-  }
-
-  .capa-card-text {
-    font-size: clamp(0.8rem, 3.7vw, 1rem);
-  }
-
-  /* ---- ways: stack ------------------------------------------------------ */
-  .sevice_section {
-    padding: 21.3vw var(--edge);
-  }
-
-  .service-wrap {
-    flex-flow: column;
-    gap: 4.27vw;
-    margin-top: 10vw;
-    padding: 3.2vw;
-  }
-
-  .service-card,
-  .service-card.is-first {
-    width: 100%;
-    padding: 6.4vw 5.33vw;
-  }
-
-  .service-top-content {
-    margin-bottom: 8vw;
-  }
-
-  .service-card-top-item,
-  .service-price-item {
-    margin-bottom: 5.33vw;
-  }
-
-  .service-list {
-    margin-top: 6.4vw;
-  }
-
-  .service-list-bullet-icon {
-    width: 3.2vw;
-    height: 3.2vw;
-    border-width: 0.53vw;
-  }
-
-  /* ---- cta -------------------------------------------------------------- */
-  .cta_section {
-    padding: 21.3vw var(--edge);
-  }
-
-  .cta_heading {
-    font-size: clamp(2.4rem, 12vw, 3.6rem);
-    letter-spacing: -0.02em;
-  }
-
-  .cta-wrap {
-    gap: 3.2vw;
-    margin-top: 10vw;
-  }
-
-  .cta-avatar img {
-    width: 10.7vw;
-    height: 10.7vw;
-  }
-
-  .cta-chat,
-  .cta-chat-typing-wrap {
-    padding: 3.2vw 4.27vw;
-  }
-
-  .cta-button {
-    padding: 3.2vw 4.27vw;
-    font-size: clamp(0.75rem, 3.4vw, 0.95rem);
-  }
-
-  .typing-dot {
-    width: 2.13vw;
-    height: 2.13vw;
-  }
-
-  /* ---- clients ---------------------------------------------------------- */
-  .testimonial_section {
-    padding: 21.3vw var(--edge);
-  }
-
-  .swiper-main-wrap {
-    width: 100%;
-    align-items: flex-start;
-  }
-
-  .swiper {
-    width: 100%;
-    cursor: auto;
-  }
-
-  .swiper-card {
-    gap: 8vw;
-    padding: 5.33vw;
-  }
-
-  .swiper-heading {
-    font-size: clamp(1.3rem, 6.4vw, 1.8rem);
-  }
-
-  .swiper-quote-icon {
-    width: 7vw;
-    height: 7vw;
-  }
-
-  .client-img {
-    width: 13vw;
-    height: 13vw;
-  }
-
-  .swiper-pagination {
-    margin: 5.33vw 0 0;
-    padding: 2.13vw;
-  }
-
-  .swiper-bullet {
-    width: 5.33vw;
-    height: 1.07vw;
-  }
-
-  .swiper-bullet.is-active {
-    width: 10.67vw;
-  }
-
-  .drag-wrap {
-    display: none;   /* touch has its own affordance */
-  }
-
-  /* ---- footer ----------------------------------------------------------- */
-  .footer {
-    padding: 21.3vw var(--edge) 8vw;
-  }
-
-  .footer-logo {
-    margin-bottom: 12vw;
-  }
-
-  .faq-column-main {
-    padding-top: 0;
-  }
-
-  .faq-column {
-    grid-template-columns: 1fr;
-    gap: 3.2vw;
-    margin-top: 10vw;
-  }
-
-  .faq-toggle {
-    padding: 4.27vw 5.33vw;
-    font-size: clamp(0.9rem, 4.27vw, 1.1rem);
-  }
-
-  .faq-icon {
-    width: 8.5vw;
-    height: 8.5vw;
-  }
-
-  .faq-icon-item {
-    width: 4.27vw;
-    height: 4.27vw;
-  }
-
-  .faq-answer {
-    padding: 0 5.33vw 4.27vw;
-  }
-
-  .velar-panel {
-    padding: 10.7vw 5.33vw;
-    border-radius: 5.33vw;
-  }
-
-  .velar-panel-top {
-    grid-template-columns: 1fr;
-    gap: 8vw;
-    padding-bottom: 8vw;
-  }
-
-  .velar-pillars {
-    grid-template-columns: 1fr;
-    gap: 6.4vw;
-    margin-top: 8vw;
-  }
-
-  .velar-panel-foot {
-    flex-flow: column;
-    align-items: flex-start;
-    gap: 5.33vw;
-    margin-top: 10vw;
-  }
-
-  .velar-cta {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .capa-card-bottom {
-    position: static;
-    width: 100%;
-    margin-top: 3.2vw;
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  .work_section {
-    background-color: var(--ground);
-  }
-
-  .footer-bottom {
-    flex-flow: column;
-    align-items: flex-start;
-    gap: 8vw;
-    margin-top: 21.3vw;
-  }
-
-  .footer-colophon {
-    max-width: 100%;
-    text-align: left;
-  }
-
-  .service-placeholder-note {
-    font-size: 0.7rem;
-  }
-}
-
-/* Tablet: the vw system holds, but the rail's fixed width eats too much of a
-   narrow viewport, so content gets its gutter back. */
-@media screen and (min-width: 768px) and (max-width: 1100px) {
-  :root {
-    --gutter: 24vw;
-  }
-
-  .faq-column {
-    grid-template-columns: 1fr;
-  }
-
-  .work-top-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .velar-pillars {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .velar-panel-top {
-    grid-template-columns: 1fr;
-  }
-}
 
 /* ==========================================================================
    REDUCED MOTION — resting states for everything the engine would animate.
@@ -3691,4 +2968,850 @@ button:focus-visible {
   width: var(--s18);
   height: var(--s18);
   color: var(--accent);
+}
+
+/* ==========================================================================
+   COLLAPSED LAYOUT — a separate design, not a squeezed one.
+
+   Above 1100px the layout ZOOMS on the vw grid and never reflows. Below it,
+   the fixed rail becomes a top bar plus a drawer, and every desktop-only
+   module early-returns in JS (ghost engine, preloader, horizontal scroll,
+   theme switcher, image trail, magnetic rAF loop) — MOBILE_BREAKPOINT in
+   components/engine/core.ts MUST match the 1099 boundary below, because the
+   ghost engine animates the rail's own elements and cannot run once the rail
+   has collapsed.
+
+   The block is authored on a 375 reference. Proportional values (section
+   padding, gaps, the full-bleed mark) are left to grow with the viewport —
+   that is the intent. Fixed-purpose CHROME is capped with min(): a 10.5vw
+   burger is 39px on a phone and 115px at 1099, which is not "scaled up", it
+   is broken. Anything with a hand-set pixel ceiling below is chrome.
+   ========================================================================== */
+
+.mobile-menu,
+.mobile-hero-only {
+  display: none;
+}
+
+@media screen and (max-width: 1099px) {
+  :root {
+    --gutter: min(5.33vw, 56px);
+    --edge: min(5.33vw, 56px);
+    /* Section rhythm. 21.3vw is 80px at 375 but 234px at 1099, which reads as
+       a dead screen rather than as breathing room. */
+    --band: min(21.3vw, 152px);
+    /* The top bar's height, DECLARED rather than derived — the bar is then
+       given exactly this height below, so everything hanging off it is correct
+       by construction. Deriving it from the tallest child is what went wrong
+       before: the old hand-set 14vw was 52px against a 63px bar, so the drawer
+       opened underneath the bar and clipped its own first item, and a
+       derivation that assumed the burger was tallest was still 3px out because
+       the logo pill's own padding makes IT the tallest item above ~900px. */
+    --bar-h: min(16.8vw, 78px);
+  }
+
+  body {
+    font-size: clamp(0.95rem, 4.27vw, 1.15rem);
+  }
+
+  /* ---- rail becomes a top bar + drawer ---------------------------------- */
+  .navigation {
+    position: fixed;
+    inset: 0 0 auto 0;
+    width: 100%;
+    height: auto;
+    padding: 0;
+    z-index: 90;
+  }
+
+  .nav-container {
+    opacity: 1;
+    display: block;
+    transform: none !important;
+  }
+
+  .profile-img-wrap {
+    display: none;
+  }
+
+  .nav-top-layout {
+    flex-flow: row;
+    align-items: center;
+    gap: 0;
+    margin: 0;
+    /* Height is fixed so --bar-h is a fact, not an estimate. */
+    height: var(--bar-h);
+    padding: 0 var(--edge);
+    background-color: rgba(20, 18, 15, 0.86);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .nav-top-bg,
+  .nav-menu-bg {
+    display: none;
+  }
+
+  .nav-logo,
+  .nav-logo-item {
+    width: auto;
+  }
+
+  /* Widened from 24vw with the nine-glyph mark: the cap height is the width
+     divided by the aspect, so holding the width would have shrunk the mark in
+     the bar from ~29px to ~18px. 34vw restores the old cap height, capped so
+     a tablet bar does not carry a 370px wordmark. */
+  .nav-logo-item {
+    width: min(34vw, 190px);
+    --mark-w: min(34vw, 190px);
+    aspect-ratio: var(--mark-aspect);
+  }
+
+  .nav-top-text,
+  .nav-stats-wrap,
+  .nav-platforms-wrap {
+    display: none;
+  }
+
+  .mobile-menu {
+    position: relative;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    gap: min(1.6vw, 7px);
+    width: min(10.5vw, 46px);
+    height: min(10.5vw, 46px);
+    margin-left: auto;
+  }
+
+  .mobile-menu-icons {
+    display: block;
+    width: min(6.4vw, 26px);
+    height: 2px;
+    background-color: var(--ink);
+    border-radius: 2px;
+  }
+
+  /* The hero cards are real panels on mobile, not ghosts. */
+  .hero-card,
+  .hero-card-3 {
+    color: var(--ink);
+  }
+
+  /* Drawer reveals by clip-path from the top, so it wipes down rather than
+     sliding a whole panel over the page. */
+  .nav-menu-wrap {
+    position: fixed;
+    inset: var(--bar-h) 0 auto 0;
+    max-height: calc(100vh - var(--bar-h));
+    padding: var(--edge) var(--edge) min(10vw, 44px);
+    background-color: var(--ground);
+    border-bottom: 1px solid var(--hairline);
+    overflow-y: auto;
+    clip-path: inset(0 0 100% 0);
+    pointer-events: none;
+  }
+
+  .nav-menu {
+    gap: min(2.13vw, 10px);
+    margin-bottom: min(5.33vw, 24px);
+    padding: 0;
+  }
+
+  .nav-menu-item {
+    height: min(13.3vw, 58px);
+    padding: 0 min(4.27vw, 20px);
+    font-size: clamp(1rem, 4.8vw, 1.3rem);
+  }
+
+  .nav-item-bg,
+  .nav-item-icon,
+  .nav-button,
+  .nav-button-secondary {
+    opacity: 1 !important;
+  }
+
+  .nav-item-icon {
+    width: min(5.3vw, 22px);
+  }
+
+  .nav-email-wrap {
+    height: min(13.3vw, 58px);
+    margin-bottom: min(3.2vw, 14px);
+  }
+
+  .email-text {
+    font-size: clamp(0.8rem, 3.7vw, 1rem);
+  }
+
+  .nav-button-slot {
+    height: min(13.3vw, 58px);
+  }
+
+  .nav-button-wrap {
+    gap: min(3.2vw, 14px);
+  }
+
+  /* ---- hero ------------------------------------------------------------- */
+  .hero {
+    min-height: auto;
+    /* Clears the fixed bar, plus air. Derived from it so the two cannot drift. */
+    padding-top: calc(var(--bar-h) + min(8vw, 44px));
+    padding-bottom: min(16vw, 96px);
+    overflow: hidden;
+  }
+
+  .hero-sticky {
+    position: static;
+    height: auto;
+    padding-bottom: 0;
+  }
+
+  .mark-preload-wrap {
+    display: none;
+  }
+
+  .hero-mark-slot {
+    width: 89.33vw;
+    --mark-w: 89.33vw;
+  }
+
+  .mark-ghost {
+    opacity: 1;   /* on mobile it IS the mark — nothing FLIPs onto it */
+  }
+
+  /* The ® rides the mark, so it is sized against the mark's own cap height
+     rather than the viewport — the mark is capped at 89.33vw but its height is
+     that over the aspect, and a raw 4.5vw dot drifted off the cap as the
+     viewport grew. */
+  .mark-dot-ghost {
+    top: min(1vw, 8px);
+    /* max(), not min(): for a negative offset the CAP is the larger value —
+       min() would have let the dot run further out as the viewport grew. */
+    right: max(-3vw, -12px);
+    width: min(4.5vw, 24px);
+    height: min(4.5vw, 24px);
+    background-color: var(--accent);
+    opacity: 1;
+  }
+
+  .hero-navigation-wrap {
+    display: none;
+  }
+
+  .hero-cards-wrap {
+    position: static;
+    width: 100%;
+    height: auto;
+    margin-top: min(8vw, 44px);
+    padding: 0 var(--edge);
+  }
+
+  .hero-cards-left {
+    position: static;
+    flex-flow: row;
+    /* stretch, not the desktop flex-start: side by side the two stat cards
+       carry different content heights (an icon vs a numeral), so flex-start
+       left them visibly mismatched. */
+    align-items: stretch;
+    gap: min(3.2vw, 16px);
+    width: 100%;
+  }
+
+  .hero-card {
+    flex: 1;
+    width: auto;
+    padding: min(4.8vw, 24px) min(3.2vw, 20px);
+    background-color: var(--surface);
+    border: 1px solid var(--hairline);
+    color: var(--ink);
+    opacity: 1;
+  }
+
+  .hero-stat-a-bg,
+  .hero-stat-b-bg {
+    display: none;
+  }
+
+  .hero-stat-a-icon,
+  .hero-stat-b-numb {
+    width: min(12vw, 52px);
+    font-size: min(12vw, 52px);
+  }
+
+  .hero-stat-a-text,
+  .hero-stat-b-text {
+    font-size: clamp(0.75rem, 3.4vw, 1rem);
+  }
+
+  /* Below 768 the ghost engine early-returns, so nothing in the hero is a
+     ghost — these are the real cards and the real buttons. Undo the
+     desktop rule that makes them transparent to the pointer. */
+  .main-wrap > .hero,
+  .hero-cards-wrap > .hero-content-layout,
+  .hero-cards-wrap > .hero-cards-left {
+    pointer-events: auto;
+  }
+
+  .hero-content-layout {
+    position: static;
+    margin-top: min(8vw, 44px);
+  }
+
+  .hero-heading {
+    visibility: visible;
+    color: var(--ink);
+    font-size: clamp(2.1rem, 10.7vw, 4.2rem);
+    text-align: left;
+    padding: 0 var(--edge);
+  }
+
+  .hero-buttons-wrap {
+    display: flex;
+    width: 100%;
+    padding: 0 var(--edge);
+    margin-top: min(6.4vw, 32px);
+  }
+
+  .hero-cta-button,
+  .hero-button {
+    /* Full-width split on a phone; on a tablet two half-width buttons read as
+       a stretched pair, so they size to their labels and sit left. */
+    flex: 1;
+    opacity: 1 !important;
+    padding: min(3.7vw, 16px) min(4.27vw, 26px);
+    font-size: clamp(0.85rem, 3.7vw, 1.05rem);
+  }
+
+  .hero-card-3 {
+    position: static;
+    width: 100%;
+    margin-top: min(8vw, 44px);
+    background-color: var(--surface);
+    color: var(--ink);
+    opacity: 1;
+    padding: min(5.3vw, 28px);
+  }
+
+  /* --s28 is 1.94vw — 28px at 1440 but under 8px here, so the trait glyphs
+     all but vanished next to 17px labels. Sized against the label instead. */
+  .hero-card-3-glyph {
+    width: 1.25em;
+    height: 1.25em;
+  }
+
+  .hero-card-3-item {
+    gap: min(3.2vw, 14px);
+  }
+
+  .hero-container {
+    flex-flow: column;
+    align-items: flex-start;
+    gap: min(5.3vw, 24px);
+    width: 100%;
+    margin-top: min(10vw, 56px);
+    padding: 0 var(--edge);
+  }
+
+  .hero-left-text,
+  .hero-right-text {
+    visibility: visible;
+    width: 100%;
+    text-align: left;
+  }
+
+  /* ---- journey ---------------------------------------------------------- */
+  .about-section {
+    margin-top: 0;
+    padding: var(--band) var(--edge);
+  }
+
+  .about-card-container {
+    height: auto;
+    gap: min(5.33vw, 32px);
+    padding-bottom: 0;
+  }
+
+  .about-timeline-wrap {
+    display: none;
+  }
+
+  .about-card-wrap {
+    position: static !important;
+    width: 100%;
+    visibility: visible !important;
+    transform: none !important;
+    margin-bottom: min(5.33vw, 32px);
+  }
+
+  .about-card {
+    padding: min(6.4vw, 38px) min(5.33vw, 32px);
+  }
+
+  .about-card-year {
+    font-size: clamp(3.5rem, 18vw, 5.5rem);
+  }
+
+  .about-card-heading {
+    font-size: clamp(1.2rem, 6.4vw, 1.8rem);
+  }
+
+  .about-card-bottom-layout {
+    margin-top: min(8vw, 48px);
+  }
+
+  .about-card-button {
+    padding: min(2.4vw, 14px) min(4.27vw, 26px);
+    font-size: clamp(0.75rem, 3.4vw, 0.95rem);
+  }
+
+  /* Fixed to the bottom of the viewport as a sheet. Capped side inset plus a
+     max-width so it does not become a full-bleed slab on a tablet. */
+  .popup-card-wrap {
+    position: fixed;
+    inset: auto min(4vw, 24px) min(4vw, 24px);
+    width: auto;
+    max-width: 560px;
+    margin-inline: auto;
+    z-index: 200;
+  }
+
+  .popup-card {
+    padding: min(6.4vw, 38px) min(5.33vw, 32px);
+    border-radius: min(4.3vw, 26px);
+  }
+
+  .popup-heading {
+    font-size: clamp(1.4rem, 7.5vw, 2rem);
+  }
+
+  .popup-close {
+    width: min(11vw, 48px);
+    height: min(11vw, 48px);
+  }
+
+  .popup-close-icon {
+    width: min(5vw, 22px);
+    height: min(5vw, 22px);
+  }
+
+  /* ---- work: native swipe, no pinning ----------------------------------- */
+  .work_section {
+    min-height: auto;
+  }
+
+  .work-sticky-support {
+    display: none;
+  }
+
+  .work-sticky {
+    position: static;
+    min-height: auto;
+    padding: var(--band) 0;
+  }
+
+  .work-top-layout {
+    grid-template-columns: 1fr;
+    gap: min(6.4vw, 38px);
+    margin-bottom: min(12vw, 72px);
+    padding: 0 var(--edge);
+  }
+
+  .work-track-wrap {
+    width: 100%;
+    padding: 0 var(--edge);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .work-track {
+    gap: min(6.4vw, 38px);
+    transform: none !important;
+  }
+
+  /* One card fills the phone viewport; on a tablet that would be a 900px slab,
+     so it caps and the track starts showing the next card — which is the point
+     of a swipe rail. */
+  .work-card {
+    width: min(82.67vw, 380px);
+    scroll-snap-align: center;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .work-card-content {
+    padding: min(5.33vw, 32px);
+  }
+
+  .work-label {
+    padding: min(1.33vw, 8px) min(2.67vw, 16px);
+    font-size: clamp(0.7rem, 3vw, 0.9rem);
+  }
+
+  .work-card-heading {
+    font-size: clamp(1.3rem, 6.4vw, 1.8rem);
+  }
+
+  .work-card-arrow-wrap {
+    width: min(11vw, 48px);
+    height: min(11vw, 48px);
+  }
+
+  .work-card-arrow,
+  .work-card-arrow-2,
+  .work-card-arrow-icon {
+    width: min(4.8vw, 21px);
+    height: min(4.8vw, 21px);
+  }
+
+  /* ---- what you get: chips stack under the copy ------------------------- */
+  .what_you_get_section {
+    min-height: auto;
+    padding: var(--band) var(--edge);
+  }
+
+  .what_you_get-text {
+    width: 100%;
+    font-size: clamp(1.9rem, 9vw, 2.8rem);
+    letter-spacing: -0.02em;
+  }
+
+  .capa-anchor {
+    display: none;
+  }
+
+  .capa-cards-wrap {
+    flex-flow: column;
+    gap: min(3.2vw, 19px);
+    height: auto;
+    width: 100%;
+    margin-top: min(10vw, 60px);
+  }
+
+  .capa-card {
+    position: static !important;
+    width: 100%;
+    visibility: visible !important;
+    transform: none !important;
+  }
+
+  .capa-card-item {
+    width: 100%;
+    padding: min(4.27vw, 26px) min(5.33vw, 32px);
+  }
+
+  .capa-card-bottom {
+    width: 100%;
+  }
+
+  .capa-icon {
+    width: min(7vw, 30px);
+  }
+
+  .capa-card-label {
+    font-size: clamp(0.95rem, 4.3vw, 1.15rem);
+  }
+
+  .capa-card-text {
+    font-size: clamp(0.8rem, 3.7vw, 1rem);
+  }
+
+  /* ---- ways: stack ------------------------------------------------------ */
+  .sevice_section {
+    padding: var(--band) var(--edge);
+  }
+
+  .service-wrap {
+    flex-flow: column;
+    gap: min(4.27vw, 26px);
+    margin-top: min(10vw, 60px);
+    padding: min(3.2vw, 19px);
+  }
+
+  .service-card,
+  .service-card.is-first {
+    width: 100%;
+    padding: min(6.4vw, 38px) min(5.33vw, 32px);
+  }
+
+  .service-top-content {
+    margin-bottom: min(8vw, 48px);
+  }
+
+  .service-card-top-item,
+  .service-price-item {
+    margin-bottom: min(5.33vw, 32px);
+  }
+
+  .service-list {
+    margin-top: min(6.4vw, 38px);
+  }
+
+  .service-list-bullet-icon {
+    width: 3.2vw;
+    height: 3.2vw;
+    border-width: 0.53vw;
+  }
+
+  /* ---- cta -------------------------------------------------------------- */
+  .cta_section {
+    padding: var(--band) var(--edge);
+  }
+
+  .cta_heading {
+    font-size: clamp(2.4rem, 12vw, 3.6rem);
+    letter-spacing: -0.02em;
+  }
+
+  .cta-wrap {
+    gap: min(3.2vw, 19px);
+    margin-top: min(10vw, 60px);
+  }
+
+  .cta-avatar img {
+    width: min(10.7vw, 48px);
+    height: min(10.7vw, 48px);
+  }
+
+  .cta-chat,
+  .cta-chat-typing-wrap {
+    padding: min(3.2vw, 19px) min(4.27vw, 26px);
+  }
+
+  .cta-button {
+    padding: min(3.2vw, 19px) min(4.27vw, 26px);
+    font-size: clamp(0.75rem, 3.4vw, 0.95rem);
+  }
+
+  .typing-dot {
+    width: min(2.13vw, 10px);
+    height: min(2.13vw, 10px);
+  }
+
+  /* ---- clients ---------------------------------------------------------- */
+  .testimonial_section {
+    padding: var(--band) var(--edge);
+  }
+
+  .swiper-main-wrap {
+    width: 100%;
+    align-items: flex-start;
+  }
+
+  .swiper {
+    width: 100%;
+    cursor: auto;
+  }
+
+  .swiper-card {
+    gap: min(8vw, 48px);
+    padding: min(5.33vw, 32px);
+  }
+
+  .swiper-heading {
+    font-size: clamp(1.3rem, 6.4vw, 1.8rem);
+  }
+
+  .swiper-quote-icon {
+    width: 7vw;
+    height: 7vw;
+  }
+
+  .client-img {
+    width: 13vw;
+    height: 13vw;
+  }
+
+  .swiper-pagination {
+    margin: min(5.33vw, 32px) 0 0;
+    padding: min(2.13vw, 13px);
+  }
+
+  .swiper-bullet {
+    width: 5.33vw;
+    height: 1.07vw;
+  }
+
+  .swiper-bullet.is-active {
+    width: 10.67vw;
+  }
+
+  .drag-wrap {
+    display: none;   /* touch has its own affordance */
+  }
+
+  /* ---- footer ----------------------------------------------------------- */
+  .footer {
+    padding: var(--band) var(--edge) min(8vw, 48px);
+  }
+
+  .footer-logo {
+    margin-bottom: min(12vw, 72px);
+  }
+
+  .faq-column-main {
+    padding-top: 0;
+  }
+
+  .faq-column {
+    grid-template-columns: 1fr;
+    gap: min(3.2vw, 19px);
+    margin-top: min(10vw, 60px);
+  }
+
+  .faq-toggle {
+    padding: min(4.27vw, 26px) min(5.33vw, 32px);
+    font-size: clamp(0.9rem, 4.27vw, 1.1rem);
+  }
+
+  .faq-icon {
+    width: min(8.5vw, 38px);
+    height: min(8.5vw, 38px);
+  }
+
+  .faq-icon-item {
+    width: min(4.27vw, 19px);
+    height: min(4.27vw, 19px);
+  }
+
+  .faq-answer {
+    padding: 0 min(5.33vw, 32px) min(4.27vw, 26px);
+  }
+
+  .velar-panel {
+    padding: min(10.7vw, 64px) min(5.33vw, 32px);
+    border-radius: min(5.33vw, 32px);
+  }
+
+  .velar-panel-top {
+    grid-template-columns: 1fr;
+    gap: min(8vw, 48px);
+    padding-bottom: min(8vw, 48px);
+  }
+
+  .velar-pillars {
+    grid-template-columns: 1fr;
+    gap: min(6.4vw, 38px);
+    margin-top: min(8vw, 48px);
+  }
+
+  .velar-panel-foot {
+    flex-flow: column;
+    align-items: flex-start;
+    gap: min(5.33vw, 32px);
+    margin-top: min(10vw, 60px);
+  }
+
+  .velar-cta {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .capa-card-bottom {
+    position: static;
+    width: 100%;
+    margin-top: min(3.2vw, 19px);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .work_section {
+    background-color: var(--ground);
+  }
+
+  .footer-bottom {
+    flex-flow: column;
+    align-items: flex-start;
+    gap: min(8vw, 48px);
+    margin-top: var(--band);
+  }
+
+  .footer-colophon {
+    max-width: 100%;
+    text-align: left;
+  }
+
+  .service-placeholder-note {
+    font-size: 0.7rem;
+  }
+}
+
+/* ==========================================================================
+   TABLET — 768 to 1099.
+
+   Shares the collapsed block's structure (top bar + drawer, no ghost morph,
+   swipeable work track) but not its single-column phone composition: at these
+   widths a one-column stack of full-width cards is a phone layout on a big
+   screen, which is exactly what "not adapted for every screen size" looks
+   like. The measure of the body copy is also held here — a paragraph running
+   the full 1099px is unreadable regardless of how well it fits.
+
+   The previous block at this range assumed the DESKTOP rail was still present
+   and only widened the gutter around it; the rail no longer exists below 1100.
+   ========================================================================== */
+
+@media screen and (min-width: 768px) and (max-width: 1099px) {
+  /* Cap the measure rather than the container: text stops growing, the
+     container keeps its generous padding. */
+  .max-width-389,
+  .hero-left-text,
+  .hero-right-text,
+  .work-top-text,
+  .velar-lede,
+  .footer-colophon {
+    max-width: 46ch;
+  }
+
+  .what_you_get-text {
+    max-width: 22ch;
+  }
+
+  /* Two columns where the content is a set of peers. */
+  .faq-column,
+  .velar-pillars,
+  .capa-cards-wrap {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  .work-top-layout {
+    grid-template-columns: 1fr 1fr;
+    align-items: end;
+  }
+
+  .velar-panel-top {
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+  }
+
+  /* The hero's two stat cards and the traits card sit in one row instead of
+     stacking, which is what leaves the headline room to breathe. */
+  .hero-card-3 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 40px;
+  }
+
+  /* Buttons size to their labels rather than splitting the width in half. */
+  .hero-cta-button,
+  .hero-button {
+    flex: 0 0 auto;
+  }
+
+  .hero-buttons-wrap {
+    justify-content: flex-start;
+  }
+
+  /* The mark is the page's signature and stays full-bleed, but the ® needs to
+     keep pace with a cap height that is now much larger than a phone's. */
+  .mark-dot-ghost {
+    top: 12px;
+    right: -16px;
+    width: 30px;
+    height: 30px;
+  }
 }

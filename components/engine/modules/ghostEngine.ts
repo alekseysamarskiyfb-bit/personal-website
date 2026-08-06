@@ -77,18 +77,32 @@ export const GhostEngine = {
       ".nav-stat-b-bg",
       ".nav-stat-b-numb",
       ".nav-stat-b-text",
-      /* The button ghosts are real anchors — below 768 they ARE the hero's
-         buttons. Leaving the desktop autoAlpha:0 on them meant resizing down
-         to mobile produced two invisible buttons. */
+      /* The button ghosts are real anchors — below MOBILE_BREAKPOINT they ARE
+         the hero's buttons. Leaving the desktop autoAlpha:0 on them meant
+         resizing down into the collapsed layout produced two invisible
+         buttons. */
       ".hero-cta-button",
       ".hero-button",
     ].forEach((sel) => {
       const el = Utils.$(sel);
-      if (el) gsap.set(el, { clearProps: "all" });
+      if (el) this.release(el);
     });
 
-    Utils.$$(".hero-navigation-link").forEach((el) => gsap.set(el, { clearProps: "all" }));
+    Utils.$$(".hero-navigation-link").forEach((el) => this.release(el));
     this.initialized = false;
+  },
+
+  /**
+   * Killing a ScrollTrigger does NOT kill the tween it drove. Clearing the
+   * props alone left those orphaned tweens alive, and GSAP re-applied their
+   * values on the very next tick — so crossing from the desktop layout into
+   * the collapsed one left the rail's mark stranded at its hero size (a
+   * 1048px-wide wordmark inside a 190px slot, hanging 266px off the right
+   * edge of a 1024 viewport). Kill first, then clear.
+   */
+  release(el: HTMLElement) {
+    gsap.killTweensOf(el);
+    gsap.set(el, { clearProps: "all" });
   },
 
   /** Per-pair scroll window, read off the nearest configured ancestor. */
