@@ -45,7 +45,7 @@ would under a wheel:
    The lean is now zero in the collapsed layout, where a card has no side to
    lean in from.
 `tsc --noEmit` clean; `next build` clean at 152 kB first load (+1 kB).
-Ref: pending
+Ref: 1803f76
 
 ## 2026-08-06 · change · Phase 3 — responsiveness
 By: alekseysamarskiyfb-bit
