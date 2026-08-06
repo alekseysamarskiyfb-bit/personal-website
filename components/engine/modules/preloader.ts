@@ -154,7 +154,24 @@ export const Preloader = {
     if (navLogoItem) tl.set(navLogoItem, { display: "none" }, 0);
 
     tl.to(logo, { x: xToCenter, duration: 1, ease: "power3.inOut" });
-    tl.to(letters, { yPercent: 0, duration: 1, stagger: 0.2, ease: "power3.out" }, "<");
+
+    /* The letter rise has to FINISH before the mark starts climbing at t=1,
+       or the last glyphs are still coming up as the whole lockup leaves.
+       A fixed stagger cannot promise that — it is multiplied by the letter
+       count, and the nine-glyph mark would have run 1.6s of stagger plus a 1s
+       tween inside a 1s window. Spreading a fixed 0.6s budget across whatever
+       letters exist keeps the run bounded at any name length. */
+    const riseSpread = 0.6;
+    tl.to(
+      letters,
+      {
+        yPercent: 0,
+        duration: 1,
+        stagger: letters.length > 1 ? riseSpread / (letters.length - 1) : 0,
+        ease: "power3.out",
+      },
+      "<"
+    );
     tl.to(logo, { x: 0, y: 0, duration: 1, ease: "power2.inOut" }, 1);
 
     /* Rail on at 1.4 — 40% through the mark's climb — so the reveal chain can

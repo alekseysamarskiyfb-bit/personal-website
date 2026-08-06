@@ -11,6 +11,7 @@
  */
 
 import { EMAIL, INSTAGRAM, LINKEDIN, TELEGRAM, TELEGRAM_HANDLE } from "./navData";
+import { MARK_H, MARK_W, WORD, WORD_LABEL } from "./Wordmark";
 import { IconArrowUpRight, IconInstagram, IconTelegram, IconLinkedIn, IconMail } from "./icons";
 
 const FAQS = [
@@ -48,30 +49,38 @@ export default function SiteFooter() {
         className="footer-logo"
         data-trail-images="/work/creative-1.jpg,/work/creative-2.jpg,/work/creative-3.jpg,/work/creative-4.jpg,/work/creative-5.jpg,/work/creative-6.jpg,/work/creative-7.jpg,/work/creative-8.jpg"
       >
+        {/* Geometry and the word itself come from Wordmark, so this copy of
+            the mark can never drift from the rail/hero one. */}
         <svg
           className="footer-logo-icon"
-          viewBox="0 0 464 150"
+          viewBox={`0 0 ${MARK_W} ${MARK_H}`}
           preserveAspectRatio="xMidYMid meet"
           role="img"
-          aria-label="Oleksii"
+          aria-label={WORD_LABEL}
         >
           <defs>
             <clipPath id="footer-mark-clip">
-              <text x="0" y="150" textLength="464" lengthAdjust="spacing" className="mark-svg-text">
-                OLEKSII
+              <text
+                x="0"
+                y={MARK_H}
+                textLength={MARK_W}
+                lengthAdjust="spacing"
+                className="mark-svg-text"
+              >
+                {WORD}
               </text>
             </clipPath>
           </defs>
 
           <text
             x="0"
-            y="150"
-            textLength="464"
+            y={MARK_H}
+            textLength={MARK_W}
             lengthAdjust="spacing"
             fill="currentColor"
             className="mark-svg-text footer-mark-fill"
           >
-            OLEKSII
+            {WORD}
           </text>
 
           {/* Trail images land here, clipped to the letterforms. */}

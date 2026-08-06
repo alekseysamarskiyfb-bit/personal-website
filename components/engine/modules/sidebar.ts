@@ -187,7 +187,14 @@ export const ButtonHover = {
       const splitA = new SplitText(originalTarget, { type: "words", wordsClass: "word" });
       const splitB = new SplitText(cloneTarget, { type: "words", wordsClass: "word" });
 
-      gsap.set(splitB.words, { y: originalTarget.offsetHeight });
+      /* yPercent, not a measured pixel height.
+         The offsetHeight read here happened before the label had settled at
+         its final size, so the clone parked ~12px below an 18px word and sat
+         visible inside the mask — every nav label rendered with a second copy
+         struck through it. yPercent is resolved against the element's OWN box
+         at tween time, so it is exactly one line at any font size, survives
+         the vw grid resizing, and needs no measurement at all. */
+      gsap.set(splitB.words, { yPercent: 100 });
 
       let showingA = true;
       let tl: gsap.core.Timeline | null = null;
@@ -202,19 +209,14 @@ export const ButtonHover = {
         if (tl) tl.kill();
         tl = gsap.timeline();
 
-        /* Measured per hover, not once at init: the label's height is on the
-           vw grid, so a resize changes it and a cached value would roll the
-           words to the wrong place. */
-        const h = originalTarget.offsetHeight;
-
         const out = showingA ? splitA.words : splitB.words;
         const incoming = showingA ? splitB.words : splitA.words;
 
-        tl.to(out, { y: -h, duration: 0.5, stagger: 0.05, ease: "power2.out" });
+        tl.to(out, { yPercent: -100, duration: 0.5, stagger: 0.05, ease: "power2.out" });
         tl.fromTo(
           incoming,
-          { y: h },
-          { y: 0, duration: 0.5, stagger: 0.05, ease: "power2.out" },
+          { yPercent: 100 },
+          { yPercent: 0, duration: 0.5, stagger: 0.05, ease: "power2.out" },
           "<"
         );
 

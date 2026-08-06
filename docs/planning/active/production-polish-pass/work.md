@@ -1,9 +1,16 @@
 # Work — Production polish pass
 
-**Status:** Phase 1 complete and verified. Phases 2–6 outstanding.
-**Next action:** Phase 2 — the SAMARSKYI rename, starting by measuring the
-nine-glyph advance width in Anton at 173px so the mark's viewBox, `textLength`
-and every value derived from `--mark-aspect: 3.0933` can be re-derived.
+**Status:** Phases 1 and 2 complete and verified. Phases 3–6 outstanding.
+**Next action:** Phase 3 — responsiveness. Start with 3.1, the missing tablet
+band: decide the boundary where the rail collapses to the mobile top-bar +
+drawer, and move `MOBILE_BREAKPOINT` to match it so CSS and JS opt out on the
+same line.
+
+**Measured mark geometry (Phase 2):** Anton at 173px — `OLEKSII` 464.01 wide,
+`SAMARSKYI` 737.19 wide, cap ascent 150.02 for both. Box is now 737 x 150,
+aspect 4.9133, exported from `Wordmark.tsx` and mirrored in `--mark-aspect`.
+Re-measure with canvas `measureText` against the loaded face if the name or
+the display font ever changes.
 
 **Toolchain:** Node v24.19.0 in `~/.local/node` (no sudo). Every shell command
 needs `export PATH="$HOME/.local/node/bin:$PATH"` first, or use `zsh -lc`.
@@ -17,6 +24,13 @@ anything driven by `gsap.set` ARE verifiable; scrubbed states are not. Open a
 fresh tab with `preview_start` (it loads visible) and measure straight away.
 If the dev server ever serves a stale error, `rm -rf .next` and restart — a
 failed compile poisons the cache and every later measurement with it.
+
+**NEVER run `npm run build` while the dev server is up.** Both write the same
+`.next`, so the production build strips the dev server's chunks; the server
+then serves pages with no CSS and `Cannot find module './81.js'` on every
+request. Symptoms are silent and misleading — custom properties resolve to
+empty, fonts fall back to Times, and vh-based heights come out ~8x wrong, which
+looks exactly like a layout regression. Stop the dev server, build, restart.
 
 ---
 
