@@ -94,8 +94,13 @@ const NODES = ENTRIES.map((_, i) => ({
   origin: i % 2 === 0 ? "bottom right" : "bottom left",
 }));
 
-/* Each card's reveal fires at its own point in the container's scroll. */
-const STARTS = ENTRIES.map((_, i) => `${-42 + i * 12.5}% top`);
+/* Cards no longer carry their own reveal trigger: TimelineSpine adds
+   .is-revealed as the drawn line reaches each milestone, so a card cannot
+   arrive before the path that leads to it. The INNER elements still stagger,
+   triggered off the card's own box rather than off a percentage of the 470vh
+   container — the old `-42% top` starts fired before the section was even on
+   screen, so the first cards were simply present rather than arriving. */
+const CARD_TRIGGER = (i: number) => `.ac-${i + 1}`;
 
 export default function Journey() {
   return (
@@ -164,6 +169,10 @@ export default function Journey() {
             <div
               className={`about-card-wrap ac-${i + 1}`}
               key={i}
+              /* Which side of the centre line this card lives on. The card
+                 enters FROM that side, so the two halves of the zig-zag mirror
+                 each other instead of all seven doing the same move. */
+              data-side={NODES[i].origin.includes("right") ? "left" : "right"}
               data-origin={NODES[i].origin}
               data-connect={`step-${i + 1}`}
               data-offset={NODES[i].origin.includes("right") ? "-2.8vw, 0" : "2.8vw, 0"}
@@ -171,23 +180,21 @@ export default function Journey() {
               data-anchor-pos-mobile="top left"
               style={{ top: NODES[i].top, left: 0 }}
             >
-              <div
-                className="about-card"
-                data-tl-desktop
-                data-tl-type="trigger"
-                data-tl-trigger=".about-card-container"
-                data-tl-start={STARTS[i]}
-                data-tl-from="{'y': '3.5%', 'opacity': 0, 'scale': 0.97, 'filter': 'blur(10px)'}"
-                data-tl-to="{'y': '0%', 'opacity': 1, 'scale': 1, 'filter': 'blur(0px)', 'duration': 1.45, 'delay': 0.2, 'ease': 'expo.out'}"
-              >
+              {/* The card's own arrival is a CSS transition driven by
+                  .is-revealed, which TimelineSpine sets from the drawn length.
+                  MagneticPositions owns this element's transform, so the
+                  entrance has to live on the inner card — a transform here
+                  would be overwritten every frame by the solver. */}
+              <div className="about-card">
                 <div className="about-card-top">
                   <div
                     className="about-card-year"
                     data-number-count={entry.year}
                     data-tl-desktop
-                    data-tl-trigger=".about-card-container"
-                    data-tl-start={STARTS[i]}
-                    data-tl-to="{'duration': 1.5, 'stagger': 0.1, 'delay': 0.2, 'ease': 'expo.out'}"
+                    data-tl-once
+                    data-tl-trigger={CARD_TRIGGER(i)}
+                    data-tl-start="top 80%"
+                    data-tl-to="{'duration': 1.5, 'stagger': 0.1, 'delay': 0.25, 'ease': 'expo.out'}"
                   >
                     {entry.year}
                   </div>
@@ -197,12 +204,13 @@ export default function Journey() {
                 <h3
                   className="about-card-heading"
                   data-tl-desktop
+                  data-tl-once
                   data-tl-type="trigger"
-                  data-tl-trigger=".about-card-container"
-                  data-tl-start={STARTS[i]}
+                  data-tl-trigger={CARD_TRIGGER(i)}
+                  data-tl-start="top 80%"
                   data-tl-split="lines"
                   data-tl-from="{'yPercent': 100}"
-                  data-tl-to="{'yPercent': 0, 'duration': 0.6, 'stagger': 0.1, 'delay': 0.32, 'ease': 'expo.out'}"
+                  data-tl-to="{'yPercent': 0, 'duration': 0.7, 'stagger': 0.08, 'delay': 0.34, 'ease': 'expo.out'}"
                 >
                   {entry.role}
                 </h3>
@@ -212,12 +220,13 @@ export default function Journey() {
                 <p
                   className="op80 about-card-teaser"
                   data-tl-desktop
+                  data-tl-once
                   data-tl-type="trigger"
-                  data-tl-trigger=".about-card-container"
-                  data-tl-start={STARTS[i]}
+                  data-tl-trigger={CARD_TRIGGER(i)}
+                  data-tl-start="top 80%"
                   data-tl-split="lines"
                   data-tl-from="{'yPercent': 100}"
-                  data-tl-to="{'yPercent': 0, 'duration': 0.6, 'stagger': 0.08, 'delay': 0.42, 'ease': 'expo.out'}"
+                  data-tl-to="{'yPercent': 0, 'duration': 0.7, 'stagger': 0.07, 'delay': 0.46, 'ease': 'expo.out'}"
                 >
                   {entry.teaser}
                 </p>
@@ -228,11 +237,12 @@ export default function Journey() {
                     className="about-card-button"
                     aria-expanded="false"
                     data-tl-desktop
+                    data-tl-once
                     data-tl-type="trigger"
-                    data-tl-trigger=".about-card-container"
-                    data-tl-start={STARTS[i]}
+                    data-tl-trigger={CARD_TRIGGER(i)}
+                    data-tl-start="top 80%"
                     data-tl-from="{'opacity': 0}"
-                    data-tl-to="{'opacity': 1, 'duration': 1.4, 'delay': 0.7, 'ease': 'expo.out'}"
+                    data-tl-to="{'opacity': 1, 'duration': 1.2, 'delay': 0.74, 'ease': 'expo.out'}"
                   >
                     Read more
                   </button>

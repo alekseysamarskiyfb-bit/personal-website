@@ -30,7 +30,49 @@ export const TimelineSpine = {
     this.build();
   },
 
+  /** ScrollTriggers created for the collapsed layout's per-card reveal. */
+  cardTriggers: [] as ScrollTrigger[],
+
+  /**
+   * Collapsed layout: there is no spine (the timeline wrap is display:none and
+   * the cards are a plain stack), but .is-revealed still owns the card's
+   * arrival — without this every card would sit at opacity 0 forever. Each
+   * card gets its own one-shot trigger, which is also the per-card reveal the
+   * stacked layout never had.
+   */
+  /** Hand the hidden-until-revealed state to CSS, but only once we can honour it. */
+  arm() {
+    Utils.$(".about-card-container")?.classList.add("is-armed");
+  },
+
+  buildCollapsed() {
+    const cards = Utils.$$(".about-card-wrap");
+    if (!cards.length) return;
+    this.arm();
+
+    if (prefersReducedMotion()) {
+      cards.forEach((c) => c.classList.add("is-revealed"));
+      return;
+    }
+
+    cards.forEach((card) => {
+      this.cardTriggers.push(
+        ScrollTrigger.create({
+          trigger: card,
+          start: "top 88%",
+          once: true,
+          onEnter: () => card.classList.add("is-revealed"),
+        })
+      );
+    });
+  },
+
   build() {
+    if (isMobile()) {
+      this.buildCollapsed();
+      return;
+    }
+
     const wrap = Utils.$(".about-timeline-wrap");
     const svg = document.querySelector<SVGSVGElement>(".about-spine");
     const track = document.querySelector<SVGPathElement>(".about-spine-track");
@@ -99,9 +141,34 @@ export const TimelineSpine = {
       return c;
     });
 
+    /* The CARDS ride the same progress as the nodes.
+       Their reveals used to be hand-tuned percentages of the container
+       (-42% to +33% of a 470vh box), which meant the first cards had already
+       played before the section was on screen — they were simply THERE rather
+       than arriving. Driving them from the drawn length instead means a card
+       cannot appear before the line physically reaches its own milestone, so
+       the run reads as the timeline drawing itself.
+
+       One-way: once revealed a card stays revealed. Toggling it back off on
+       the way up is the "everything replays when I scroll back" complaint. */
+    const cards = Utils.$$(".about-card-wrap");
+    this.arm();
+    const revealCards = (p: number) => {
+      // p > 0 guard: the first node sits only ~3% along, so any lead at all
+      // would reveal card one before the line had started drawing — which is
+      // the very thing this replaces.
+      if (p <= 0.001) return;
+      cards.forEach((card, i) => {
+        if (nodeProgress[i] === undefined) return;
+        // Slightly ahead of the node: the card is what the line arrives AT.
+        if (p >= nodeProgress[i] - 0.03) card.classList.add("is-revealed");
+      });
+    };
+
     if (prefersReducedMotion()) {
       gsap.set(path, { strokeDasharray: "none", strokeDashoffset: 0 });
       circles.forEach((c) => c.classList.add("is-active"));
+      cards.forEach((c) => c.classList.add("is-revealed"));
       return;
     }
 
@@ -123,14 +190,34 @@ export const TimelineSpine = {
           circles.forEach((c, i) =>
             c.classList.toggle("is-active", p >= nodeProgress[i] - 0.005)
           );
+          revealCards(p);
         },
       },
     });
+
+    /* Land the correct state immediately, not on the first scroll event — a
+       reload partway down the page (or a resize rebuild) must not leave the
+       cards the line has already passed sitting invisible. */
+    const st = this.tween.scrollTrigger;
+    if (st) {
+      revealCards(st.progress);
+      circles.forEach((c, i) =>
+        c.classList.toggle("is-active", st.progress >= nodeProgress[i] - 0.005)
+      );
+    }
   },
 
   destroy() {
     this.tween?.scrollTrigger?.kill();
     this.tween?.kill();
     this.tween = null;
+    this.cardTriggers.forEach((st) => st.kill());
+    this.cardTriggers = [];
+    Utils.$(".about-card-container")?.classList.remove("is-armed");
+    /* A rebuild re-runs the reveal from scratch, so the class has to go with
+       it — otherwise a card that was revealed before a resize keeps the class
+       while its trigger no longer exists, and the mirrored entrance never
+       replays at the new size. */
+    Utils.$$(".about-card-wrap").forEach((c) => c.classList.remove("is-revealed"));
   },
 };

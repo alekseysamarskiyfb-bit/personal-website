@@ -1,10 +1,29 @@
 # Work — Production polish pass
 
-**Status:** Phases 1–3 complete and verified. Phases 4, 4b, 5, 6 outstanding.
-**Next action:** Phase 4 — the Journey redesign. Start with 4.2, re-deriving
-the card reveal triggers from each card's own position: the current starts run
-`-42%` to `+33%` against a 470vh container, so the first cards have already
-played before the section is in view.
+**Status:** Phases 1–4 complete and verified. Phases 4b, 5, 6 outstanding.
+**Next action:** Phase 4b — the What You Get redesign. Start with 4b.1, the
+hard break: `.what_you_get-text` has a 760px `clamp()` floor inside a container
+that offers 744px at 1024, so it overflows at every tablet width.
+
+### Motion verification (resolved 2026-08-06)
+
+The in-app Browser pane loads visible then goes hidden, which throttles
+`requestAnimationFrame` to nothing: GSAP's ticker stops, Lenis stops,
+ScrollTrigger never updates, and the Journey section renders empty at every
+scroll offset. `gsap`/`ScrollTrigger` are bundled (not on `window`) and
+`window.lenis` is not the Lenis instance, so the ticker cannot be pumped from
+injected JS.
+
+Resolved by adding **Playwright** as a devDependency (user-approved). Run the
+dev server, then drive a real Chromium where rAF actually runs. Two rules that
+matter:
+ - Scroll in INCREMENTS (~220px per frame, then ~45 idle frames), never a
+   single jump — scrub and inertia need frames to settle or every reading is
+   a transient.
+ - Wait ~4.5s after load: `CONFIG.introLockMs` locks scroll for 3s.
+The harness lives in the scratchpad, not the repo. Node cannot resolve
+`playwright` from outside the project, so copy it to the project root to run
+it, then delete it.
 
 **Breakpoints (Phase 3):** collapse point is **1100**. `MOBILE_BREAKPOINT` in
 core.ts and the `max-width: 1099px` block in globals.css must always agree —

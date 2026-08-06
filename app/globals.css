@@ -1662,7 +1662,10 @@ button:focus-visible {
   flex-flow: column;
   align-items: flex-end;
   width: 100%;
-  margin-top: var(--s144);
+  /* Was --s144 (144px). The spine's lead-in starts above the first milestone,
+     so a gap that large left the line beginning in empty space with the
+     section header stranded above it, unconnected to the run it introduces. */
+  margin-top: var(--s72);
 }
 
 .about-card-container {
@@ -1670,10 +1673,16 @@ button:focus-visible {
   display: flex;
   flex-flow: column;
   width: 100%;
-  /* Reserves the run the cards are magnetised into. Card height grows with
-     the viewport (their width is vw-based), so the step has to clear a card
-     at the WIDEST viewport, not the narrowest. */
-  height: 470vh;
+  /* Reserves the run the cards are magnetised into. Milestones sit 13.6% apart,
+     so the step is 0.136 x this height and must always clear a card (~280px at
+     1440) with air to spare.
+
+     470vh put 575px between 280px cards: half the scroll was empty, and at a
+     900px viewport you saw one card at a time with a void either side. 330vh
+     gives a ~400px step — the run reads as continuous. The px floor is what
+     protects a SHORT window, where a pure vh value would collapse the step
+     below the card height and the cards would overlap. */
+  height: max(330vh, 2700px);
   padding-bottom: var(--s72);
 }
 
@@ -1761,6 +1770,53 @@ button:focus-visible {
   border-radius: var(--s12);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
+
+  transition: opacity 0.9s var(--ease-out), transform 1.15s var(--ease-out),
+    filter 0.9s var(--ease-out);
+}
+
+/* ---- arrival -------------------------------------------------------------
+   Driven by .is-revealed on the WRAP, which TimelineSpine sets from the drawn
+   length of the path — a card cannot arrive before the line that leads to it.
+   A CSS transition rather than a tween, because the wrap's transform belongs
+   to MagneticPositions, which re-solves it every frame; anything animating the
+   wrap would be overwritten.
+
+   Gated on .is-armed, which the spine sets once it has actually taken charge.
+   Without that gate the hidden state is the DEFAULT, and any failure to build
+   the spine — a missing element, a zero-size box, a JS error upstream — leaves
+   seven cards permanently invisible with no way back. Armed-then-hide fails
+   open: worst case the cards are simply there, unanimated.
+
+   The x offset is mirrored per side so the two halves of the zig-zag lean in
+   from the edge they live on, instead of all seven making the same move. */
+.about-card-container.is-armed .about-card-wrap .about-card {
+  opacity: 0;
+  transform: translate3d(var(--card-enter-x, 0), 2.2rem, 0) scale(0.972);
+  filter: blur(10px);
+}
+
+.about-card-wrap[data-side="left"] {
+  --card-enter-x: -3.2rem;
+}
+
+.about-card-wrap[data-side="right"] {
+  --card-enter-x: 3.2rem;
+}
+
+.about-card-container.is-armed .about-card-wrap.is-revealed .about-card {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  filter: blur(0px);
+}
+
+/* The summary RECEDES as the story lifts, so the swap reads as one object
+   turning over rather than a second card stacking on top of a first that is
+   still sitting there. Last, and specific enough to beat the reveal rule. */
+.about-card-container .about-card-wrap:has(.popup-card-wrap.is-active-card) .about-card {
+  opacity: 0;
+  transform: translate3d(0, -0.5rem, 0) scale(0.94);
+  filter: blur(6px);
 }
 
 .about-card-year {
@@ -3344,6 +3400,15 @@ button:focus-visible {
     visibility: visible !important;
     transform: none !important;
     margin-bottom: min(5.33vw, 32px);
+  }
+
+  /* No sideways lean in the stacked layout. The mirrored entrance belongs to
+     the zig-zag, where a card has a side to lean in FROM; here the cards are
+     full-width, so a ±51px offset just pushed them off the right edge (26px of
+     horizontal overflow on a 390 viewport). They rise instead. */
+  .about-card-wrap[data-side="left"],
+  .about-card-wrap[data-side="right"] {
+    --card-enter-x: 0;
   }
 
   .about-card {

@@ -2,6 +2,51 @@
 
 Newest first.
 
+## 2026-08-06 · change · Phase 4 — Journey redesign
+By: alekseysamarskiyfb-bit
+Why: the timeline worked but read thin. Reveals fired off-screen, all seven
+cards made the same move, everything replayed on scroll-back, the drawn spine
+was decorative, and the run was half empty space.
+How:
+ - Cards reveal FROM the spine's own drawn length. `TimelineSpine` already lit
+   its nodes from path progress (plan item 4.5 was half wrong — that part
+   existed); it now drives the cards from the same progress, so a card cannot
+   appear before the line reaches its milestone. This replaced the hand-tuned
+   `-42%`-to-`+33%` starts rather than re-tuning them.
+ - Reveal is one-way, plus `data-tl-once` on the inner elements — no replay.
+ - Inner elements trigger off the CARD's own box (`.ac-N`, `top 80%`) instead
+   of a percentage of the container, cascading 0.25 / 0.34 / 0.46 / 0.74.
+ - Mirrored entrances via `data-side`, as a CSS transition on the inner card —
+   MagneticPositions re-solves the wrap's transform every frame and would
+   overwrite a tween there.
+ - Container height 470vh -> `max(330vh, 2700px)`. 470vh left 575px between
+   280px cards: half the scroll was void. ~400px now, and the px floor stops a
+   short window collapsing the step below card height into an overlap.
+ - Story popup: the summary recedes as the story lifts.
+ - `.about-wrap` top margin --s144 -> --s72, binding the run to its header.
+ - Collapsed layout gained a per-card reveal it never had (`buildCollapsed()`).
+ - FAIL-OPEN gate: the hidden state applies only under `.is-armed`, set once
+   the spine has taken charge, so a failure to build leaves cards visible
+   rather than permanently invisible.
+Tooling: added Playwright as a devDependency (user-approved) because the
+in-app browser pane freezes requestAnimationFrame once hidden, which stopped
+GSAP's ticker and made all scroll-driven state unverifiable. Dev-only; the
+shipped bundle is untouched.
+Verified with a real ticker, scrolling in increments so scrub settles as it
+would under a wheel:
+ - 1440x900: cards and spine nodes advance in exact lockstep — 0%/`0000000`,
+   14%/`1000000`, 45%/`1110000`, 76%/`1111100`, 100%/`1111111`. Nothing
+   reveals before the section.
+ - Scrolling back to the top leaves all seven revealed: no replay.
+ - 390 / 834 / 1280: zero horizontal overflow, all cards reveal, no console
+   errors.
+ - Caught and fixed a regression this introduced: the ±51px mirrored offset
+   pushed the stacked mobile cards off the right edge (26px overflow at 390).
+   The lean is now zero in the collapsed layout, where a card has no side to
+   lean in from.
+`tsc --noEmit` clean; `next build` clean at 152 kB first load (+1 kB).
+Ref: pending
+
 ## 2026-08-06 · change · Phase 3 — responsiveness
 By: alekseysamarskiyfb-bit
 Why: there was no tablet or laptop design. Two media queries existed — a good
@@ -54,7 +99,7 @@ Verified: `tsc --noEmit` clean; `next build` clean, first-load JS unchanged at
 zero horizontal overflow and zero elements past the right edge at every width;
 bar height matches drawer offset exactly at every collapsed width; the 1099 /
 1100 boundary flips cleanly with the rail at 204px and the hero intact.
-Ref: pending
+Ref: ceecf7a
 
 ## 2026-08-06 · change · Phase 2 — SAMARSKYI mark rename
 By: alekseysamarskiyfb-bit
