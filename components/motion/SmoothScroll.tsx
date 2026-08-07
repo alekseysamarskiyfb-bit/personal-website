@@ -16,6 +16,19 @@ import { prefersReducedMotion } from "./motion";
  * Under reduced motion Lenis is never constructed — the browser's own
  * scrolling is left alone, which is the whole point of the preference.
  */
+
+let instance: Lenis | null = null;
+
+/**
+ * The live Lenis instance, or null when smooth scrolling is off (reduced
+ * motion, or before mount). Anything that needs to freeze the page — the
+ * menu — has to go through Lenis, because setting `overflow: hidden` while
+ * Lenis is driving leaves it scrolling a document that cannot move.
+ */
+export function getLenis(): Lenis | null {
+  return instance;
+}
+
 export default function SmoothScroll() {
   useLayoutEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -29,6 +42,7 @@ export default function SmoothScroll() {
       smoothWheel: true,
     });
 
+    instance = lenis;
     lenis.on("scroll", ScrollTrigger.update);
 
     const raf = (time: number) => lenis.raf(time * 1000);
@@ -58,6 +72,7 @@ export default function SmoothScroll() {
       document.removeEventListener("click", onClick);
       gsap.ticker.remove(raf);
       lenis.destroy();
+      instance = null;
     };
   }, []);
 

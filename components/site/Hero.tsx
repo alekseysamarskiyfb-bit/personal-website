@@ -8,14 +8,37 @@ import { SITE } from "@/data/site";
 import { REVEAL, prefersReducedMotion } from "@/components/motion/motion";
 import { ArrowDown } from "./icons";
 
-const LAST = SITE.lastName.toUpperCase().split("");
+const LINES = [SITE.firstName, SITE.lastName];
+
+/**
+ * The name lockup, per character so the whole thing can rise as one wave.
+ *
+ * `data-i` runs continuously across both lines, so the rise reads as one wave
+ * travelling through the whole lockup rather than two separate reveals.
+ */
+function Name() {
+  let index = 0;
+  return (
+    <>
+      {LINES.map((text) => (
+        <span className="hero__line" key={text}>
+          {text.split("").map((char, i) => (
+            <span className="hero__char" data-i={index++} key={`${char}-${i}`}>
+              {char}
+            </span>
+          ))}
+        </span>
+      ))}
+    </>
+  );
+}
 
 /**
  * The hero is the only section that animates on a clock rather than on scroll —
- * it is already in view when the page loads, so there is nothing to scroll it
- * into. Everything after it is scroll-driven.
+ * it is already in view when the page loads. Everything after it is
+ * scroll-driven.
  *
- * The wordmark is sized purely in vw with `nowrap`, which makes its fit ratio
+ * The name is sized purely in vw with `nowrap`, which makes its fit ratio
  * identical at every viewport width: one constant, tuned once, holds from 375
  * to 1920.
  */
@@ -30,65 +53,50 @@ export default function Hero() {
     const reduced = prefersReducedMotion();
 
     const ctx = gsap.context(() => {
-      if (reduced) {
-        gsap.set("[data-intro]", { opacity: 1, y: 0, filter: "none" });
-        return;
-      }
+      if (reduced) return;
 
-      const tl = gsap.timeline({
-        defaults: { ease: "expo.out" },
-        delay: 0.15,
-      });
+      const tl = gsap.timeline({ defaults: { ease: "expo.out" }, delay: 0.15 });
 
-      tl.from(".hero__pill", {
-        y: -22,
+      tl.from(".hero__role", {
+        y: 24,
         opacity: 0,
-        filter: "blur(8px)",
-        duration: 1.1,
+        filter: "blur(10px)",
+        duration: 1.2,
       })
         .from(
-          ".hero__meta > *",
-          {
-            y: 18,
-            opacity: 0,
-            filter: "blur(8px)",
-            duration: 1.1,
-            stagger: 0.06,
-          },
-          "-=0.85",
-        )
-        .from(
-          ".hero__char",
-          {
-            yPercent: 60,
-            opacity: 0,
-            filter: "blur(16px)",
-            duration: 1.5,
-            stagger: 0.045,
-          },
-          "-=0.95",
+          ".hero__status",
+          { y: 16, opacity: 0, filter: "blur(8px)", duration: 1 },
+          "-=0.9",
         )
         .from(
           ".hero__portrait",
           {
-            yPercent: 8,
-            scale: 1.05,
+            yPercent: 6,
+            scale: 1.04,
             opacity: 0,
-            filter: "blur(14px)",
-            duration: 1.7,
+            filter: "blur(16px)",
+            duration: 1.6,
           },
-          "-=1.25",
+          "-=0.8",
         )
+        // Each character rises out of its line's mask. No blur here: the line
+        // clips its overflow, so a blur halo would be sliced off mid-rise.
         .from(
-          ".hero__scroll",
-          { opacity: 0, y: 14, duration: 1, },
-          "-=1.1",
-        );
+          ".hero__char",
+          {
+            yPercent: 108,
+            duration: 1.25,
+            ease: "expo.out",
+            stagger: (_i, target) =>
+              Number((target as HTMLElement).dataset.i ?? 0) * 0.035,
+          },
+          "-=1.3",
+        )
+        .from(".hero__scroll", { opacity: 0, y: 14, duration: 1 }, "-=0.9");
 
-      // The hero leaves the way every other section does. It is scrubbed over
-      // its own first screenful, so by the time the studio arrives the hero has
-      // fully receded rather than sitting behind it at half opacity.
-      gsap.to(".hero__stage, .hero__meta, .hero__scroll", {
+      // The hero leaves the way every other section does, scrubbed over its own
+      // first screenful, so it has fully receded by the time the studio arrives.
+      gsap.to(".hero__top, .hero__portrait, .hero__name, .hero__scroll", {
         opacity: 0,
         y: -REVEAL.fall,
         filter: `blur(${REVEAL.blur}px)`,
@@ -107,42 +115,41 @@ export default function Hero() {
 
   return (
     <section className="hero" id="top" ref={root}>
-      <div className="hero__meta shell">
-        <p className="hero__role">
-          {SITE.role.split(" & ")[0]} &amp;
+      <div className="hero__top shell">
+        <h2 className="hero__role">
+          Creative &amp;
           <br />
-          {SITE.role.split(" & ")[1]}
-        </p>
+          Motion <span className="serif">Designer</span>
+        </h2>
+
         <p className="hero__status">
           <span className="hero__dot" aria-hidden="true" />
           Available for work
-          <span className="hero__sep" aria-hidden="true">
-            /
-          </span>
+          <span className="hero__sep" aria-hidden="true" />
           {SITE.location}
         </p>
       </div>
 
       <div className="hero__stage">
-        <h1 className="hero__word display" aria-label={`${SITE.firstName} ${SITE.lastName}`}>
-          <span className="hero__first">{SITE.firstName}</span>
-          <span className="hero__last" aria-hidden="true">
-            {LAST.map((char, i) => (
-              <span className="hero__char" key={`${char}-${i}`}>
-                {char}
-              </span>
-            ))}
-          </span>
+        {/* The name sits behind the cutout, which crops it the way the
+            reference does. With a transparent portrait there is no dark card to
+            invert the type against, and ink over a navy shirt would simply
+            disappear — so occlusion, not contrast, is what keeps it readable. */}
+        <h1
+          className="hero__name"
+          aria-label={`${SITE.firstName} ${SITE.lastName}`}
+        >
+          <Name />
         </h1>
 
         <div className="hero__portrait">
           <Image
             src="/portrait-cutout.webp"
             alt={`${SITE.firstName} ${SITE.lastName}`}
-            width={1200}
-            height={1800}
+            width={1050}
+            height={1160}
             priority
-            sizes="(max-width: 860px) 88vw, 46vw"
+            sizes="(max-width: 860px) 84vw, 44vw"
           />
         </div>
       </div>

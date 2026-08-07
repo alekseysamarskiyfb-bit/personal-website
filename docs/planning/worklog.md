@@ -2,6 +2,91 @@
 
 Newest first.
 
+## 2026-08-07 · feat · add the mobile burger menu
+By: alekseysamarskiyfb-bit
+Why: below 820px the nav links were simply hidden and nothing replaced them,
+so on a phone the site had no navigation at all — only the mark and the CTA.
+How: a burger in the nav pill (≤820px only; the desktop nav is untouched) and
+a glass sheet that unrolls from the top on the same material and radius as the
+pill. The pill deliberately stays above the sheet, so the burger is still there
+as the X that closes it. Rows arrive on the site's one gesture — opacity, blur,
+a small rise — staggered by index, then a chartreuse hairline draws itself along
+the sheet's bottom edge; closing drops the stagger so it leaves as one object.
+The burger's two lines match width first, then travel and rotate. Escape closes
+and returns focus to the burger, Tab loops through the burger and the sheet, the
+veil and every link close it, and closed the sheet is `visibility: hidden` so
+nothing inside it is tabbable. SmoothScroll now exports `getLenis()`: the sheet
+freezes the page through Lenis, because `overflow: hidden` under Lenis locks a
+document Lenis is still scrolling. Crossing 820px while open drops the state, or
+the sheet would vanish and leave the page frozen. Verified at 375, 768 and 1280:
+open/close, Escape, veil, link navigation (Lenis scrolls after the sheet closes),
+scroll lock and release, the resize guard, no horizontal overflow, `tsc` clean
+and no page console errors.
+Ref: pending
+
+## 2026-08-07 · feat · rebuild the Velar section as one immersive dark plane
+By: alekseysamarskiyfb-bit
+Why: the six service cards sat on the light field below the dark panel, so they
+read as a footnote to the studio rather than as what the studio sells, and the
+block as a whole felt like two stacked elements instead of one composition.
+How: mark, pitch and all six cards now live inside a single dark plane. Cards
+are deliberately almost nothing — a 3% white fill to group each entry's three
+lines, no border, no backdrop blur, no hover; the first pass gave them glass
+edges and a lift and Oleksii read them as heavy and off-concept, so the cursor
+light is now the only thing that moves across them. The plane carries no ring
+either — dark against a light field is edge enough. Depth is stated once, as
+translateZ on three full-bleed background layers (ambient violet wash,
+technical grid masked out before it reaches the text, film grain), so the
+pointer tilt produces the parallax for free. Those layers are not scaled back
+up to cancel the perspective shrink: doing that pushed violet past the rounded
+corners and drew a purple rim around the section. New client component
+`VelarStage` owns the interaction: ±2.6° tilt, smoothed, and a cursor light
+written straight to the frame with no easing — it was given a 0.35s trail
+first and the lag read as lag, not weight. Both are gated behind
+`(hover: hover) and (pointer: fine)`
+and reduced-motion, so touch gets the still composition and nothing else. The
+layers carry no `filter: blur()` — softness lives in the gradient stops, which
+keeps an expensive off-screen buffer out of the 3D context. Palette unchanged:
+the existing `--velar-glow` / `--velar-2` violets, white alphas, near-black.
+Kept the light section head, the pitch copy, and the staggered card entrance.
+Ref: pending
+
+## 2026-08-07 · feat · redesign the hero around the new portrait
+By: alekseysamarskiyfb-bit
+Why: Oleksii sent a new photo, an accent colour, and the Juliand reference —
+he wanted the name treated as a stacked Title Case lockup with both words
+animating, and the role and availability lines pulled into the composition
+instead of sitting apart from it.
+How: the new photo is a black-background square, not a cutout, so it is framed
+rather than composited — an arch-topped card whose background matches the
+photo's own, which makes the crop edge invisible. The name is set twice: an
+ink copy for the light field and a paper copy clipped to the card's geometry,
+so one word stays legible across both. A difference blend was tried first and
+rejected — it threw colour casts over skin and fabric. Both lines now animate,
+per character, rising out of a per-line mask with a stagger keyed to a running
+`data-i` so the two copies stay in lockstep. The role line is display type at
+up to 3.5rem; availability became a glass pill. Accent #88f000 added as
+--accent and used only as a shape, twice: the availability dot and the current
+role's timeline node. Verified at 375 and 1440, no overflow, console clean.
+Ref: pending
+
+## 2026-08-07 · feat · rebuild the portfolio grid as video row + stills row
+By: alekseysamarskiyfb-bit
+Why: the section read as eight interchangeable stills with geo/vertical
+captions nobody scans. Oleksii wants the video work leading, one row of
+stills behind it, captions reduced to a name, and a hover worth hovering.
+How: row one is four video slots (creative-8/2/1/6 as posters, play mark,
+no src yet — adding `src` in data/work.ts makes them play); row two is the
+four stills that led before. Captions are one line: "Video 1…4" and
+"<category> · Creative 1…4"; the vertical/market pair is gone. Hover now
+lifts 8px, scales and warms the media, sweeps one band of light across the
+glass, reveals a slot-number chip, tightens the inner ring to accent-ghost,
+opens the play mark, and draws the caption rule in chartreuse. Touch skips
+the sweep and shows the chip at rest; reduced motion is covered by the
+global transition clamp. Verified at 1440, 800 and 375 — grid, captions,
+hover state and no horizontal overflow, console clean.
+Ref: pending
+
 ## 2026-08-07 · feat · build the light portfolio site
 By: alekseysamarskiyfb-bit
 Why: Oleksii needs a site he can send a prospective client cold — one scroll
