@@ -56,19 +56,28 @@ By: alekseysamarskiyfb-bit
 Why: Oleksii sent a new photo, an accent colour, and the Juliand reference —
 he wanted the name treated as a stacked Title Case lockup with both words
 animating, and the role and availability lines pulled into the composition
-instead of sitting apart from it.
-How: the new photo is a black-background square, not a cutout, so it is framed
-rather than composited — an arch-topped card whose background matches the
-photo's own, which makes the crop edge invisible. The name is set twice: an
-ink copy for the light field and a paper copy clipped to the card's geometry,
-so one word stays legible across both. A difference blend was tried first and
-rejected — it threw colour casts over skin and fabric. Both lines now animate,
-per character, rising out of a per-line mask with a stagger keyed to a running
-`data-i` so the two copies stay in lockstep. The role line is display type at
-up to 3.5rem; availability became a glass pill. Accent #88f000 added as
---accent and used only as a shape, twice: the availability dot and the current
-role's timeline node. Verified at 375 and 1440, no overflow, console clean.
-Ref: 3e7d0f6
+instead of sitting apart from it. He then sent a background-free version of the
+photo and asked for it larger.
+How: the name is now two Title Case lines, both animating per character out of
+a per-line mask, staggered by a running `data-i` so the rise reads as one wave
+across the whole lockup. The portrait is a transparent cutout standing on the
+field, trimmed to the subject's own bounds so its rendered height IS the
+subject's height with no padding to compensate for, and sized by
+`min(82svh, 50rem, 46vw × 1160/1050)` — height and width capped in one
+expression, because driving off viewport height alone computes a portrait wider
+than a phone screen and buries the name behind it. The name sits behind the
+cutout and is cropped by it; the lockup rides high enough that its first line
+crosses the head rather than the shoulders, which is less than half the width,
+so most of the name survives. The role line is display type up to 3.5rem;
+availability became a glass pill. Accent #88f000 added as --accent, used only
+as a shape and only twice: the availability dot and the current role's node.
+Two earlier approaches were built and dropped, both for the same reason — the
+first photo had a baked-in black background: an arch-topped card with the name
+difference-blended over it (colour casts over skin and fabric), then the same
+card with a second paper-white copy of the name clipped to it. The cutout made
+both unnecessary. Verified at 375 / 768 / 1024 / 1280 / 1440 / 1920: no
+overflow, no overlaps, behaviour pass clean, `tsc` clean.
+Ref: 3e7d0f6 (superseded within the same commit by the cutout; see 101c046)
 
 ## 2026-08-07 · feat · rebuild the portfolio grid as video row + stills row
 By: alekseysamarskiyfb-bit
