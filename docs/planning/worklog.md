@@ -22,7 +22,7 @@ the sheet would vanish and leave the page frozen. Verified at 375, 768 and 1280:
 open/close, Escape, veil, link navigation (Lenis scrolls after the sheet closes),
 scroll lock and release, the resize guard, no horizontal overflow, `tsc` clean
 and no page console errors.
-Ref: pending
+Ref: 3e7d0f6
 
 ## 2026-08-07 · feat · rebuild the Velar section as one immersive dark plane
 By: alekseysamarskiyfb-bit
@@ -49,7 +49,7 @@ layers carry no `filter: blur()` — softness lives in the gradient stops, which
 keeps an expensive off-screen buffer out of the 3D context. Palette unchanged:
 the existing `--velar-glow` / `--velar-2` violets, white alphas, near-black.
 Kept the light section head, the pitch copy, and the staggered card entrance.
-Ref: pending
+Ref: 3e7d0f6
 
 ## 2026-08-07 · feat · redesign the hero around the new portrait
 By: alekseysamarskiyfb-bit
@@ -68,7 +68,7 @@ per character, rising out of a per-line mask with a stagger keyed to a running
 up to 3.5rem; availability became a glass pill. Accent #88f000 added as
 --accent and used only as a shape, twice: the availability dot and the current
 role's timeline node. Verified at 375 and 1440, no overflow, console clean.
-Ref: pending
+Ref: 3e7d0f6
 
 ## 2026-08-07 · feat · rebuild the portfolio grid as video row + stills row
 By: alekseysamarskiyfb-bit
@@ -85,7 +85,7 @@ opens the play mark, and draws the caption rule in chartreuse. Touch skips
 the sweep and shows the chip at rest; reduced motion is covered by the
 global transition clamp. Verified at 1440, 800 and 375 — grid, captions,
 hover state and no horizontal overflow, console clean.
-Ref: pending
+Ref: 3e7d0f6
 
 ## 2026-08-07 · feat · build the light portfolio site
 By: alekseysamarskiyfb-bit
