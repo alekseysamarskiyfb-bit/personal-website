@@ -47,7 +47,7 @@ Measured, A/B against the previous implementation on the same machine:
 Verified: `tsc --noEmit` clean; `next build` clean at 152 kB. Scans at 1440 and
 390 — zero horizontal overflow, all 7 cards reveal, no console errors. Velar
 confirmed animating (panel 0->1, glow scrubbing 0.25->1, foot 0->1).
-Ref: pending
+Ref: bbff80e
 
 ## 2026-08-07 · change · Phase 4b — What You Get redesign
 By: alekseysamarskiyfb-bit
