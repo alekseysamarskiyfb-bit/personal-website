@@ -20,9 +20,7 @@ recompressed to WebP (3.6 MB → 75 kB, 220 kB → 58 kB) after Next's WASM
 encoder took 36s on the PNG; `sharp` added so image optimisation is fast and
 production-grade. Verified across six widths plus a behaviour and an
 independent gate pass — details in the initiative's work.md.
-Ref: pending
-
-## 2026-08-07 · chore · recover assets and toolchain from history
+Ref: 5d9f453
 
 ## 2026-08-07 · chore · recover assets and toolchain from history
 By: alekseysamarskiyfb-bit
@@ -36,4 +34,4 @@ velar-v.png, avatar*.jpeg, work/creative-1..8.jpg) and the build config
 (package.json, tsconfig, next/postcss/tailwind config, .gitignore,
 .claude/launch.json) out of 349133a into the working tree. No design code
 carried over — the previous site was dark-theme and the brief asks for light.
-Ref: pending
+Ref: 5d9f453 (landed with the build)

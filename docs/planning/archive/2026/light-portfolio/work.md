@@ -1,7 +1,7 @@
 # Work — Light portfolio site
 
-Status: **built and verified against the contract; awaiting Oleksii's
-acceptance.** Nothing is committed yet — the whole site is untracked.
+Status: **accepted and shipped.** Committed as 5d9f453 and pushed to
+origin/main on 2026-08-07.
 
 ## Plan
 
@@ -45,10 +45,19 @@ All eight steps are done.
   typed, `REVEAL.enterStart` is actually read, dead CSS and an unused Tailwind
   font mapping are gone, and non-English portfolio titles carry `lang`.
 
+## Acceptance
+
+Oleksii accepted by asking for the push. Committed as 5d9f453 and pushed.
+
+The push had to go through the `github-deploy-website` SSH alias: `origin`
+still resolves to a key GitHub has marked read-only. Unchanged, because it is
+a persistent local config change and therefore Oleksii's call:
+
+    git remote set-url origin git@github-deploy-website:alekseysamarskiyfb-bit/personal-website.git
+
 ## Next action
 
-Oleksii reviews the site. On acceptance: commit, archive this folder to
-`docs/planning/archive/2026/`, and offer deployment as its own piece of work.
+None. The initiative is closed.
 
 ## Follow-ups
 
