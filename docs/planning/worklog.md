@@ -2,6 +2,31 @@
 
 Newest first.
 
+## 2026-08-07 · chore · deploy to production
+By: alekseysamarskiyfb-bit
+Why: user asked to deploy after the final QA pass. Deployment was out of scope
+in the contract, so this was confirmed explicitly first — including the known
+placeholder Telegram/Instagram handles, which the user chose to ship with.
+How: pushed `de91163..83f79b1` (13 commits) to origin/main; the host rebuilds
+from GitHub on push (no vercel.json or workflow in the repo).
+The first push FAILED — "the key you are authenticating with has been marked as
+read only". Not a GitHub permission problem: `~/.ssh/config` pins
+`Host github.com` to `id_ed25519_account` with `IdentitiesOnly yes`, and that
+key is read-only on this repo. The read/write key (`SHA256:IJ1mCp…`,
+`id_ed25519_github`) is only reachable through the `github-deploy-website`
+alias already in the config, so the push went through that.
+NOTE: `origin` still points at the read-only path, so the next plain
+`git push` will fail the same way. Fix, left for the user because it is a
+persistent config change:
+  git remote set-url origin git@github-deploy-website:alekseysamarskiyfb-bit/personal-website.git
+Verified live at https://oleksiisamarskyi.com after the rebuild: SAMARSKYI
+wordmark present and the old OLEKSII gone; og:title, og:image, favicon and
+theme-color #14120f present with the stale #d5cfbe gone; the FAQ anchor,
+work `data-theme` and the mirrored-card `data-side` attributes all shipped.
+Assets serve: /icon.svg 200 image/svg+xml, /opengraph-image 200 image/png 44 kB.
+Still live with placeholder handles (`t.me/oleksii`, `instagram.com/oleksii`).
+Ref: 83f79b1
+
 ## 2026-08-07 · fix · final QA sweep
 By: alekseysamarskiyfb-bit
 Why: verify the whole initiative against the contract's success criteria
