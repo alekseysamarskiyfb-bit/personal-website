@@ -57,7 +57,7 @@ icon centre 134 == flown text centre 134; card-to-paragraph clearance positive
 at every tested viewport height (8px at 1440x700 up to 42px at 1440x900), where
 it had been -3px. Scans at 1440 / 834 / 390 — zero horizontal overflow, all 7
 timeline cards reveal, no console errors. OG card rendered and inspected.
-Ref: pending
+Ref: fa18764
 
 ## 2026-08-07 · change · Phase 5 — motion consistency
 By: alekseysamarskiyfb-bit
