@@ -1,31 +1,31 @@
 # Work — Production polish pass
 
-**Status:** All six phases complete and verified. Final QA pass outstanding.
-**Next action:** the final QA sweep — a full read of the diff against the
-contract's success criteria, plus an end-to-end pass at every breakpoint
-(390 / 768 / 834 / 1024 / 1099 / 1100 / 1280 / 1440 / 1920) covering every
-section rather than the ones each phase happened to touch. Check the
-still-open items below before calling the initiative done.
+**Status:** ACCEPTED and archived 2026-08-07. All six phases plus the final QA
+pass complete and verified against the contract.
 
-### Open before this can be called finished
- - **Telegram / Instagram handles are still placeholders** (`t.me/oleksii`,
-   `instagram.com/oleksii` in `navData.ts`). The user owns this; it is the
-   site's primary conversion point and must not ship as-is.
- - `npm run lint` remains unusable — no ESLint config, `next lint` drops into
-   interactive setup. `next build` type-checks regardless. The contract's
-   "lint clean" criterion is therefore unmeasured, not met.
+**Acceptance note.** Five of the six success criteria are met and verified in a
+real browser at nine widths: navigation clickable and landing correctly,
+no horizontal overflow or overlaps, resize never breaking the page, every
+section carrying motion in one vocabulary, and the Journey section rebuilt so
+the run derives from the drawn spine. The sixth is PARTIALLY met — `next build`
+and `tsc` are clean, but `next lint` was never runnable: the project has no
+ESLint config, so that half of the criterion is unmeasured rather than passing.
+
+**Handed back to the user, not done here:**
+ - The Telegram and Instagram handles in `navData.ts` are still the
+   `t.me/oleksii` placeholders. Out of scope by the user's decision, but this
+   is the site's primary conversion point and must not ship as-is.
  - Next 14.2.35 carries 21 high-severity advisories; the fix is Next 16, a
-   breaking major deliberately left out of a polish pass.
+   breaking major deliberately excluded from a polish pass.
 
-**Established pattern for scroll-linked reveals** (used by the Journey spine
-and the What You Get chips, and the model for anything similar):
- 1. One scrub owns the progress.
- 2. Dependent elements derive their state from that progress, so nothing can
-    appear before the thing that leads to it.
- 3. Reveal one-way — no toggling back, which is what reads as a replay.
- 4. The hidden state is gated behind an `.is-armed` class the owning module
-    sets once it is actually in charge, so any failure fails OPEN (elements
-    visible but unanimated) rather than leaving content permanently invisible.
+**Surviving follow-ups** (each would be its own initiative):
+ - Configure ESLint so the "lint clean" criterion becomes measurable.
+ - Upgrade Next, with the advisories as the driver.
+ - Real case studies behind the Work cards; they are non-interactive today.
+ - Image optimisation: eight work creatives and a 3.6 MB portrait ship as raw
+   `<img>` with no `next/image`.
+ - Promote the Playwright QA harness from the scratchpad into the repo if this
+   kind of verification is wanted routinely.
 
 ### Motion verification (resolved 2026-08-06)
 

@@ -42,7 +42,7 @@ Verified against the contract:
 Extras checked: every img has alt, every button and link has an accessible
 name, one h1, lang set, all external links carry noopener, and
 title/description/og:title/og:image/icon/theme-color all present.
-Ref: pending
+Ref: f43f5d4
 
 ## 2026-08-07 · change · Phase 6 — visual sweep
 By: alekseysamarskiyfb-bit
