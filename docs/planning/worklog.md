@@ -2,6 +2,63 @@
 
 Newest first.
 
+## 2026-08-07 · change · Phase 6 — visual sweep
+By: alekseysamarskiyfb-bit
+Why: dead rules, contradictory declarations, unexplained magic numbers, and no
+link preview on a site whose main distribution is a URL pasted into Telegram.
+How:
+ - Removed 29 dead CSS rules (globals.css 3969 -> 3804 lines): the whole
+   `.service-*` / `.sevice_section` and `.testimonial_section` / `.swiper-*` /
+   `.client-img` / `.drag-wrap` blocks for sections that do not exist, plus
+   `.t-display`, `.glass`, `.h2-style-white`, `.max-width-700`,
+   `.is-preload-hidden`, `.about-timeline-overflow`, `.about-timeline-rail`,
+   `.about-card-bottom-text`, `.footer-link-dot`, `.mobile-hero-only`.
+   Derived mechanically by diffing every CSS class against all source, then
+   removed with postcss. `.lenis-smooth` / `.lenis-stopped` deliberately kept —
+   Lenis applies those at runtime and they look dead to a static scan.
+ - Removed the dead `narrow` option end to end (`NavLink.narrow`, its reader in
+   Sidebar, and the `.nav-item-icon.is-narrow` rule that could never match),
+   and the never-called `registerStyleEnginePlugins()`.
+ - `IconQuote` -> `IconLayers` for the Velar nav item; a quotation mark read as
+   a testimonial rather than a studio.
+ - Metadata: added openGraph, twitter, canonical and metadataBase; a real
+   `app/icon.svg` favicon (drawn as a path, so it does not depend on a font);
+   and `app/opengraph-image.tsx` rendering a 1200x630 card with next/og — part
+   of Next, no new dependency. Also fixed `themeColor: #d5cfbe`, a leftover
+   from the light palette the site had before it was inverted, so mobile
+   browser chrome showed a bone bar above a near-black page.
+Three defects found while sweeping, all matching reported symptoms:
+ - THE COMPRESSED TEXT. The ghost engine scaled `text_font` and `icon_center`
+   pairs with independent scaleX/scaleY, so any difference in aspect between
+   the rail's text box and its hero ghost deformed the glyphs — which is why
+   "Years in performance" rendered squashed and letter-mangled beside an
+   undistorted "Creatives". Now a UNIFORM scale, taken from the font-size
+   ratio (what "text_font" actually means) rather than from the box, so the
+   result does not depend on how the copy happens to wrap. Widening the box in
+   Phase 3 had treated the symptom; this is the cause.
+ - A uniformly scaled element no longer fills its ghost box, so it needed
+   re-centring on it — without that the copy sat 18px off the icon above it.
+ - `.hero-cards-wrap { bottom: 12% }` put the lower stat card 3px BELOW the top
+   of the ground paragraph: a genuine overlap at 900px tall. Now 17%.
+ - `.hero-stat-icon-wrap` declared `align-items: flex-end` and a second rule
+   further down overrode it to `center`; one was dead and the pair was the
+   icon/figure misalignment. Resolved to one centred rule, and the stat cards
+   are centre-aligned to match the flown copy, which carries the rail's own
+   `text-align: center` (a left-aligned card put its icon hard left against
+   centred text).
+ - `.hero-profile-img { margin-left: -3vw }` removed. Measured the PNG's alpha
+   bounding box: the subject is centred on its canvas to within 1px of 1600,
+   and the image box is centred in the same padded frame as the mark, so the
+   nudge was not correcting the asset — it pushed the portrait 43px off the
+   mark's optical centre.
+Verified: `tsc --noEmit` clean; `next build` clean at 152 kB, now emitting
+/icon.svg and /opengraph-image. Portrait centre 720 == mark centre 720; stat
+icon centre 134 == flown text centre 134; card-to-paragraph clearance positive
+at every tested viewport height (8px at 1440x700 up to 42px at 1440x900), where
+it had been -3px. Scans at 1440 / 834 / 390 — zero horizontal overflow, all 7
+timeline cards reveal, no console errors. OG card rendered and inspected.
+Ref: pending
+
 ## 2026-08-07 · change · Phase 5 — motion consistency
 By: alekseysamarskiyfb-bit
 Why: sections used different easings and durations for the same class of move,

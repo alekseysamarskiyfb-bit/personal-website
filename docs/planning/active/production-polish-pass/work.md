@@ -1,14 +1,21 @@
 # Work — Production polish pass
 
-**Status:** Phases 1–5 complete and verified. Phase 6 outstanding, then final QA.
-**Next action:** Phase 6 — the visual sweep. Dead CSS (`.about-timeline-overflow`,
-`.about-timeline-rail`, `.h2-style-white`, `.max-width-700`,
-`.about-card-bottom-text`, `.mobile-hero-only`, `.t-display`, `.glass`,
-`.is-preload-hidden`, plus the `.sevice_*` / `.testimonial_*` / `.swiper-*`
-blocks for sections that do not exist), dead TS (`NavLink.narrow`,
-`registerStyleEnginePlugins`), the contradictory `align-items` override on the
-hero stat wraps, `.hero-profile-img`'s unexplained `-3vw`, `IconQuote` on the
-Velar nav item, and the missing favicon / OG metadata.
+**Status:** All six phases complete and verified. Final QA pass outstanding.
+**Next action:** the final QA sweep — a full read of the diff against the
+contract's success criteria, plus an end-to-end pass at every breakpoint
+(390 / 768 / 834 / 1024 / 1099 / 1100 / 1280 / 1440 / 1920) covering every
+section rather than the ones each phase happened to touch. Check the
+still-open items below before calling the initiative done.
+
+### Open before this can be called finished
+ - **Telegram / Instagram handles are still placeholders** (`t.me/oleksii`,
+   `instagram.com/oleksii` in `navData.ts`). The user owns this; it is the
+   site's primary conversion point and must not ship as-is.
+ - `npm run lint` remains unusable — no ESLint config, `next lint` drops into
+   interactive setup. `next build` type-checks regardless. The contract's
+   "lint clean" criterion is therefore unmeasured, not met.
+ - Next 14.2.35 carries 21 high-severity advisories; the fix is Next 16, a
+   breaking major deliberately left out of a polish pass.
 
 **Established pattern for scroll-linked reveals** (used by the Journey spine
 and the What You Get chips, and the model for anything similar):

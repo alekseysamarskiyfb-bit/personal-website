@@ -38,6 +38,7 @@ type Measurement = {
   rRect: DOMRect;
   gRect: DOMRect;
   realFontSize: string;
+  ghostFontSize: string;
   parent?: HTMLElement;
   parentRect?: DOMRect;
   computedStyle?: { width: string; height: string };
@@ -135,6 +136,7 @@ export const GhostEngine = {
       rRect: real.getBoundingClientRect(),
       gRect: ghost.getBoundingClientRect(),
       realFontSize: window.getComputedStyle(real).fontSize,
+      ghostFontSize: window.getComputedStyle(ghost).fontSize,
     };
 
     if (type === "logo") {
@@ -201,11 +203,36 @@ export const GhostEngine = {
       toOverrides.position = "absolute";
       toOverrides.top = "0px";
       toOverrides.left = "0px";
-    } else if (type === "link" || type === "icon_center" || type === "text_font") {
+    } else if (type === "link") {
       vars.x = xDiff;
       vars.y = yDiff;
       vars.scaleX = gRect.width / rRect.width;
       vars.scaleY = gRect.height / rRect.height;
+      vars.transformOrigin = "top left";
+    } else if (type === "icon_center" || type === "text_font") {
+      /* UNIFORM scale. Glyphs and icons have a shape; stretching one axis
+         against the other deforms it. The two stat cards proved it — the
+         rail's text box and its hero ghost have different aspect ratios, so
+         "Years in performance" rendered squashed and letter-mangled next to
+         an undistorted "Creatives".
+         The factor is the FONT-SIZE ratio, which is what "text_font" means:
+         the ghost declares the size the type should read at in the hero, and
+         the real element is scaled to exactly that. Deriving it from the box
+         instead makes the result depend on how the copy happens to wrap. */
+      const rf = parseFloat(m.realFontSize);
+      const gf = parseFloat(m.ghostFontSize);
+      const uniform = rf > 0 && gf > 0 ? gf / rf : gRect.height / rRect.height;
+
+      /* Re-centre on the ghost. A uniformly scaled element no longer fills the
+         ghost box the way a stretched one did, so aligning its top-left corner
+         left the copy sitting off-centre from the icon above it. Centring the
+         leftover difference is what keeps the card's contents on one axis. */
+      const slackX = (gRect.width - rRect.width * uniform) / 2 / scale;
+      const slackY = (gRect.height - rRect.height * uniform) / 2 / scale;
+      vars.x = xDiff + slackX;
+      vars.y = yDiff + slackY;
+      vars.scaleX = uniform;
+      vars.scaleY = uniform;
       vars.transformOrigin = "top left";
     } else if (type === "background") {
       const sX = gRect.width / rRect.width;

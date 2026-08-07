@@ -294,7 +294,7 @@ export default function Sidebar() {
                   data-tl-to="{'scale': 1, 'opacity': 1}"
                 />
                 <link.Icon
-                  className={`nav-item-icon${link.narrow ? " is-narrow" : ""}`}
+                  className="nav-item-icon"
                   data-tl-desktop
                   data-tl-type="scroll"
                   data-tl-trigger=".hero"

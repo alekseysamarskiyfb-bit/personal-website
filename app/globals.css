@@ -216,26 +216,16 @@ p {
   margin: 0;
 }
 
-.t-display {
-  font-family: var(--font-display), Arial, sans-serif;
-  font-weight: 500;
-}
-
 /* Section headings — 66px @1440.
    lh 1.04 not 1.0: at this size 1.0 collides ascenders into the descenders
    of the line above on any two-line heading. */
-.h2-style,
-.h2-style-white {
+.h2-style {
   font-family: var(--font-display), Arial, sans-serif;
   font-size: clamp(2.5rem, 4.58vw, 5rem);
   font-weight: 600;
   line-height: 1.04;
   letter-spacing: -0.032em;
   text-wrap: balance;
-}
-
-.h2-style-white {
-  color: var(--paper-ink);
 }
 
 /* the section-header component: label -> heading -> subhead.
@@ -270,10 +260,6 @@ p {
 .max-width-389 {
   max-width: 34ch;   /* measure, not an arbitrary rem value */
   color: var(--ink-70);
-}
-
-.max-width-700 {
-  max-width: clamp(300px, 32vw, 800px);
 }
 
 .op80 {
@@ -330,22 +316,6 @@ p {
 }
 
 /* ==========================================================================
-   GLASS
-   Depth comes ONLY from backdrop-filter + translucent fill + a 1px
-   top-light border. There are no box-shadows anywhere in this system.
-   backdrop-filter stays in CSS and is never tweened by GSAP — animating it
-   destroys compositing performance.
-   ========================================================================== */
-
-.glass {
-  background-color: var(--surface);
-  border: 1px solid var(--hairline);
-  -webkit-backdrop-filter: blur(15px);
-  backdrop-filter: blur(15px);
-  border-radius: var(--s8);
-}
-
-/* ==========================================================================
    SPLITTEXT MASKING
    Text reveals slide from behind a mask — never a plain fade.
    Objects reveal with blur + scale + alpha together.
@@ -361,12 +331,6 @@ p {
    gradient nav item blank. */
 .line {
   will-change: transform;
-}
-
-/* Elements the engine animates in from hidden must START hidden in CSS or
-   they flash on first paint, before the engine mounts. */
-.is-preload-hidden {
-  visibility: hidden;
 }
 
 /* ==========================================================================
@@ -866,11 +830,6 @@ button:focus-visible {
   transition: color var(--dur-base) var(--ease-out);
 }
 
-/* Optical correction — a denser glyph reads heavier at the same box. */
-.nav-item-icon.is-narrow {
-  width: var(--s14);
-}
-
 /* Stretches the anchor over the whole row: every nav item is clickable
    across its full pill, not only on its label. The row itself is
    pointer-transparent, so this is the item's entire hit area. */
@@ -1320,7 +1279,10 @@ button:focus-visible {
   /* Absolute inside the sticky frame, not fixed to the viewport: a fixed band
      never scrolls away and bled over every section below the hero. */
   position: absolute;
-  bottom: 12%;
+  /* 12% put the lower stat card's bottom edge 3px BELOW the top of the ground
+     paragraph — a real overlap at 900px tall. 17% clears it with air to spare
+     at every viewport height the hero supports. */
+  bottom: 17%;
   z-index: 30;
   left: var(--s40);
   right: var(--s40);
@@ -1376,8 +1338,12 @@ button:focus-visible {
      stopped shrinking while its box kept going — "Years in performance" wrapped
      to three clipped lines below ~1100px. The box now has a floor of its own. */
   width: max(13vw, 168px);
-  align-items: flex-start;
-  text-align: left;
+  /* Centred, not left. The visible text here is the RAIL's element flown in,
+     and it carries the rail's own `text-align: center` — so a left-aligned
+     card put its icon hard left against centred copy. Centring the card is
+     what actually makes the two agree. */
+  align-items: center;
+  text-align: center;
 }
 
 .hero-stat-a-bg,
@@ -1399,8 +1365,12 @@ button:focus-visible {
   position: relative;
   z-index: 1;
   display: flex;
+  /* Centred, matching the card and the flown copy. This rule had `flex-end`
+     here and a second rule further down overriding it to `center` — one of the
+     two was dead, and the pair was the icon/figure misalignment in the stat
+     cards. */
   justify-content: center;
-  align-items: flex-end;
+  align-items: center;
 }
 
 .hero-stat-a-icon {
@@ -1447,11 +1417,6 @@ button:focus-visible {
   letter-spacing: 0.005em;
   color: var(--ink-70);
   text-wrap: balance;
-}
-
-.hero-stat-icon-wrap,
-.hero-stat-numb-wrap {
-  align-items: center;
 }
 
 /* ---- headline + buttons -------------------------------------------------- */
@@ -1633,7 +1598,11 @@ button:focus-visible {
   object-fit: contain;
   /* Bottom-anchored so the crop always cuts at the chest, at any aspect. */
   object-position: 50% 100%;
-  margin-left: -3vw;
+  /* No horizontal nudge. There was a -3vw here with no explanation; the
+     source PNG's opaque area is centred on its canvas to within 1px of 1600,
+     and the image box is centred in the same padded frame as the mark, so the
+     offset was not correcting the asset — it was pushing the portrait 43px
+     off the mark's optical centre at 1440. */
 }
 
 .nav-link-mask-inner {
@@ -1721,27 +1690,6 @@ button:focus-visible {
   border: 2px solid var(--accent);
   border-radius: 50%;
   background-color: var(--ground);
-}
-
-.about-timeline-overflow {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  width: var(--s2);
-  height: 100%;
-  transform: translateX(-50%);
-  overflow: hidden;
-}
-
-/* Warm brown fading to nothing — a rail, not a border. */
-.about-timeline-rail {
-  width: 100%;
-  height: 0%;
-  background-image: linear-gradient(
-    rgba(243, 239, 230, 0.5),
-    rgba(243, 239, 230, 0.22) 44%,
-    rgba(243, 239, 230, 0) 95%
-  );
 }
 
 .about-card-wrap {
@@ -1853,16 +1801,6 @@ button:focus-visible {
   margin-top: var(--s34);
   padding-top: var(--s16);
   border-top: 1px solid var(--hairline);
-}
-
-.about-card-bottom-text {
-  color: var(--ink-50);
-  font-family: var(--font-body), Arial, sans-serif;
-  font-size: clamp(0.6rem, 0.83vw, 1rem);
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  line-height: 1.3;
 }
 
 .about-card-button {
@@ -2684,14 +2622,6 @@ button:focus-visible {
   color: var(--accent);
 }
 
-.footer-link-dot {
-  flex: none;
-  width: var(--s12);
-  height: var(--s12);
-  border: 2px solid var(--accent);
-  border-radius: 50%;
-}
-
 .footer-link-arrow {
   width: var(--s16);
   height: var(--s16);
@@ -2703,10 +2633,6 @@ button:focus-visible {
   text-align: right;
   line-height: 1.5;
 }
-
-
-
-
 
 /* ==========================================================================
    REDUCED MOTION — resting states for everything the engine would animate.
@@ -3130,8 +3056,7 @@ button:focus-visible {
    is broken. Anything with a hand-set pixel ceiling below is chrome.
    ========================================================================== */
 
-.mobile-menu,
-.mobile-hero-only {
+.mobile-menu {
   display: none;
 }
 
@@ -3670,43 +3595,6 @@ button:focus-visible {
     font-size: clamp(0.8rem, 3.7vw, 1rem);
   }
 
-  /* ---- ways: stack ------------------------------------------------------ */
-  .sevice_section {
-    padding: var(--band) var(--edge);
-  }
-
-  .service-wrap {
-    flex-flow: column;
-    gap: min(4.27vw, 26px);
-    margin-top: min(10vw, 60px);
-    padding: min(3.2vw, 19px);
-  }
-
-  .service-card,
-  .service-card.is-first {
-    width: 100%;
-    padding: min(6.4vw, 38px) min(5.33vw, 32px);
-  }
-
-  .service-top-content {
-    margin-bottom: min(8vw, 48px);
-  }
-
-  .service-card-top-item,
-  .service-price-item {
-    margin-bottom: min(5.33vw, 32px);
-  }
-
-  .service-list {
-    margin-top: min(6.4vw, 38px);
-  }
-
-  .service-list-bullet-icon {
-    width: 3.2vw;
-    height: 3.2vw;
-    border-width: 0.53vw;
-  }
-
   /* ---- cta -------------------------------------------------------------- */
   .cta_section {
     padding: var(--band) var(--edge);
@@ -3742,56 +3630,8 @@ button:focus-visible {
     height: min(2.13vw, 10px);
   }
 
-  /* ---- clients ---------------------------------------------------------- */
-  .testimonial_section {
-    padding: var(--band) var(--edge);
-  }
-
-  .swiper-main-wrap {
-    width: 100%;
-    align-items: flex-start;
-  }
-
-  .swiper {
-    width: 100%;
-    cursor: auto;
-  }
-
-  .swiper-card {
-    gap: min(8vw, 48px);
-    padding: min(5.33vw, 32px);
-  }
-
-  .swiper-heading {
-    font-size: clamp(1.3rem, 6.4vw, 1.8rem);
-  }
-
-  .swiper-quote-icon {
-    width: 7vw;
-    height: 7vw;
-  }
-
-  .client-img {
-    width: 13vw;
-    height: 13vw;
-  }
-
-  .swiper-pagination {
-    margin: min(5.33vw, 32px) 0 0;
-    padding: min(2.13vw, 13px);
-  }
-
-  .swiper-bullet {
-    width: 5.33vw;
-    height: 1.07vw;
-  }
-
   .swiper-bullet.is-active {
     width: 10.67vw;
-  }
-
-  .drag-wrap {
-    display: none;   /* touch has its own affordance */
   }
 
   /* ---- footer ----------------------------------------------------------- */
@@ -3883,10 +3723,6 @@ button:focus-visible {
   .footer-colophon {
     max-width: 100%;
     text-align: left;
-  }
-
-  .service-placeholder-note {
-    font-size: 0.7rem;
   }
 }
 

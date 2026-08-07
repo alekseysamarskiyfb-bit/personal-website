@@ -2,7 +2,7 @@ import {
   IconFaq,
   IconHome,
   IconJourney,
-  IconQuote,
+  IconLayers,
   IconSpark,
   IconWork,
 } from "./icons";
@@ -13,8 +13,6 @@ export type NavLink = {
   href: string;
   side: "left" | "right";
   Icon: (p: React.SVGProps<SVGSVGElement>) => JSX.Element;
-  /** Narrower glyph — optically corrected so it reads at the same weight. */
-  narrow?: boolean;
   /** Renders with the gradient treatment reserved for the venture. */
   feature?: boolean;
 };
@@ -29,7 +27,10 @@ export const NAV_LINKS: NavLink[] = [
   { id: "journey", label: "Journey", href: "#journey", side: "left", Icon: IconJourney },
   { id: "work", label: "Portfolio", href: "#portfolio", side: "left", Icon: IconWork },
   { id: "what", label: "What You Get", href: "#what-you-get", side: "right", Icon: IconSpark },
-  { id: "velar", label: "Velar Studio", href: "#velar", side: "right", Icon: IconQuote, feature: true },
+  /* IconLayers, not IconQuote: a quotation mark for a studio link read as a
+     testimonial. Layers matches what the section is about — production stacked
+     into a system. */
+  { id: "velar", label: "Velar Studio", href: "#velar", side: "right", Icon: IconLayers, feature: true },
   { id: "faq", label: "FAQ", href: "#faq", side: "right", Icon: IconFaq },
 ];
 

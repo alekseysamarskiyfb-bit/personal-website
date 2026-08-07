@@ -34,14 +34,39 @@ const body = Inter({
   display: "swap",
 });
 
+const TITLE = "Oleksii Samarskyi — Performance Creative & Growth";
+const DESCRIPTION =
+  "Performance creative and growth for paid acquisition. Static, motion and AI-assisted creative across Meta, TikTok, Native and Display. Founder of Velar Studio.";
+const SITE = "https://oleksiisamarskyi.com";
+
 export const metadata: Metadata = {
-  title: "Oleksii Samarskyi — Performance Creative & Growth",
-  description:
-    "Performance creative and growth for paid acquisition. Static, motion and AI-assisted creative across Meta, TikTok, Native and Display. Founder of Velar Studio.",
+  /* Absolute URLs for the social card. Without a metadataBase, Next emits
+     relative og:image paths, which no unfurler will resolve. */
+  metadataBase: new URL(SITE),
+  title: TITLE,
+  description: DESCRIPTION,
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    url: SITE,
+    siteName: "Oleksii Samarskyi",
+    title: TITLE,
+    description: DESCRIPTION,
+    locale: "en_GB",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#d5cfbe",
+  /* The ground colour. This was #d5cfbe — a leftover from the light palette
+     the site had before it was inverted, so mobile browser chrome rendered a
+     bone-coloured bar above a near-black page. */
+  themeColor: "#14120f",
+  colorScheme: "dark",
 };
 
 export default function RootLayout({

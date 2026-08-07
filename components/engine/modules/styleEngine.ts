@@ -235,7 +235,3 @@ export const StyleEngine = {
     gsap.fromTo(targets, fromVars, tweenConfig as gsap.TweenVars);
   },
 };
-
-export function registerStyleEnginePlugins() {
-  gsap.registerPlugin(ScrollTrigger, SplitText);
-}
