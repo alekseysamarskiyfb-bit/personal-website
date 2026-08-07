@@ -2,6 +2,53 @@
 
 Newest first.
 
+## 2026-08-07 · change · Phase 5 — motion consistency
+By: alekseysamarskiyfb-bit
+Why: sections used different easings and durations for the same class of move,
+several replayed on scroll-back, Velar had no motion beyond two text reveals,
+the hero settle fought the user's own inertia, and the magnetic solver ran an
+unbounded rAF loop.
+How:
+ - `MagneticPositions` no longer runs a per-frame loop. `solve()` measures both
+   target and anchor with getBoundingClientRect and uses the DELTA, and in every
+   pair both elements sit in the same positioned container — so the delta is
+   scroll-invariant and only LAYOUT changes can invalidate it. Now a
+   ResizeObserver over the target, anchor and section boxes, plus ScrollTrigger's
+   refresh event. Writing a transform does not change a border box, so the
+   observer cannot feed itself. Also dropped `will-change: transform` from the
+   twelve targets — justified while a loop rewrote them every frame, pure cost
+   once they are written only on layout change.
+ - `HeroSnap` waits for real velocity (<0.06 px/ms, sampled every 60ms, capped
+   at 420ms) instead of a fixed 90ms idle timer. Lenis runs at lerp 0.1 and is
+   still visibly moving 90ms after the wheel stops, so the old settle launched
+   into the tail of the user's own inertia — that fight is the jerk in the hero.
+ - Velar: the panel now arrives as one object, the wordmark rises from behind
+   its own plate (masked by `.velar-lockup`), the foot cascades after the
+   pillars, and the glow is a scroll-LINKED scrub so the panel keeps responding
+   as you move through it. Pillars gained a hover state — they had none at all;
+   the section's only transition was on the CTA button.
+ - One vocabulary: the five section-heading reveals that used
+   `power2.out / 0.6 / stagger 0.1 / delay 0.3` now match the rest at
+   `expo.out / 0.7 / stagger 0.09 / delay 0.25`. `expo.inOut` stays on the label
+   pills — a symmetric width grow is a different move.
+ - Replay: `data-tl-once` added to the Journey header (label, heading, lede) and
+   the CTA (heading, lede). Only `Sidebar.tsx:42` still reverses, correctly —
+   it is the rail's z-index swap and must return to z-9 going back up.
+Measured, A/B against the previous implementation on the same machine:
+ - CORRECTION to the plan. It claimed the rAF loop was "the single largest
+   source of jank". Frame pacing during a full-page scroll is unchanged:
+   median 16.8ms -> 16.7ms, frames over 32ms 122 -> 118. The claim was wrong.
+ - The real cost was IDLE. Over 4 seconds of sitting still inside the Journey
+   section: script time 40ms -> 10ms, total main-thread task time 340ms ->
+   220ms, style recalcs 270 -> 240. That is battery, not smoothness.
+ - Alignment survives without the loop, which was the risk: all 7 timeline
+   cards land at dy=0 with dx=±40px — exactly their declared ∓2.8vw offset —
+   and all 5 capability chips pin at 0,0.
+Verified: `tsc --noEmit` clean; `next build` clean at 152 kB. Scans at 1440 and
+390 — zero horizontal overflow, all 7 cards reveal, no console errors. Velar
+confirmed animating (panel 0->1, glow scrubbing 0.25->1, foot 0->1).
+Ref: pending
+
 ## 2026-08-07 · change · Phase 4b — What You Get redesign
 By: alekseysamarskiyfb-bit
 Why: the idea (capability chips pinned inside the sentence) is good, the

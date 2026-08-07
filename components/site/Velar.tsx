@@ -52,8 +52,32 @@ export default function Velar() {
         </p>
       </div>
 
-      <div className="velar-panel">
-        <div className="velar-glow" aria-hidden />
+      {/* The plate arrives as one object, then its contents cascade. Without
+          this the section's only motion was the label and the lede, which is
+          why it read as static next to its neighbours. */}
+      <div
+        className="velar-panel"
+        data-tl-once
+        data-tl-type="trigger"
+        data-tl-trigger=".velar-panel"
+        data-tl-start="top 82%"
+        data-tl-from="{'y': 48, 'opacity': 0}"
+        data-tl-to="{'y': 0, 'opacity': 1, 'duration': 1.1, 'ease': 'expo.out'}"
+      >
+        {/* The section's scroll-LINKED component: the bloom tracks scroll
+            rather than firing once, so the panel keeps responding as you move
+            through it instead of settling and going dead. */}
+        <div
+          className="velar-glow"
+          aria-hidden
+          data-tl-desktop
+          data-tl-type="scroll"
+          data-tl-trigger=".velar-panel"
+          data-tl-start="top 90%"
+          data-tl-end="bottom 60%"
+          data-tl-from="{'opacity': 0.25, 'scale': 0.72}"
+          data-tl-to="{'opacity': 1, 'scale': 1.08}"
+        />
 
         <div className="velar-panel-top">
           <div className="velar-lockup">
@@ -66,6 +90,15 @@ export default function Velar() {
               height={1816}
               loading="lazy"
               decoding="async"
+              /* Rises from behind its own box — the same mask grammar the
+                 headings use, so the venture's mark arrives like the rest of
+                 the page's type rather than just being present. */
+              data-tl-once
+              data-tl-type="trigger"
+              data-tl-trigger=".velar-panel"
+              data-tl-start="top 78%"
+              data-tl-from="{'yPercent': 105}"
+              data-tl-to="{'yPercent': 0, 'duration': 1.05, 'delay': 0.15, 'ease': 'expo.out'}"
             />
           </div>
 
@@ -108,7 +141,15 @@ export default function Velar() {
           ))}
         </ul>
 
-        <div className="velar-panel-foot">
+        <div
+          className="velar-panel-foot"
+          data-tl-once
+          data-tl-type="trigger"
+          data-tl-trigger=".velar-pillars"
+          data-tl-start="top 72%"
+          data-tl-from="{'opacity': 0, 'y': 22}"
+          data-tl-to="{'opacity': 1, 'y': 0, 'duration': 0.9, 'delay': 0.2, 'ease': 'expo.out'}"
+        >
           <p className="velar-foot-note">
             Taking on a small number of studio engagements at a time.
           </p>

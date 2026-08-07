@@ -30,8 +30,8 @@ type Pair = {
 export const MagneticPositions = {
   initialized: false,
   pairs: [] as Pair[],
-  rafId: null as number | null,
-  isRunning: false,
+  observer: null as ResizeObserver | null,
+  onRefresh: null as (() => void) | null,
   mobile: false,
 
   init() {
@@ -42,7 +42,7 @@ export const MagneticPositions = {
     if (!this.pairs.length) return;
 
     this.positionAllOnce();
-    if (!this.mobile && !prefersReducedMotion()) this.startLoop();
+    if (!this.mobile && !prefersReducedMotion()) this.watch();
     this.initialized = true;
   },
 
@@ -85,7 +85,10 @@ export const MagneticPositions = {
         offsetY: Utils.parseUnit(rawY),
       });
 
-      target.style.willChange = "transform";
+      /* No will-change. It was justified while a rAF loop rewrote these
+         transforms every frame; now they are written only on layout change, so
+         permanently promoting twelve elements to their own compositor layers
+         costs memory and buys nothing. */
     });
   },
 
@@ -139,21 +142,53 @@ export const MagneticPositions = {
     this.pairs.forEach((p) => this.solve(p, false));
   },
 
-  startLoop() {
-    if (this.isRunning) return;
-    this.isRunning = true;
-    const loop = () => {
-      if (!this.isRunning) return;
-      this.pairs.forEach((p) => this.solve(p, true));
-      this.rafId = requestAnimationFrame(loop);
-    };
-    this.rafId = requestAnimationFrame(loop);
+  /**
+   * Re-solve on LAYOUT CHANGE, not on every frame.
+   *
+   * This used to run an unbounded rAF loop: twelve pairs re-solved forever, each
+   * doing a getBoundingClientRect plus a DOMMatrix(getComputedStyle().transform),
+   * whether or not the section was on screen and whether or not anything had
+   * moved. It never idled, and it was the single largest source of scroll jank.
+   *
+   * Per-frame work was never actually required. `solve` measures target and
+   * anchor with getBoundingClientRect and uses the DELTA between them, and in
+   * every pair here both elements sit inside the same positioned container —
+   * the timeline cards and their milestones, the capability chips and their
+   * inline anchors. Scrolling moves both by the same amount, so the delta is
+   * scroll-invariant and the solved transform stays correct until the LAYOUT
+   * changes underneath it.
+   *
+   * So: observe the boxes, and re-solve when one of them actually changes.
+   * Writing a transform does not alter a border box, so the observer cannot
+   * feed itself.
+   */
+  watch() {
+    const solveAll = () => this.pairs.forEach((p) => this.solve(p, true));
+
+    const boxes = new Set<Element>();
+    this.pairs.forEach(({ target, anchor }) => {
+      boxes.add(target);
+      boxes.add(anchor);
+      // The container catches reflows that move an anchor without resizing it.
+      const section = target.closest("section");
+      if (section) boxes.add(section);
+    });
+
+    this.observer = new ResizeObserver(solveAll);
+    boxes.forEach((el) => this.observer?.observe(el));
+
+    // Fonts, images and pinned sections settle through refresh, not resize.
+    this.onRefresh = solveAll;
+    ScrollTrigger.addEventListener("refresh", solveAll);
   },
 
   destroy() {
-    this.isRunning = false;
-    if (this.rafId) cancelAnimationFrame(this.rafId);
-    this.rafId = null;
+    this.observer?.disconnect();
+    this.observer = null;
+    if (this.onRefresh) {
+      ScrollTrigger.removeEventListener("refresh", this.onRefresh);
+      this.onRefresh = null;
+    }
     this.pairs.forEach(({ target }) => {
       target.style.transform = "";
       target.style.willChange = "";

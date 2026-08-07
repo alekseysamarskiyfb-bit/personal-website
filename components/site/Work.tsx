@@ -51,7 +51,7 @@ export default function Work() {
                 data-tl-start="top 80%"
                 data-tl-split="lines"
                 data-tl-from="{'yPercent': 100}"
-                data-tl-to="{'yPercent': 0, 'duration': 0.6, 'stagger': 0.1, 'delay': 0.3, 'ease': 'power2.out'}"
+                data-tl-to="{'yPercent': 0, 'duration': 0.7, 'stagger': 0.09, 'delay': 0.25, 'ease': 'expo.out'}"
               >
                 Built for the feed,
                 <br />
@@ -67,7 +67,7 @@ export default function Work() {
               data-tl-start="top 80%"
               data-tl-split="lines"
               data-tl-from="{'yPercent': 100}"
-              data-tl-to="{'yPercent': 0, 'duration': 0.6, 'stagger': 0.1, 'delay': 0.3, 'ease': 'power2.out'}"
+              data-tl-to="{'yPercent': 0, 'duration': 0.7, 'stagger': 0.09, 'delay': 0.25, 'ease': 'expo.out'}"
             >
 Vertical-format creative for paid acquisition — produced against
               live test data, not a moodboard. This set is one crypto campaign,

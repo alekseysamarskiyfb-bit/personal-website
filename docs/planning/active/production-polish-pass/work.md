@@ -1,10 +1,14 @@
 # Work — Production polish pass
 
-**Status:** Phases 1–4b complete and verified. Phases 5 and 6 outstanding.
-**Next action:** Phase 5 — motion consistency. Start with 5.1, the unbounded
-`MagneticPositions` rAF loop: 12 pairs re-solved every frame forever, each
-doing a `getBoundingClientRect` plus `DOMMatrix(getComputedStyle().transform)`,
-never idling. Note 5.4 is already done — `immediateRender` landed in 4b.
+**Status:** Phases 1–5 complete and verified. Phase 6 outstanding, then final QA.
+**Next action:** Phase 6 — the visual sweep. Dead CSS (`.about-timeline-overflow`,
+`.about-timeline-rail`, `.h2-style-white`, `.max-width-700`,
+`.about-card-bottom-text`, `.mobile-hero-only`, `.t-display`, `.glass`,
+`.is-preload-hidden`, plus the `.sevice_*` / `.testimonial_*` / `.swiper-*`
+blocks for sections that do not exist), dead TS (`NavLink.narrow`,
+`registerStyleEnginePlugins`), the contradictory `align-items` override on the
+hero stat wraps, `.hero-profile-img`'s unexplained `-3vw`, `IconQuote` on the
+Velar nav item, and the missing favicon / OG metadata.
 
 **Established pattern for scroll-linked reveals** (used by the Journey spine
 and the What You Get chips, and the model for anything similar):

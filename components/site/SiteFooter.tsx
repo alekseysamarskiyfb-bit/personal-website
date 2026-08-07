@@ -111,7 +111,7 @@ export default function SiteFooter() {
           data-tl-start="top 90%"
           data-tl-split="lines"
           data-tl-from="{'yPercent': 100}"
-          data-tl-to="{'yPercent': 0, 'duration': 0.6, 'stagger': 0.1, 'delay': 0.3, 'ease': 'power2.out'}"
+          data-tl-to="{'yPercent': 0, 'duration': 0.7, 'stagger': 0.09, 'delay': 0.25, 'ease': 'expo.out'}"
         >
           Questions,
           <br />

@@ -19,6 +19,7 @@ export default function Cta() {
       <div className="column cta-column" id="cta_column">
         <h2
           className="cta_heading"
+          data-tl-once
           data-tl-type="trigger"
           data-tl-trigger="#cta_column"
           data-tl-start="top 82%"
@@ -33,6 +34,7 @@ export default function Cta() {
 
         <p
           className="max-width-389 op80"
+          data-tl-once
           data-tl-type="trigger"
           data-tl-trigger="#cta_column"
           data-tl-start="top 74%"

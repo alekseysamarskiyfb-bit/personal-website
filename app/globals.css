@@ -2869,6 +2869,9 @@ button:focus-visible {
   background-color: rgba(10, 9, 8, 0.55);
   border: 1px solid var(--hairline);
   border-radius: var(--s22);
+  /* Masks the wordmark's rise, so the mark comes up from behind its own plate
+     rather than sliding across it. */
+  overflow: hidden;
 }
 
 .velar-wordmark {
@@ -2896,11 +2899,36 @@ button:focus-visible {
   list-style: none;
 }
 
+/* The pillars had no hover at all — four cards that looked interactive and
+   answered to nothing. A restrained lift: the glyph takes the accent, the
+   copy comes up to full ink. */
 .velar-pillar {
   display: flex;
   flex-flow: column;
   align-items: flex-start;
   gap: var(--s12);
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.velar-pillar:hover {
+  transform: translateY(-4px);
+}
+
+.velar-pillar-icon,
+.velar-pillar-body {
+  transition: color var(--dur-base) var(--ease-out),
+    background-color var(--dur-base) var(--ease-out),
+    opacity var(--dur-base) var(--ease-out);
+}
+
+.velar-pillar:hover .velar-pillar-icon {
+  background-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.velar-pillar:hover .velar-pillar-body {
+  color: var(--ink);
+  opacity: 1;
 }
 
 .velar-pillar-icon {

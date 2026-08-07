@@ -67,6 +67,31 @@ export const HeroSnap = {
       });
     };
 
+    /* Wait for the page to actually be SLOW, not for a fixed delay.
+       A 90ms timer was the old test, but Lenis runs at lerp 0.1 and is still
+       visibly moving 90ms after the wheel stops — so the settle launched into
+       the tail of the user's own inertia and the two fought. That fight is the
+       jerk in the hero. Sampling the real velocity means the takeover happens
+       when the page is genuinely coasting to a stop, at any scroll speed. */
+    const SLOW = 0.06;      // px per ms — imperceptible drift
+    const MAX_WAIT = 420;   // ms; never wait forever on a slow trackpad glide
+
+    let waited = 0;
+    const armSettle = () => {
+      if (this.idleTimer) clearTimeout(this.idleTimer);
+      const y = window.scrollY;
+      this.idleTimer = setTimeout(() => {
+        const speed = Math.abs(window.scrollY - y) / 60;
+        waited += 60;
+        if (speed > SLOW && waited < MAX_WAIT) {
+          armSettle();
+          return;
+        }
+        waited = 0;
+        settle();
+      }, 60);
+    };
+
     const onScroll = () => {
       if (!this.enabled || this.settling) return;
       if (window.scrollY > end() * 1.25) {
@@ -74,10 +99,8 @@ export const HeroSnap = {
         this.lastY = window.scrollY;
         return;
       }
-      if (this.idleTimer) clearTimeout(this.idleTimer);
-      // Fires on gesture END: momentum has to finish before we take over,
-      // otherwise the settle competes with the user's own inertia.
-      this.idleTimer = setTimeout(settle, 90);
+      waited = 0;
+      armSettle();
     };
 
     Utils.addEvent(window, "scroll", onScroll, { passive: true });

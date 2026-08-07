@@ -108,6 +108,7 @@ export default function Journey() {
       <div className="column">
         <p
           className="label"
+          data-tl-once
           data-tl-type="trigger"
           data-tl-trigger=".about-section"
           data-tl-start="top 90%"
@@ -118,23 +119,25 @@ export default function Journey() {
         </p>
         <h2
           className="h2-style margin-bottom-s"
+          data-tl-once
           data-tl-type="trigger"
           data-tl-trigger=".about-section"
           data-tl-start="top 90%"
           data-tl-split="lines"
           data-tl-from="{'yPercent': 100}"
-          data-tl-to="{'yPercent': 0, 'duration': 0.6, 'stagger': 0.1, 'delay': 0.3, 'ease': 'power2.out'}"
+          data-tl-to="{'yPercent': 0, 'duration': 0.7, 'stagger': 0.09, 'delay': 0.25, 'ease': 'expo.out'}"
         >
           How I got here
         </h2>
         <p
           className="max-width-389 op80"
+          data-tl-once
           data-tl-type="trigger"
           data-tl-trigger=".about-section"
           data-tl-start="top 90%"
           data-tl-split="lines"
           data-tl-from="{'yPercent': 100}"
-          data-tl-to="{'yPercent': 0, 'duration': 0.6, 'stagger': 0.1, 'delay': 0.3, 'ease': 'power2.out'}"
+          data-tl-to="{'yPercent': 0, 'duration': 0.7, 'stagger': 0.09, 'delay': 0.25, 'ease': 'expo.out'}"
         >
           Not a resume — the actual path. Seven seats in three years, each one
           teaching something the last one couldn&rsquo;t.
