@@ -2,6 +2,48 @@
 
 Newest first.
 
+## 2026-08-07 · fix · final QA sweep
+By: alekseysamarskiyfb-bit
+Why: verify the whole initiative against the contract's success criteria
+rather than against each phase's own scope.
+How: swept 390 / 768 / 834 / 1024 / 1099 / 1100 / 1280 / 1440 / 1920, walking
+the full page height at each width, plus interaction and resilience passes.
+One BLOCKER found and fixed:
+ - Timeline cards overlapped each other at 1440 (2 pairs) and 1920 (all 6
+   pairs) — a defect introduced by the Phase 4 container tightening. Cause: a
+   card's height follows viewport WIDTH (the cards are on the vw grid, reaching
+   554px at 1920) while the container was sized in vh, so the milestone step
+   followed viewport HEIGHT (only 340px at 1920x900). No CSS expression can
+   reconcile those, because card height also depends on how the copy wraps.
+   `TimelineSpine.reserve()` now measures the tallest card and sizes the
+   container so the step clears it, reading the milestone spacing from the
+   anchors themselves so it cannot desynchronise from Journey.tsx. Runs before
+   MagneticPositions, since it moves every anchor. The CSS height is now only a
+   pre-JS fallback.
+   After: clearance is positive everywhere — 68px at 1280, 62px at 1440, 47px
+   at 1920x900, 46px at 1920x1080, where the deficit had been up to 214px.
+Also corrected a false alarm in my own harness: nav links measured
+"unreachable" below 1100 because they live in the closed drawer. Opening the
+drawer first, all six are reachable at every width.
+Verified against the contract:
+ 1. Nav clickable and lands correctly — 6/6 at all nine widths; clicks land
+    journey/work/velar at 0px, what at 40px (its scroll-margin), faq at 95px.
+    Mobile drawer opens, links are hit-testable, it closes on click, and
+    Journey lands at 77px, just below the 78px bar.
+ 2. No horizontal overflow and no overlaps — clean at all nine widths after
+    the fix above, walking the entire page at each.
+ 3. Resize never breaks the page — survives a resize DURING the intro plus
+    five more across the collapse boundary; rail, heading and portrait stay
+    visible throughout, no errors.
+ 4/5. Motion: every section animates; Velar and Journey confirmed in earlier
+    phases; reduced motion lands everything at rest (7/7 cards, 5/5 chips).
+ 6. `next build` clean at 152 kB, `tsc --noEmit` clean. `next lint` remains
+    UNMEASURED — no ESLint config exists; this criterion is not met.
+Extras checked: every img has alt, every button and link has an accessible
+name, one h1, lang set, all external links carry noopener, and
+title/description/og:title/og:image/icon/theme-color all present.
+Ref: pending
+
 ## 2026-08-07 · change · Phase 6 — visual sweep
 By: alekseysamarskiyfb-bit
 Why: dead rules, contradictory declarations, unexplained magic numbers, and no

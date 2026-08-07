@@ -45,6 +45,49 @@ export const TimelineSpine = {
     Utils.$(".about-card-container")?.classList.add("is-armed");
   },
 
+  /**
+   * Reserve a run tall enough for the cards it has to hold.
+   *
+   * The two dimensions pull in opposite directions: a card's WIDTH is on the vw
+   * grid so its height grows as the viewport widens (554px at 1920), while the
+   * container was sized in vh so the gap between milestones grew with viewport
+   * HEIGHT instead (only 340px at 1920x900). On a wide, short window the cards
+   * were therefore 214px taller than the step between them, and consecutive
+   * cards overlapped.
+   *
+   * No CSS expression can reconcile that, because card height depends on how
+   * the copy wraps. So it is measured: take the tallest card, add clearance,
+   * and size the container so the milestone spacing clears it. The spacing
+   * fraction is read from the anchors themselves rather than hard-coded, so
+   * changing the layout in Journey.tsx cannot desynchronise this.
+   *
+   * Must run BEFORE MagneticPositions solves — it changes where every anchor is.
+   */
+  reserve() {
+    if (isMobile()) return;
+    const container = Utils.$(".about-card-container");
+    const anchors = Utils.$$(".about-anchor");
+    const cards = Utils.$$(".about-card-wrap");
+    if (!container || anchors.length < 2 || !cards.length) return;
+
+    const tops = anchors.map((a) => parseFloat(a.style.top) || 0);
+    let minGapPct = Infinity;
+    for (let i = 1; i < tops.length; i++) {
+      minGapPct = Math.min(minGapPct, Math.abs(tops[i] - tops[i - 1]));
+    }
+    if (!isFinite(minGapPct) || minGapPct <= 0) return;
+
+    const tallest = Math.max(...cards.map((c) => c.offsetHeight));
+    if (!tallest) return;
+
+    /* Air between one card's bottom and the next card's top. Enough that the
+       run reads as a sequence rather than a stack, without reopening the
+       half-empty scroll the 470vh version had. */
+    const CLEARANCE = 110;
+    const needed = (tallest + CLEARANCE) / (minGapPct / 100);
+    container.style.height = `${Math.round(Math.max(needed, window.innerHeight * 2.6))}px`;
+  },
+
   buildCollapsed() {
     const cards = Utils.$$(".about-card-wrap");
     if (!cards.length) return;
@@ -213,7 +256,10 @@ export const TimelineSpine = {
     this.tween = null;
     this.cardTriggers.forEach((st) => st.kill());
     this.cardTriggers = [];
-    Utils.$(".about-card-container")?.classList.remove("is-armed");
+    const container = Utils.$(".about-card-container");
+    container?.classList.remove("is-armed");
+    // Let CSS own the height again, so the next reserve() measures cleanly.
+    if (container) container.style.height = "";
     /* A rebuild re-runs the reveal from scratch, so the class has to go with
        it — otherwise a card that was revealed before a resize keeps the class
        while its trigger no longer exists, and the mirrored entrance never

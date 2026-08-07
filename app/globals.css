@@ -1642,15 +1642,12 @@ button:focus-visible {
   display: flex;
   flex-flow: column;
   width: 100%;
-  /* Reserves the run the cards are magnetised into. Milestones sit 13.6% apart,
-     so the step is 0.136 x this height and must always clear a card (~280px at
-     1440) with air to spare.
-
-     470vh put 575px between 280px cards: half the scroll was empty, and at a
-     900px viewport you saw one card at a time with a void either side. 330vh
-     gives a ~400px step — the run reads as continuous. The px floor is what
-     protects a SHORT window, where a pure vh value would collapse the step
-     below the card height and the cards would overlap. */
+  /* PRE-JS FALLBACK ONLY. TimelineSpine.reserve() overwrites this with a height
+     measured from the tallest card, because no CSS expression can reconcile the
+     two axes involved: card height follows viewport WIDTH (the cards are on the
+     vw grid) while a vh height makes the milestone step follow viewport HEIGHT.
+     A wide, short window made the cards taller than the gap between them, and
+     they overlapped. This value only has to be sane before the engine runs. */
   height: max(330vh, 2700px);
   padding-bottom: var(--s72);
 }

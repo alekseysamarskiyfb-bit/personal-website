@@ -93,6 +93,9 @@ function initAll() {
        reflows the manifesto and moves every anchor after the one it changed.
        Solving first would pin the chips to positions that are about to move. */
     CardInteractions.sizeAnchors();
+    /* Also before the solver: this resizes the timeline container to fit the
+       tallest card, which moves every milestone it contains. */
+    TimelineSpine.reserve();
     MagneticPositions.init();
     // The spine is generated FROM the milestones, so it can only be built
     // once magnetic positioning has settled them.
