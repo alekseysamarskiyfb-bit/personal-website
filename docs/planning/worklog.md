@@ -28,7 +28,7 @@ unequal neighbours, and the pill's asymmetric padding put them 7px off. Padding
 is now symmetric with the mark carrying its own inset — measured 0px off both
 the pill centre and the viewport centre at 1024/1280/1440/1920.
 Verified: six-width sweep clean, behaviour pass clean, `tsc` clean.
-Ref: pending
+Ref: cd4d98f
 
 ## 2026-08-08 · fix · centre the Velar wordmark below 900px
 By: alekseysamarskiyfb-bit
@@ -112,7 +112,7 @@ needed, which left the picture stranded at 49% of a wide frame. Capped at
 6.5rem it recovers to 60%. Verified at 375x812, 390x667, 768x1024, 1440x900
 and 1920x1080, plus the six-width sweep and behaviour pass — no overflow, no
 overlaps, `tsc` clean.
-Ref: pending
+Ref: f1d54b3
 
 ## 2026-08-07 · feat · add the mobile burger menu
 By: alekseysamarskiyfb-bit
