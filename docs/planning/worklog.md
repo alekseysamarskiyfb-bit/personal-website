@@ -23,7 +23,7 @@ one item shorter. Verified at 1440x900 and 375x812: hero computes
 DOM, no line at the boundary in either direction, hero back to opacity 1 after a
 scroll round trip (the cd4d98f defect has not returned), no console errors,
 `tsc` clean.
-Ref: pending
+Ref: 4c69d6a
 
 ## 2026-08-08 · fix · make the open menu span the sheet, and drop the plain-text handle
 By: alekseysamarskiyfb-bit
