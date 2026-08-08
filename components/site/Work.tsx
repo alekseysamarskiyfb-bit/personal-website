@@ -10,6 +10,10 @@ const SIZES = "(max-width: 620px) 84vw, (max-width: 1080px) 44vw, 23vw";
  * data/work.ts.
  */
 function WorkMedia({ item }: { item: WorkItem }) {
+  // The chip is decorative, so the media carries the whole accessible name —
+  // the slot and what the creative is, which nothing else on the card says.
+  const name = `${item.label} — ${item.alt}`;
+
   if (item.kind === "video") {
     if (!item.src) {
       // Placeholder: the poster holds the frame so the row reads finished,
@@ -18,8 +22,7 @@ function WorkMedia({ item }: { item: WorkItem }) {
         <Image
           className="work__media"
           src={item.poster}
-          alt=""
-          aria-hidden="true"
+          alt={name}
           width={506}
           height={900}
           sizes={SIZES}
@@ -39,7 +42,7 @@ function WorkMedia({ item }: { item: WorkItem }) {
         loop
         playsInline
         preload="metadata"
-        aria-label={item.label}
+        aria-label={name}
       />
     );
   }
@@ -48,7 +51,7 @@ function WorkMedia({ item }: { item: WorkItem }) {
     <Image
       className="work__media"
       src={item.src as string}
-      alt={item.label}
+      alt={name}
       width={506}
       height={900}
       sizes={SIZES}
@@ -64,7 +67,7 @@ export default function Work() {
           <h2 className="display">
             Selected <span className="serif">work</span>
           </h2>
-          <p className="eyebrow">9:16 · paid social</p>
+          <p className="eyebrow">Vertical video · static ads</p>
         </Reveal>
 
         <ul className="work__grid">
@@ -72,7 +75,7 @@ export default function Work() {
             <Reveal
               as="li"
               className="work__item"
-              key={item.index}
+              key={item.label}
               index={i % 4}
               strength={0.75}
             >
@@ -80,7 +83,7 @@ export default function Work() {
                 <WorkMedia item={item} />
                 <span className="work__sheen" aria-hidden="true" />
                 <span className="work__index" aria-hidden="true">
-                  {item.index}
+                  {item.label}
                 </span>
                 {item.kind === "video" ? (
                   <span className="work__play" aria-hidden="true">
@@ -90,10 +93,6 @@ export default function Work() {
                   </span>
                 ) : null}
               </div>
-              <p className="work__label">
-                <span className="work__rule" aria-hidden="true" />
-                {item.label}
-              </p>
             </Reveal>
           ))}
         </ul>

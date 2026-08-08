@@ -33,7 +33,6 @@ export default function Cta() {
             Message me on Telegram
             <ArrowUpRight className="arrow" />
           </a>
-          <p className="cta-panel__handle">{SITE.telegramHandle}</p>
         </Reveal>
       </div>
     </section>

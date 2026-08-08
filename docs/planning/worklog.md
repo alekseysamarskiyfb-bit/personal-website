@@ -2,6 +2,31 @@
 
 Newest first.
 
+## 2026-08-08 · fix · make the open menu span the sheet, and drop the plain-text handle
+By: alekseysamarskiyfb-bit
+Why: the menu's content was capped at 34rem, so past that width it sat in a
+column with dead space to its right while the sheet ran full-bleed behind it —
+the cap had been added to stop the trailing arrow stranding at 768, and it
+traded one flaw for a worse one. Separately, Oleksii wants "@o_samarskyi" gone
+as visible text.
+How: the cap is gone; rows, rules and the CTA now end where the sheet's gutter
+ends at every width. To keep the rows from reading as under-filled, the label
+tracks the viewport hard — `--menu-label: clamp(2.5rem, 13vw, 6.5rem)`, one
+variable the whole block is tuned on. A two-column split (links left, contact
+right) was built first and thrown away: with three links there is nothing to put
+beside them, so it only moved the empty space from the right of the rows to
+above the CTA. A `max-height: 560px` rule shrinks the label, the row rhythm and
+the sheet's top inset together, so landscape phones reach the CTA without the
+sheet scrolling. The handle came out of the CTA panel and the menu's meta line
+(both plain text) and out of the footer link's label, which now reads
+"Telegram"; every `t.me/o_samarskyi` href is untouched, and `SITE.telegramHandle`
+stays because the OpenGraph card still uses it. `.cta-panel__handle` and
+`.menu__dot` deleted with their last uses. Verified open at 320, 375, 480, 768,
+820 and 812x375: content box equals the sheet's gutter box at every one (748px
+inside 820), nothing scrolls internally, no horizontal overflow, no rendered
+"@o_samarskyi" anywhere, `tsc` clean.
+Ref: pending
+
 ## 2026-08-08 · fix · hero never came back after scrolling away; hero and nav polish
 By: alekseysamarskiyfb-bit
 Why: Oleksii reported the photo vanishing and not returning until a reload —
@@ -30,18 +55,35 @@ the pill centre and the viewport centre at 1024/1280/1440/1920.
 Verified: six-width sweep clean, behaviour pass clean, `tsc` clean.
 Ref: cd4d98f
 
-## 2026-08-08 · fix · centre the Velar wordmark below 900px
+## 2026-08-08 · fix · align the Velar wordmark — centred on mobile, flush on desktop
 By: alekseysamarskiyfb-bit
-Why: below 900px the studio head drops to one column, so the mark no longer
-shares a row with the pitch — left-aligned in the full width it read as a
-column that had lost its other half.
-How: `text-align: center` on `.velar__mark` inside the existing 900px query,
-with `margin-inline: auto` on the image, which is a block and would otherwise
-ignore it. The tag line is inline-flex, so it centres with the mark as one
-unit rather than needing a rule of its own. Desktop is untouched. Verified at
-375, 768 and 1440: equal side gaps at both mobile widths (22px and 203px),
-image and tag centres within a pixel of the block's, still left-aligned at
-1440, no horizontal overflow.
+Why: two complaints about the same lockup. Below 900px the studio head drops to
+one column, so the mark no longer shares a row with the pitch and, left-aligned
+in the full width, read as a column that had lost its other half. On desktop it
+sat visibly indented from the cards beneath it.
+How: mobile is `text-align: center` on `.velar__mark` inside the existing 900px
+query, plus `margin-inline: auto` on the image, which is a block and would
+otherwise ignore it; the tag is inline-flex, so it centres as one unit with the
+mark.
+The desktop indent had two causes, found by scanning the asset's alpha channel
+rather than eyeballing it. First, the wordmark file carries its own transparent
+margin — the ink starts 14.31% of the file's width in from the left edge — so
+the image box was flush with the cards while the mark was not. That is undone
+with `translateX(-14.31%)`, a percentage of the image's own width, which stays
+correct at any rendered size where a pixel value would be right at exactly one;
+it is reset to `none` under 900px, where the asset's near-equal side margins
+(14.31% vs 15.19%) let it centre honestly on its own.
+Second, `.velar__mark` sat at `translateZ(40px)`, and perspective projected the
+whole lockup about 10px further left than the flat cards — 9.2px at 1024, 10.6
+at 1440, 11.3 at 1920, so no single correction covered the range. Compensating
+the image alone would also have left the tag line behind, misaligned on its
+own. The depth is now dropped: a misregistration visible at rest, permanently,
+is a worse trade than parallax visible only while the section is tilting, and
+the pitch (+22), rule (+12), grid (−32) and ambient wash (−70) still carry the
+depth the tilt reads from.
+Verified 1024/1440/1920: ink and tag both 0.0px from the card edge at all
+three. 375 and 768: mark, image and tag centres coincident, ink centre within
+1.1px. No horizontal overflow at any width, console clean.
 Ref: pending
 
 ## 2026-08-08 · copy · change the header button to "Let's Talk"
@@ -54,25 +96,31 @@ the closing CTA panel are untouched. Checked at 1280 and 375 — the pill grows 
 110px and still sits beside the burger with no overflow.
 Ref: pending
 
-## 2026-08-08 · fix · restyle the portfolio captions and compact the phone grid
+## 2026-08-08 · fix · move the portfolio labels onto the cards, compact the phone grid
 By: alekseysamarskiyfb-bit
-Why: Oleksii read the captions as foreign to the design — they were body-size
-mixed case behind a drawn dash, a voice the site uses nowhere else. "9:16 ·
-paid social" named a format and a channel rather than the work. And one 9:16
-card per phone row was nearly a full screen each, so eight creatives became a
-scroll of their own.
-How: the caption now speaks the site's smallest voice — uppercase, tracked,
-eyebrow-sized, ink-70 going to ink on hover — and the drawn rule is gone.
-Labels are "Video 1…4" and "Static 1…4": a first pass set the stills as
-category plus creative number, which needed a second muted span and, at half
-width on a phone, stacked onto its own line; Oleksii asked for the plain
-numbering, so the caption is one word and a digit and the note field, its
-dot and the stacking rule came back out. The section eyebrow reads "Vertical
-video · static ads", matching what the two rows actually are and the
-language Velar now uses. Phones keep two cards per row (162x287 at 375
-instead of 335x595), with the play mark, index chip and caption tracking
-scaled to match. Verified at 1440, 768 and 375: four-up and two-up grids,
-every caption one line at 12px, no horizontal overflow, `tsc` clean.
+Why: the captions under the cards read as foreign to the design — body-size
+mixed case behind a drawn dash, a voice the site uses nowhere else — and four
+passes at rewording them (geo and vertical, category plus number, "Video N",
+then a description of each creative) never fixed the placement, which was the
+actual problem. "9:16 · paid social" named a format and a channel rather than
+the work. And one 9:16 card per phone row was nearly a full screen each, so
+eight creatives became a scroll of their own.
+How: there is no caption under the frame any more. The card's only text is
+the chip on the artwork, now reading "Video 01…04" and "Static 01…04", always
+visible rather than appearing on hover — it sits on the site's glass recipe
+so it carries its own light instead of depending on whatever dark creative is
+under it, and on hover it goes opaque white and lifts with the frame. The
+descriptive wording that briefly lived under the cards survives as
+`WorkItem.alt`: never rendered, but it is the image's alt text and the
+video's accessible name, so the accessible name is "Video 01 — Affiliate
+promo" while the visible label stays a slot number. `.work__label`,
+`.work__item` and the touch override for the chip are deleted with their last
+uses. The section eyebrow reads "Vertical video · static ads", matching what
+the two rows actually are and the language Velar now uses. Phones keep two
+cards per row (162x287 at 375 instead of 335x595), with the play mark and the
+chip scaled to match. Verified at 1440 and 375: four-up and two-up grids, all
+eight chips rendered at rest, chip 27% of card width at 1440 and 45% at 375,
+no horizontal overflow, `tsc` clean and a clean production build.
 Ref: pending
 
 ## 2026-08-08 · feat · repoint the Velar copy at vertical video

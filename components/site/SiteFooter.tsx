@@ -21,7 +21,7 @@ export default function SiteFooter() {
             target="_blank"
             rel="noreferrer noopener"
           >
-            Telegram {SITE.telegramHandle}
+            Telegram
             <ArrowUpRight />
           </a>
           <a className="footer__link" href="#top">

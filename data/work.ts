@@ -8,11 +8,13 @@ export type WorkItem = {
   src?: string;
   /** Still behind a video, shown before it decodes and while src is absent. */
   poster?: string;
-  /** The one line printed under the frame. Videos read "Video 1"; stills read
-   *  their category and creative number. Nothing else is captioned. */
+  /** The chip printed on the frame — "Video 01", "Static 03". It is the only
+   *  text the card shows, so keep it to the kind and its two digits. */
   label: string;
-  /** Two digits, drawn as the chip on the frame. */
-  index: string;
+  /** What the creative actually is, in two or three words. Never rendered:
+   *  it is the image's alt text and the video's accessible name, so a screen
+   *  reader gets the work rather than the slot number. */
+  alt: string;
 };
 
 /**
@@ -24,49 +26,49 @@ export const WORK: WorkItem[] = [
   {
     kind: "video",
     poster: "/work/creative-8.jpg",
-    label: "Video 1",
-    index: "01",
+    label: "Video 01",
+    alt: "Affiliate promo",
   },
   {
     kind: "video",
     poster: "/work/creative-2.jpg",
-    label: "Video 2",
-    index: "02",
+    label: "Video 02",
+    alt: "Trading education",
   },
   {
     kind: "video",
     poster: "/work/creative-1.jpg",
-    label: "Video 3",
-    index: "03",
+    label: "Video 03",
+    alt: "Futures results",
   },
   {
     kind: "video",
     poster: "/work/creative-6.jpg",
-    label: "Video 4",
-    index: "04",
+    label: "Video 04",
+    alt: "Signal channel",
   },
   {
     kind: "image",
     src: "/work/creative-7.jpg",
-    label: "Affiliate · Creative 1",
-    index: "05",
+    label: "Static 01",
+    alt: "Affiliate offer",
   },
   {
     kind: "image",
     src: "/work/creative-5.jpg",
-    label: "Crypto signals · Creative 2",
-    index: "06",
+    label: "Static 02",
+    alt: "Signals dashboard",
   },
   {
     kind: "image",
     src: "/work/creative-3.jpg",
-    label: "Referral · Creative 3",
-    index: "07",
+    label: "Static 03",
+    alt: "Referral program",
   },
   {
     kind: "image",
     src: "/work/creative-4.jpg",
-    label: "Crypto · Creative 4",
-    index: "08",
+    label: "Static 04",
+    alt: "Airdrop teaser",
   },
 ];

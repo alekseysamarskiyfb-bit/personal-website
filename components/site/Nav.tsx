@@ -150,7 +150,7 @@ export default function Nav() {
             target="_blank"
             rel="noreferrer noopener"
           >
-            Hire me
+            Let&rsquo;s Talk
             <ArrowUpRight className="arrow" />
           </a>
 
@@ -224,11 +224,7 @@ export default function Nav() {
                 Message me on Telegram
                 <ArrowUpRight className="arrow" />
               </a>
-              <p className="menu__meta">
-                <span>{SITE.telegramHandle}</span>
-                <span className="menu__dot" aria-hidden="true" />
-                <span>{SITE.location}</span>
-              </p>
+              <p className="menu__meta">{SITE.location}</p>
             </div>
           </div>
 

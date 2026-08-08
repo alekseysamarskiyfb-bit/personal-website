@@ -1100,8 +1100,12 @@ h3 {
   gap: clamp(1.75rem, 4.5vw, 4.5rem);
 }
 
+/* Deliberately flat. At translateZ(40px) perspective projected the whole lockup
+   about 10px further left than the flat cards below it — a misalignment visible
+   at rest, every second, traded against parallax visible only while tilting.
+   The pitch and the three background layers still carry the depth. */
 .velar__mark {
-  transform: translateZ(40px) scale(0.972);
+  transform: none;
 }
 
 .velar__mark img {
@@ -1109,6 +1113,12 @@ h3 {
   width: 100%;
   max-width: 21rem;
   height: auto;
+  /* The asset carries its own transparent margin — the ink starts 14.31% of the
+     file's width in from the left edge — so the image box lines up with the
+     cards while the mark itself looks indented past them. Pulling it back by a
+     percentage of the image's own width holds at every rendered size, where a
+     pixel value would be right at exactly one. */
+  transform: translateX(-14.31%);
 }
 
 .velar__tag {
@@ -1251,6 +1261,10 @@ h3 {
   .velar__mark img {
     max-width: 15rem;
     margin-inline: auto;
+    /* The asset's left and right margins are near enough equal (14.3% vs
+       15.2%) that the mark centres honestly without the desktop correction,
+       which here would just throw it off-centre. */
+    transform: none;
   }
 }
 
@@ -1437,12 +1451,6 @@ h3 {
   gap: clamp(1rem, 2vw, 1.75rem);
 }
 
-.work__item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-}
-
 .work__frame {
   position: relative;
   overflow: hidden;
@@ -1524,31 +1532,36 @@ h3 {
   transform: translateX(120%) rotate(18deg);
 }
 
-/* The slot number, kept off the artwork until the card is asked about. */
+/* The card's only text: which slot this is, on the same glass pill the nav
+   and the availability line use. It is always on — the artwork underneath is
+   dark and busy, so the pill carries its own light rather than depending on
+   what it happens to sit over — and it lifts slightly with the frame. */
 .work__index {
   position: absolute;
   z-index: 4;
   top: 0.75rem;
   left: 0.75rem;
-  padding: 0.25rem 0.5rem;
+  padding: 0.3rem 0.65rem;
   border-radius: 999px;
   font-family: var(--font-display), system-ui, sans-serif;
   font-size: var(--t-eyebrow);
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
   color: var(--ink);
   background: var(--glass-fill-strong);
   box-shadow: inset 0 0 0 1px var(--glass-edge);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  opacity: 0;
-  transform: translateY(-6px);
-  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+  backdrop-filter: blur(10px) saturate(1.6);
+  -webkit-backdrop-filter: blur(10px) saturate(1.6);
+  transition: background 0.5s var(--ease), box-shadow 0.5s var(--ease),
+    transform 0.5s var(--ease);
 }
 
 .work__item:hover .work__index {
-  opacity: 1;
-  transform: translateY(0);
+  transform: translateY(-2px);
+  background: #fff;
+  box-shadow: inset 0 0 0 1px var(--glass-edge), var(--shadow-soft);
 }
 
 /* Play mark — present at rest so a video slot is never mistaken for a still,
@@ -1589,20 +1602,6 @@ h3 {
 /* The caption speaks the site's smallest voice — the same uppercase, widely
    tracked line the eyebrows and the career meta use — so it belongs to the
    page rather than to the card. */
-.work__label {
-  font-size: var(--t-eyebrow);
-  font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  line-height: 1.2;
-  color: var(--ink-70);
-  transition: color 0.5s var(--ease);
-}
-
-.work__item:hover .work__label {
-  color: var(--ink);
-}
-
 @media (max-width: 1080px) {
   .work__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1617,10 +1616,6 @@ h3 {
     gap: 0.75rem;
   }
 
-  .work__item {
-    gap: 0.6rem;
-  }
-
   .work__play {
     width: 2.25rem;
     height: 2.25rem;
@@ -1629,22 +1624,13 @@ h3 {
   .work__index {
     top: 0.5rem;
     left: 0.5rem;
-    padding: 0.2rem 0.4rem;
-  }
-
-  .work__label {
-    letter-spacing: 0.12em;
+    padding: 0.25rem 0.5rem;
+    letter-spacing: 0.08em;
   }
 }
 
-/* Touch has no hover state to reward, so the frame shows its furniture at
-   rest and skips the sweep entirely. */
+/* Touch has no hover state to reward, so the sweep is skipped entirely. */
 @media (hover: none) {
-  .work__index {
-    opacity: 1;
-    transform: none;
-  }
-
   .work__sheen {
     display: none;
   }
