@@ -29,7 +29,7 @@ them: 7 roles, array ordered newest-first by start date, full-time chain gap
 and overlap free at every join, ADPRODIGIES adjacent + contiguous with the lead
 role later, location arc a single UA→PL move, span 6.5y. Rendered rail matches
 the source row for row, `tsc` clean, console clean.
-Ref: pending
+Ref: 87a49b4
 
 ## 2026-08-08 · feat · real videos in the four video cards, played on scroll
 By: alekseysamarskiyfb-bit
@@ -59,10 +59,23 @@ resumes where it stopped, and the play mark fades out while running and comes
 back when it does not. Reduced motion never starts playback at all.
 `WorkItem.src` is now required and the placeholder branch, its
 `.work__media--empty` fill and the play mark markup in Work.tsx are gone.
+The first encode shipped cropped and Oleksii caught it. `AVMutableVideoComposition(propertiesOf:)`
+sets renderSize to the source's own size, so overriding renderSize afterwards
+only re-canvases the composition — the frames keep their original scale and
+everything outside the new, smaller canvas is cut. Every clip was a top-left
+540x960 window onto a 1080x1920 master, which reads as a 2x zoom. Proved it
+rather than guessed by pulling the same timestamp out of master and encode and
+comparing. The composition is now built by hand with the scale on the layer
+instruction's transform, applied after preferredTransform so the rotation's own
+translation scales with it. Posters were always correct — the image generator
+scales properly — which is why the still and the video disagreed.
 Verified on a fresh load at the top of the page: all four `src` null,
 readyState 0, no video request. Scrolled in: all four armed, readyState 4,
 540x960, playing, marks faded. Scrolled away: all four paused with currentTime
-frozen and the marks back. Scrolled in again: all four resumed mid-clip.
+frozen and the marks back. Scrolled in again: all four resumed mid-clip. After
+the re-encode, frames pulled from all four files show the full composition, and
+the rendered 160x285 box is within 0.2% of the video's own 0.5625 ratio, so
+`object-fit: cover` crops nothing.
 `tsc` clean, console clean, production build clean.
 Ref: pending
 
