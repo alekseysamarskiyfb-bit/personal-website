@@ -14,8 +14,8 @@ export default function Home() {
       <Nav />
       <main>
         <Hero />
-        {/* Studio before career: the visitor asks "who is this" before
-            "what have they done", and the studio answers it fastest. */}
+        {/* Agency before career: the visitor asks "who is this" before
+            "what have they done", and the agency answers it fastest. */}
         <Velar />
         <Career />
         <Work />

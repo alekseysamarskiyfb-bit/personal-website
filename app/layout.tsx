@@ -33,7 +33,7 @@ const serif = Instrument_Serif({
 
 const DESCRIPTION =
   "Creative and motion designer building high-converting static, motion and " +
-  "AI-assisted advertising creatives. Founder of Velar Studio.";
+  "AI-assisted advertising creatives. Founder of Velar Agency.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://oleksiisamarskyi.com"),

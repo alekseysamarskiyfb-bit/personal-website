@@ -98,7 +98,7 @@ export default async function OpengraphImage() {
             color: "rgba(13,13,15,0.5)",
           }}
         >
-          <span>Velar Studio</span>
+          <span>{SITE.agency}</span>
           <span>{SITE.telegramHandle}</span>
         </div>
       </div>

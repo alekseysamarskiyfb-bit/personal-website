@@ -31,7 +31,7 @@ export default function SiteFooter() {
       </div>
 
       <div className="shell footer__base">
-        <p>© {new Date().getFullYear()} Velar Studio</p>
+        <p>© {new Date().getFullYear()} {SITE.agency}</p>
         <p>Designed and built in Poland</p>
       </div>
     </footer>

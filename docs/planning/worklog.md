@@ -2,6 +2,72 @@
 
 Newest first.
 
+## 2026-08-08 · fix · drop the positioning tag from the Velar lockup
+By: alekseysamarskiyfb-bit
+Why: Oleksii pointed at "Vertical video · AI-powered creative" under the
+wordmark and asked for it gone. The lockup already says what it needs to —
+mark, "Agency", founder — and the tag was a fourth line competing with the
+pitch, which makes the same claim in sentences.
+How: the markup came out of Velar.tsx, and `.velar__tag`, `.velar__pulse` and
+the `velar-pulse` keyframes went with it, since that was their last use — the
+pulse dot existed only inside that line. Nothing else referenced them.
+Verified at 1440 and 375: mark, sub-line and founder block still measure flush
+with the card edge on desktop (mark and card left both 115.19px) and centred at
+375 (all three on 187.5). A first reading showed the lockup 1.3px out; that was
+a residual tilt from the previous session's synthetic pointer test still easing
+toward zero — the plane's matrix held rotations of ~1.4e-05, which projects
+children differently at different heights, which is why the three numbers
+disagreed. Settled, they are identical.
+Ref: pending
+
+## 2026-08-08 · feat · rebrand the section: Velar Agency, green on brand black
+By: alekseysamarskiyfb-bit
+Why: Velar is an agency now, not a studio, and it has a new identity — a spring
+green wordmark on a blue-black. Oleksii also wants his founding of it stated
+outright rather than implied.
+How: "Studio" is gone from the rendered page entirely (verified by regex over
+document.innerText). It lived in six places; `SITE.agency` now holds the name so
+the next rename is one edit, and the footer, OpenGraph card, metadata
+description, nav label and section head all read from it or were changed in
+place.
+Palette: `--velar-glow`/`--velar-2` violet retired for `--velar-green #56ff9e`,
+`--velar-green-soft #a6ffcd` and `--velar-black #10151f`. The first two values
+were eyeballed off the screenshots and both were wrong — sampling the actual
+files gave a brighter green and a deeper black. Green is a far brighter hue than the violet it replaces, so the
+ambient wash came down from 58%/24% to 30%/16% and the cursor light from
+20%/12% to 14%/8% — the same opacities would have been garish. The plane's
+fill is now Velar's own black, lifted at the top so it has a sky.
+The wordmark is Velar's own artwork. A first pass set it in Archivo, on the
+belief that the supplied files were unreachable chat attachments; they were in
+~/Downloads all along, and a `find` for recent images would have shown that
+before any type was set. Both PNGs are 2901x626, flat single colours, ink
+starting 16px in — cropped to that ink box and resized to 1200px wide, they
+become `velar-wordmark-green.webp` (38kB) and `velar-wordmark-dark.webp` (30kB,
+unused, kept for any light surface). Cropping to the ink is what makes the
+lockup need no optical correction at all: the image box and the visible mark
+are one rectangle, so the mark, the sub-line, the founder block and the tag all
+measure 0.00px from the card edge. The obsolete `velar-wordmark.webp` — the
+"STUDIO" mark, unreferenced after this — is deleted.
+"AGENCY" sits under the mark as a tracked word followed by a rule that runs out
+to the wordmark's right edge (measured flush to 0.00px), which is what ties the
+two lines into one lockup without tracking the word out to a width it has no
+business spanning. Centred below 900px the rule is dropped, since with no edge
+to reach it would only tip the lockup.
+The founder credit is a labelled block above a rule — "Founder / Oleksii
+Samarskyi" — and the pitch now opens "I founded Velar and I run its creative."
+One effect added and no more: a lit top edge on the plane, green where the
+ambient wash comes from, drawn as a 1px background band so the plane's own
+radius clips it round the corners. The wordmark's glow is a radial background
+behind it rather than a `drop-shadow` — every one of the five layers is
+verified `filter: none`, because a filter inside this preserve-3d plane forces
+an off-screen buffer, which is what blanked the entire section once before.
+Verified at 1440: mark, sub-line, founder block and tag all 0.00px from the
+card edge, sub-line right flush with the mark to 0.00px, image 272x56. At 375:
+every lockup element centred, sub-line ink within 0.5px of the axis. "Studio"
+absent from the rendered page by regex over innerText, tilt and cursor light
+wired (`is-live` toggling, --mx/--my tracking), `tsc` clean, console clean.
+Ref: pending
+
 ## 2026-08-08 · fix · one seamless field behind the hero and the studio
 By: alekseysamarskiyfb-bit
 Why: Oleksii saw a hard horizontal line where the hero meets Velar Studio,

@@ -124,6 +124,7 @@ export default function VelarStage({ children }: { children: ReactNode }) {
         <div className="velar__layer velar__layer--ambient" aria-hidden="true" />
         <div className="velar__layer velar__layer--grid" aria-hidden="true" />
         <div className="velar__layer velar__layer--noise" aria-hidden="true" />
+        <div className="velar__layer velar__layer--sheen" aria-hidden="true" />
         {children}
         <div className="velar__layer velar__layer--cursor" aria-hidden="true" />
       </div>
