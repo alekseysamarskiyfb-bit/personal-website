@@ -3,35 +3,40 @@ export type Service = {
   blurb: string;
 };
 
+/**
+ * Ordered by what Velar leads with. Vertical video is the studio's centre of
+ * gravity; the static work sits behind it because it is what the same brands
+ * ask for next, not because it is a second business.
+ */
 export const VELAR_SERVICES: Service[] = [
   {
-    title: "Static advertising creatives",
-    blurb:
-      "Built to convert first and look good second — which is usually how they end up doing both.",
-  },
-  {
-    title: "Motion creatives",
-    blurb:
-      "Movement with a job: hold the scroll, land the offer, get out of the way.",
-  },
-  {
-    title: "AI-assisted creatives",
-    blurb:
-      "Generative pipelines used where they earn their place — volume, variation, speed to test.",
-  },
-  {
-    title: "Short-form video ads",
+    title: "Vertical video ads",
     blurb:
       "Nine-by-sixteen, cut for the first two seconds, made to survive a thumb.",
   },
   {
-    title: "Social media content",
+    title: "Content for creators",
+    blurb:
+      "Podcasts, streams and channels cut into short-form that earns the next tap.",
+  },
+  {
+    title: "AI-powered content",
+    blurb:
+      "Generative pipelines used where they earn their place — volume, variation, speed.",
+  },
+  {
+    title: "Instagram Stories",
+    blurb:
+      "Built for the format rather than cropped into it: full-bleed, tap-paced, thumb-first.",
+  },
+  {
+    title: "Social media posts",
     blurb:
       "Whole content systems rather than one-off posts, so a feed reads as one brand.",
   },
   {
-    title: "Business marketing creatives",
+    title: "Static ad creatives",
     blurb:
-      "Decks, brand assets and campaign visuals for teams selling something real.",
+      "Any platform, any format — one idea rebuilt to fit each placement properly.",
   },
 ];

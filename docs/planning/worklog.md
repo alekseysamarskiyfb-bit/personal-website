@@ -2,6 +2,26 @@
 
 Newest first.
 
+## 2026-08-08 · feat · repoint the Velar copy at vertical video
+By: alekseysamarskiyfb-bit
+Why: the section sold Velar as a performance-creative shop for media buyers —
+"one question every media buyer actually asks: did it convert?" — which is no
+longer what the studio is. Velar makes vertical video ads for businesses and
+short-form for creators, podcasts and streamers, with static alongside it.
+How: copy only, no structural change. The pitch now leads with vertical video
+and names the audience; the sub-line carries the static work (Stories, social
+posts, ad creatives for any platform) and keeps AI as a tool that earns its
+place rather than a slogan. The tag under the wordmark went from "AI-assisted
+creative studio" to "Vertical video · AI-powered creative". The six services
+were reordered and rewritten so video leads: vertical video ads, content for
+creators, AI-powered content, Instagram Stories, social media posts, static ad
+creatives — replacing "business marketing creatives", which named no audience
+the studio actually serves. Two blurbs survived intact because they were
+already about the work rather than about buying traffic. Verified at 1440, 768
+and 375: six equal cards, every title on one line, no horizontal overflow,
+console and server logs clean.
+Ref: pending
+
 ## 2026-08-07 · feat · drop the hero lockup lower, stack it above the photo on phones
 By: alekseysamarskiyfb-bit
 Why: Oleksii wanted the name lower in the desktop frame, and on phones moved
