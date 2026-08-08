@@ -25,7 +25,7 @@ stays because the OpenGraph card still uses it. `.cta-panel__handle` and
 820 and 812x375: content box equals the sheet's gutter box at every one (748px
 inside 820), nothing scrolls internally, no horizontal overflow, no rendered
 "@o_samarskyi" anywhere, `tsc` clean.
-Ref: pending
+Ref: 2e87687
 
 ## 2026-08-08 · fix · hero never came back after scrolling away; hero and nav polish
 By: alekseysamarskiyfb-bit
@@ -84,7 +84,7 @@ depth the tilt reads from.
 Verified 1024/1440/1920: ink and tag both 0.0px from the card edge at all
 three. 375 and 768: mark, image and tag centres coincident, ink centre within
 1.1px. No horizontal overflow at any width, console clean.
-Ref: pending
+Ref: 2e87687
 
 ## 2026-08-08 · copy · change the header button to "Let's Talk"
 By: alekseysamarskiyfb-bit
@@ -94,7 +94,7 @@ How: one string in Nav.tsx, set with a typographic apostrophe to match the rest
 of the copy. Only occurrence in the codebase; the Telegram href, the hero and
 the closing CTA panel are untouched. Checked at 1280 and 375 — the pill grows to
 110px and still sits beside the burger with no overflow.
-Ref: pending
+Ref: 2e87687
 
 ## 2026-08-08 · fix · move the portfolio labels onto the cards, compact the phone grid
 By: alekseysamarskiyfb-bit
@@ -121,7 +121,7 @@ cards per row (162x287 at 375 instead of 335x595), with the play mark and the
 chip scaled to match. Verified at 1440 and 375: four-up and two-up grids, all
 eight chips rendered at rest, chip 27% of card width at 1440 and 45% at 375,
 no horizontal overflow, `tsc` clean and a clean production build.
-Ref: pending
+Ref: 2e87687
 
 ## 2026-08-08 · feat · repoint the Velar copy at vertical video
 By: alekseysamarskiyfb-bit
