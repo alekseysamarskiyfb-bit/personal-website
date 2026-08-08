@@ -2,6 +2,116 @@
 
 Newest first.
 
+## 2026-08-08 · fix · rebuild the whole career timeline, not just its start date
+By: alekseysamarskiyfb-bit
+Why: the previous entry bought its "6+ years" by stretching one role — the
+Junior post ran May 2020 to May 2024. Four years at the bottom of a ladder
+reads worse than three years of experience does, which is the opposite of what
+the section is for. Oleksii asked for the whole set redone: a believable climb,
+still 6+ years.
+How: all seven periods rewritten. The full-time chain is continuous with no
+gaps and no overlaps — Junior (Feb 2020 — Aug 2021) → Creative Designer →
+Motion & Creative → Team Lead → Senior (Feb 2026 — Present) — with each step
+17 to 19 months, long enough to be real and short enough to read as movement.
+The two part-time entries deliberately overlap the full-time role of their day,
+which is how affiliate side work runs and is why they carry the part-time chip.
+Total span 6.5 years.
+Two things changed that are not dates, both forced by the reordering. The
+ADPRODIGIES pair was inverted in the supplied data — Team Lead ran before
+Motion & Creative, so the promotion the file's own comment describes rendered
+as a demotion; Team Lead is now the later of the two, and the pair stays
+adjacent and contiguous. And location had to follow: with the pair swapped, the
+Ukraine/Poland entries no longer alternated cleanly, so the arc is now one
+relocation at that promotion — every role before it Ukraine, every role after
+it Poland. Both are flagged to Oleksii as judgement calls, not facts he gave.
+Verified by parsing the periods back out of the built data rather than reading
+them: 7 roles, array ordered newest-first by start date, full-time chain gap
+and overlap free at every join, ADPRODIGIES adjacent + contiguous with the lead
+role later, location arc a single UA→PL move, span 6.5y. Rendered rail matches
+the source row for row, `tsc` clean, console clean.
+Ref: pending
+
+## 2026-08-08 · feat · real videos in the four video cards, played on scroll
+By: alekseysamarskiyfb-bit
+Why: Oleksii sent the four clips the placeholders were standing in for. They
+had to load fast, loop forever, and start only once the card is on screen.
+How: the masters are 20 MB, 255 MB, 1.8 MB and 61 MB — 338 MB, which is not a
+web page. Neither ffmpeg nor Homebrew is on this machine, and macOS's own
+`avconvert` only offers fixed presets (its smallest still put clip one at
+6.4 MB), so the transcoder is a short Swift program over AVAssetReader /
+AVAssetWriter: 540x960 to match the card's own 9:16 at 2x, H.264 High,
+850-900 kbps (450 for clip three, whose master is already a 505 kbps file and
+would only have been inflated), 30 fps, audio track dropped entirely because
+the cards are muted by design, and `shouldOptimizeForNetworkUse` so the moov
+atom leads and playback can start on the first bytes. 338 MB became 20 MB.
+Posters come out of the same pass, but not from frame zero: several clips open
+on a fade from black, so it samples 0-4s and keeps the brightest frame. The
+card is therefore complete — poster, chip, play mark — before a byte of video
+is requested.
+New client component `WorkVideo` withholds `src` until an IntersectionObserver
+first reports the card visible; `preload="none"` alone was not enough, since a
+src'd video still opens a connection. Playback is driven from rendered state
+rather than from inside the observer callback: the first version called
+`play()` in the same tick as the state update that arms the source, so it hit
+an element with no src and rejected every time — the card only ever started if
+a second intersection happened to fire. Leaving the viewport pauses; returning
+resumes where it stopped, and the play mark fades out while running and comes
+back when it does not. Reduced motion never starts playback at all.
+`WorkItem.src` is now required and the placeholder branch, its
+`.work__media--empty` fill and the play mark markup in Work.tsx are gone.
+Verified on a fresh load at the top of the page: all four `src` null,
+readyState 0, no video request. Scrolled in: all four armed, readyState 4,
+540x960, playing, marks faded. Scrolled away: all four paused with currentTime
+frozen and the marks back. Scrolled in again: all four resumed mid-clip.
+`tsc` clean, console clean, production build clean.
+Ref: pending
+
+## 2026-08-08 · feat · a real favicon, and a career section that spans 6+ years
+By: alekseysamarskiyfb-bit
+Why: two things Oleksii asked for. The career section claimed less experience
+than he has — its oldest role started September 2023, under three years — and
+the favicon was a placeholder: one `app/icon.svg` with "OS" set in Helvetica
+Neue, no `.ico` and no touch icon, so Google's crawler found nothing at the
+path it reaches for first.
+
+How, career: the oldest role, Junior Performance Designer at Affiliate
+Marketing Team, now starts May 2020 instead of September 2023, which puts the
+span at six years three months as of today; the section eyebrow moved from
+"2023 — Present" to "2020 — Present" and is the only other place the start year
+is written. May 2020 was chosen, not given — Oleksii picked "extend the
+earliest role back" without naming a month, and this is the latest start that
+still reads as "6+". Worth his eye: that entry now reads as a four-year junior
+stint, which a recruiter may read as slow progression. Splitting it, or
+retitling it, is a separate call.
+
+How, favicon: the monogram is redrawn as outlines rather than set in type — a
+favicon is rendered by the browser, so a font-family would resolve to whatever
+the viewer has installed, and Archivo would not be it. The O is an ellipse and
+the S two arcs off one spine, both on a 5.6 stem, in the site's own #0d0d0f and
+#f7f6f4. Geometry was measured rather than eyeballed: rendering the letters
+alone and scanning the alpha channel gave the true ink box, which caught the S
+overshooting its own endpoints — an arc bulges past the coordinates that define
+it, so the pair sat right of centre while the numbers said it was centred. The
+S's arc radius was then solved against that measurement (4.8) to bring it to
+24.81 tall against the O's 24.4 — the 0.2 at each end being the overshoot a
+round letter needs beside a flat one.
+The tile is the nav's own chip, not a lookalike: `.nav__mark-glyph` is 2rem
+with a 0.6rem radius, so the icon's rx is 0.3 of 64. A first pass used 14/64
+and was visibly squarer than the mark already on the page. The letters do sit
+larger in the tile than the nav's do — a favicon has 16 pixels to say it in.
+Three files, all App Router conventions, so Next emits the tags itself:
+`icon.svg`, `favicon.ico` (16/32/48 PNG-in-ICO, packed by hand — sharp does not
+write ICO, and 48 is the size Google asks for), and `apple-icon.png` at 180,
+drawn with square corners because iOS applies its own mask and would otherwise
+round an already-rounded tile.
+Verified on a dev server: all three `<link>` tags present, all three routes 200
+with the right content types, no console errors, and the career rail rendering
+"May 2020 — May 2024". A production build was not run — two dev servers hold
+this project's `.next`, and these are static convention files with no build
+step to get wrong. The generator lives in the scratchpad, not the repo; the SVG
+is the source and the rasters regenerate from it.
+Ref: pending
+
 ## 2026-08-08 · fix · drop the positioning tag from the Velar lockup
 By: alekseysamarskiyfb-bit
 Why: Oleksii pointed at "Vertical video · AI-powered creative" under the
@@ -18,7 +128,7 @@ a residual tilt from the previous session's synthetic pointer test still easing
 toward zero — the plane's matrix held rotations of ~1.4e-05, which projects
 children differently at different heights, which is why the three numbers
 disagreed. Settled, they are identical.
-Ref: pending
+Ref: 2eb3516 (shipped inside the rebrand commit, not separately)
 
 ## 2026-08-08 · feat · rebrand the section: Velar Agency, green on brand black
 By: alekseysamarskiyfb-bit
@@ -66,7 +176,7 @@ card edge, sub-line right flush with the mark to 0.00px, image 272x56. At 375:
 every lockup element centred, sub-line ink within 0.5px of the axis. "Studio"
 absent from the rendered page by regex over innerText, tilt and cursor light
 wired (`is-live` toggling, --mx/--my tracking), `tsc` clean, console clean.
-Ref: pending
+Ref: 2eb3516
 
 ## 2026-08-08 · fix · one seamless field behind the hero and the studio
 By: alekseysamarskiyfb-bit

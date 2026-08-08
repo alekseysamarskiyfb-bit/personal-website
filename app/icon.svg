@@ -1,13 +1,23 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="16" fill="#0d0d0f" />
-  <text
-    x="32"
-    y="41"
-    text-anchor="middle"
-    font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
-    font-size="26"
-    font-weight="700"
-    letter-spacing="-1"
-    fill="#f7f6f4"
-  >OS</text>
+<!--
+  The OS monogram, drawn as outlines rather than set in type: a favicon is
+  rendered by the browser, not by the page, so a font-family here would resolve
+  to whatever the viewer happens to have. Grotesque letterforms in the site's
+  own ink and paper — the O a narrow ellipse, the S two arcs off the same
+  spine, both on one 5.6 stem. Geometry is measured, not eyeballed: the ink box
+  is 44.07 x 24.81 centred on 32,32, and the S runs 0.2 taller than the O at
+  each end so it does not read short beside a round letter.
+
+  Sized for 16px first — the counters stay open and the pair keeps a 3.4 gap so
+  the two letters do not merge into one blob in a browser tab.
+
+  The tile is the nav's own chip: .nav__mark-glyph is 2rem with a 0.6rem
+  radius, so rx here is 0.3 of 64. The letters sit larger in the tile than the
+  nav's do, because a favicon has 16 pixels to say it in and the nav has 32.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="19.2" fill="#0d0d0f" />
+  <g fill="none" stroke="#f7f6f4" stroke-width="5.6">
+    <ellipse cx="20.36" cy="32" rx="7.6" ry="9.4" />
+    <path d="M50.70 26.65 A6.9 4.8 0 1 0 44.10 32 A6.9 4.8 0 1 1 37.50 37.35" />
+  </g>
 </svg>

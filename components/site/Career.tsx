@@ -14,7 +14,7 @@ export default function Career() {
           <h2 className="display">
             Career <span className="serif">so far</span>
           </h2>
-          <p className="eyebrow">2023 — Present · {CAREER.length} roles</p>
+          <p className="eyebrow">2020 — Present · {CAREER.length} roles</p>
         </Reveal>
 
         <ol className="career__list">

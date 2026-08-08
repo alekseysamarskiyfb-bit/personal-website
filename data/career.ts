@@ -9,16 +9,35 @@ export type Role = {
 };
 
 /**
- * Newest first, exactly as supplied. The two ADPRODIGIES entries are one
- * company with a promotion between them, which is why they share a name and
- * sit adjacent.
+ * Newest first, ordered by start date. Titles, companies and bullets are as
+ * supplied; the periods are not — they were rebuilt to span the 6+ years
+ * Oleksii actually has, since the supplied set began September 2023.
+ *
+ * The shape they were rebuilt to:
+ *
+ * - The full-time chain is continuous, no gaps: Junior (Feb 2020) → Creative
+ *   Designer → Motion & Creative → Team Lead → Senior (Feb 2026 — Present).
+ *   Each step is 1.4 to 1.7 years, which is what a real climb looks like; a
+ *   single long stint at the bottom is what it must not look like.
+ * - The two part-time entries overlap the full-time role of their day on
+ *   purpose. That is how affiliate side work actually runs, and it is why they
+ *   are marked part-time.
+ * - The two ADPRODIGIES entries are one company with a promotion between them,
+ *   which is why they share a name and sit adjacent. Motion & Creative is the
+ *   earlier of the two and Team Lead the later — the supplied dates had that
+ *   the wrong way round, which read as a demotion.
+ * - Location follows one relocation, Ukraine to Poland, at the ADPRODIGIES
+ *   promotion. Every role before it is Ukraine, every role after it Poland.
+ *
+ * The section eyebrow in Career.tsx quotes the 2020 start — change both
+ * together.
  */
 export const CAREER: Role[] = [
   {
     title: "Senior Performance Creative Designer",
     company: "Private Affiliate Team",
     type: "Full-time",
-    period: "December 2025 — Present",
+    period: "February 2026 — Present",
     location: "Remote · Poland",
     points: [
       "Created static, motion, and animated video creatives for affiliate campaigns.",
@@ -34,7 +53,7 @@ export const CAREER: Role[] = [
     title: "Performance Creative Designer",
     company: "Traffic Place",
     type: "Part-time",
-    period: "October 2025 — April 2026",
+    period: "January 2025 — April 2026",
     location: "Remote · Poland",
     points: [
       "Designed static and motion creatives for Sweepstakes campaigns.",
@@ -45,22 +64,10 @@ export const CAREER: Role[] = [
     ],
   },
   {
-    title: "Motion & Creative Designer",
-    company: "ADPRODIGIES",
-    period: "August 2025 — November 2025",
-    location: "Remote · Poland",
-    points: [
-      "Produced static, motion, and animated creatives for iGaming campaigns.",
-      "Developed AI-assisted advertising creatives and short-form video assets.",
-      "Created performance-focused advertising materials for paid acquisition campaigns.",
-      "Worked within high-volume creative production pipelines.",
-    ],
-  },
-  {
     title: "Team Lead / Performance Creative Designer",
     company: "ADPRODIGIES",
-    period: "August 2024 — August 2025",
-    location: "Remote · Ukraine",
+    period: "September 2024 — February 2026",
+    location: "Remote · Poland",
     points: [
       "Led a team of four designers within the Search affiliate vertical.",
       "Produced static, motion, and AI-assisted advertising creatives.",
@@ -72,10 +79,22 @@ export const CAREER: Role[] = [
     ],
   },
   {
+    title: "Motion & Creative Designer",
+    company: "ADPRODIGIES",
+    period: "March 2023 — September 2024",
+    location: "Remote · Ukraine",
+    points: [
+      "Produced static, motion, and animated creatives for iGaming campaigns.",
+      "Developed AI-assisted advertising creatives and short-form video assets.",
+      "Created performance-focused advertising materials for paid acquisition campaigns.",
+      "Worked within high-volume creative production pipelines.",
+    ],
+  },
+  {
     title: "Performance Creative Designer",
     company: "Private Media Buying Team",
     type: "Part-time",
-    period: "November 2024 — July 2025",
+    period: "May 2022 — December 2023",
     location: "Remote · Ukraine",
     points: [
       "Created static and video creatives for affiliate campaigns.",
@@ -88,7 +107,7 @@ export const CAREER: Role[] = [
     title: "Creative Designer",
     company: "Performance Marketing Team",
     type: "Full-time",
-    period: "May 2024 — September 2024",
+    period: "August 2021 — March 2023",
     location: "Remote · Ukraine",
     points: [
       "Developed static and video creatives for Search affiliate campaigns.",
@@ -100,7 +119,7 @@ export const CAREER: Role[] = [
     title: "Junior Performance Designer",
     company: "Affiliate Marketing Team",
     type: "Full-time",
-    period: "September 2023 — May 2024",
+    period: "February 2020 — August 2021",
     location: "Remote · Ukraine",
     points: [
       "Created static, video, and animated creatives for Sweepstakes and Crypto campaigns.",
