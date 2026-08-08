@@ -37,19 +37,20 @@ export default function Velar() {
                 />
                 <p className="velar__tag">
                   <span className="velar__pulse" aria-hidden="true" />
-                  AI-assisted creative studio
+                  Vertical video · AI-powered creative
                 </p>
               </div>
               <div className="velar__pitch">
                 <p>
-                  A small creative agency built around one question every media
-                  buyer actually asks:{" "}
-                  <span className="serif">did it convert?</span>
+                  A creative studio built around vertical video — ads for
+                  businesses, short-form for the people building an audience,{" "}
+                  <span className="serif">made to be watched.</span>
                 </p>
                 <p className="velar__pitch-sub">
-                  Velar makes the creative that answers it — static, motion, and
-                  AI-assisted, produced at the volume paid traffic needs and
-                  held to the standard a brand deserves.
+                  Static comes with it: Instagram Stories, social posts and ad
+                  creatives cut to any platform&rsquo;s format. AI is used
+                  wherever it genuinely earns its place — volume, variation,
+                  speed — and nowhere it would cost the work its finish.
                 </p>
               </div>
             </div>
