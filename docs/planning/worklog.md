@@ -2,6 +2,79 @@
 
 Newest first.
 
+## 2026-08-08 · fix · hero never came back after scrolling away; hero and nav polish
+By: alekseysamarskiyfb-bit
+Why: Oleksii reported the photo vanishing and not returning until a reload —
+a real defect. Plus three refinements: a bigger, sharper photo on phones, a
+larger role line on tablets, and the nav links properly centred.
+How: the defect was the hero's leave animation. It was a `gsap.to`, so GSAP
+captured its start values on the first ScrollTrigger refresh — which happens
+while the intro is still mid-fade — and recorded opacity 0 as the value to
+return to. Scrolling back up then "reversed" to invisible; only a reload reset
+it. Reproduced at 390, 768 and 1440, all three showing opacity stuck at 0 after
+a round trip. Now a `fromTo` with an explicit start and `immediateRender:
+false`, matching the Reveal primitive, which never had the bug for this exact
+reason. It hit `.hero__top` and `.hero__name` too — the whole hero was
+disappearing, the photo was just the visible part. Verified over two round
+trips at all three widths.
+The photo is regenerated from the 4800px cutout at 1600px wide, trimmed to the
+subject's bounds, WebP q92, and served at `quality={90}` with the phone `sizes`
+raised to 92vw — a 3x phone now pulls the w=1080 variant rather than a
+smaller one. Mobile max-width 90vw → 96vw. The role line's clamp bottomed out
+below 780px, so a tablet was getting the phone's 28px; the stacked range now
+has its own slope and reads 47.6px at 768. The nav pill became a
+`1fr auto 1fr` grid: `margin: auto` had only centred the links *between* two
+unequal neighbours, and the pill's asymmetric padding put them 7px off. Padding
+is now symmetric with the mark carrying its own inset — measured 0px off both
+the pill centre and the viewport centre at 1024/1280/1440/1920.
+Verified: six-width sweep clean, behaviour pass clean, `tsc` clean.
+Ref: pending
+
+## 2026-08-08 · fix · centre the Velar wordmark below 900px
+By: alekseysamarskiyfb-bit
+Why: below 900px the studio head drops to one column, so the mark no longer
+shares a row with the pitch — left-aligned in the full width it read as a
+column that had lost its other half.
+How: `text-align: center` on `.velar__mark` inside the existing 900px query,
+with `margin-inline: auto` on the image, which is a block and would otherwise
+ignore it. The tag line is inline-flex, so it centres with the mark as one
+unit rather than needing a rule of its own. Desktop is untouched. Verified at
+375, 768 and 1440: equal side gaps at both mobile widths (22px and 203px),
+image and tag centres within a pixel of the block's, still left-aligned at
+1440, no horizontal overflow.
+Ref: pending
+
+## 2026-08-08 · copy · change the header button to "Let's Talk"
+By: alekseysamarskiyfb-bit
+Why: Oleksii wants the header CTA to open a conversation rather than name the
+transaction — "Hire me" asks for a decision the visitor has not made yet.
+How: one string in Nav.tsx, set with a typographic apostrophe to match the rest
+of the copy. Only occurrence in the codebase; the Telegram href, the hero and
+the closing CTA panel are untouched. Checked at 1280 and 375 — the pill grows to
+110px and still sits beside the burger with no overflow.
+Ref: pending
+
+## 2026-08-08 · fix · restyle the portfolio captions and compact the phone grid
+By: alekseysamarskiyfb-bit
+Why: Oleksii read the captions as foreign to the design — they were body-size
+mixed case behind a drawn dash, a voice the site uses nowhere else. "9:16 ·
+paid social" named a format and a channel rather than the work. And one 9:16
+card per phone row was nearly a full screen each, so eight creatives became a
+scroll of their own.
+How: the caption now speaks the site's smallest voice — uppercase, tracked,
+eyebrow-sized, ink-70 going to ink on hover — and the drawn rule is gone.
+Labels are "Video 1…4" and "Static 1…4": a first pass set the stills as
+category plus creative number, which needed a second muted span and, at half
+width on a phone, stacked onto its own line; Oleksii asked for the plain
+numbering, so the caption is one word and a digit and the note field, its
+dot and the stacking rule came back out. The section eyebrow reads "Vertical
+video · static ads", matching what the two rows actually are and the
+language Velar now uses. Phones keep two cards per row (162x287 at 375
+instead of 335x595), with the play mark, index chip and caption tracking
+scaled to match. Verified at 1440, 768 and 375: four-up and two-up grids,
+every caption one line at 12px, no horizontal overflow, `tsc` clean.
+Ref: pending
+
 ## 2026-08-08 · feat · repoint the Velar copy at vertical video
 By: alekseysamarskiyfb-bit
 Why: the section sold Velar as a performance-creative shop for media buyers —
@@ -20,7 +93,7 @@ the studio actually serves. Two blurbs survived intact because they were
 already about the work rather than about buying traffic. Verified at 1440, 768
 and 375: six equal cards, every title on one line, no horizontal overflow,
 console and server logs clean.
-Ref: pending
+Ref: 0d06275
 
 ## 2026-08-07 · feat · drop the hero lockup lower, stack it above the photo on phones
 By: alekseysamarskiyfb-bit

@@ -96,18 +96,30 @@ export default function Hero() {
 
       // The hero leaves the way every other section does, scrubbed over its own
       // first screenful, so it has fully receded by the time the studio arrives.
-      gsap.to(".hero__top, .hero__portrait, .hero__name, .hero__scroll", {
-        opacity: 0,
-        y: -REVEAL.fall,
-        filter: `blur(${REVEAL.blur}px)`,
-        ease: "none",
-        scrollTrigger: {
-          trigger: el,
-          start: "top top",
-          end: "bottom 45%",
-          scrub: REVEAL.scrub,
+      //
+      // fromTo, not to: a plain `to` captures its start values on the first
+      // refresh, which happens while the intro above is still mid-fade. It
+      // recorded opacity 0 as the value to return to, so scrolling back up
+      // never brought the hero back — only a reload did. The start state is
+      // now stated outright, and immediateRender keeps it from overwriting the
+      // intro's own starting point at mount.
+      gsap.fromTo(
+        ".hero__top, .hero__portrait, .hero__name, .hero__scroll",
+        { opacity: 1, y: 0, filter: "blur(0px)" },
+        {
+          opacity: 0,
+          y: -REVEAL.fall,
+          filter: `blur(${REVEAL.blur}px)`,
+          ease: "none",
+          immediateRender: false,
+          scrollTrigger: {
+            trigger: el,
+            start: "top top",
+            end: "bottom 45%",
+            scrub: REVEAL.scrub,
+          },
         },
-      });
+      );
     }, el);
 
     return () => ctx.revert();
@@ -146,10 +158,17 @@ export default function Hero() {
           <Image
             src="/portrait-cutout.webp"
             alt={`${SITE.firstName} ${SITE.lastName}`}
-            width={1050}
-            height={1160}
+            width={1600}
+            height={1772}
             priority
-            sizes="(max-width: 860px) 84vw, 44vw"
+            // Above the default 75: this is the one photograph on the site and
+            // it is the largest thing on the page, so compression artefacts in
+            // the skin would be the first thing a client sees.
+            quality={90}
+            // The phone value is what the srcset is really chosen from — at
+            // 92vw on a 3x screen that asks for roughly 1100px of image, so the
+            // source has to be comfortably larger than the box it fills.
+            sizes="(max-width: 860px) 92vw, 44vw"
           />
         </div>
       </div>
