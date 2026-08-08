@@ -736,6 +736,11 @@ h3 {
 
 /* --- Hero ---------------------------------------------------------------- */
 
+/* No background of its own. The hero used to repaint the field and carry a
+   second copy of the wash, positioned against its own box rather than the
+   viewport — so the two gradients met at different values along the hero's
+   bottom edge and drew a visible line there. The body's single fixed layer is
+   the only field on the page now, and it runs straight through. */
 .hero {
   position: relative;
   min-height: 100svh;
@@ -743,18 +748,6 @@ h3 {
   flex-direction: column;
   overflow: hidden;
   isolation: isolate;
-  background: var(--field);
-}
-
-.hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(70vw 70vw at 12% 6%, rgba(255, 255, 255, 0.34), transparent 58%),
-    radial-gradient(55vw 55vw at 88% 88%, rgba(255, 255, 255, 0.2), transparent 58%);
 }
 
 .hero__top {
@@ -894,43 +887,6 @@ h3 {
   --portrait-h: min(82svh, 50rem, calc(46vw * 1772 / 1600));
 }
 
-.hero__scroll {
-  position: absolute;
-  z-index: 4;
-  right: var(--gutter);
-  bottom: clamp(2.5rem, 8vh, 5.5rem);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: var(--t-eyebrow);
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  text-decoration: none;
-  color: var(--ink-50);
-  transition: color 0.4s var(--ease);
-}
-
-.hero__scroll:hover {
-  color: var(--ink);
-}
-
-.hero__scroll svg {
-  animation: hero-nudge 2.6s var(--ease) infinite;
-}
-
-@keyframes hero-nudge {
-  0%,
-  100% {
-    transform: translateY(0);
-    opacity: 0.55;
-  }
-  45% {
-    transform: translateY(6px);
-    opacity: 1;
-  }
-}
-
 @media (max-width: 860px) {
   .hero__top {
     flex-direction: column;
@@ -974,12 +930,6 @@ h3 {
     height: auto;
     width: 100%;
     max-width: 96vw;
-  }
-
-  /* The scroll cue has nowhere to sit once the name fills the width, and touch
-     devices scroll without being told to. */
-  .hero__scroll {
-    display: none;
   }
 }
 

@@ -19,27 +19,6 @@ export function ArrowUpRight({ className }: { className?: string }) {
   );
 }
 
-export function ArrowDown({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      width="16"
-      height="28"
-      viewBox="0 0 16 28"
-      fill="none"
-      aria-hidden="true"
-    >
-      <path
-        d="M8 0v26M1 19l7 7 7-7"
-        stroke="currentColor"
-        strokeWidth="1.3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
 export function Telegram({ className }: { className?: string }) {
   return (
     <svg

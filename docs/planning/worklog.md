@@ -2,6 +2,29 @@
 
 Newest first.
 
+## 2026-08-08 · fix · one seamless field behind the hero and the studio
+By: alekseysamarskiyfb-bit
+Why: Oleksii saw a hard horizontal line where the hero meets Velar Studio,
+scrolling either way — the page is meant to read as one continuous surface. He
+also wanted the hero's scroll cue gone.
+How: the hero was painting its own field. It set `background: var(--field)` and
+carried a `::before` with its own radial washes — and those washes were
+positioned against the hero's box, with different geometry from the body's
+(`55vw at 88% 88%` versus `60vw at 92% 80%`, and no third deep wash at all). So
+the two layers arrived at the hero's bottom edge holding different values and
+the difference read as a rule. Both are deleted; `body::before` is fixed to the
+viewport and is now the only field on the page, which makes a seam
+geometrically impossible rather than merely tuned away. The scroll cue came out
+whole: the `<a>`, the `ArrowDown` import, its four CSS rules, the `hero-nudge`
+keyframes, the phone-width hide, and the icon itself in `icons.tsx`, which had
+no other caller. It also left the hero's leave animation, whose selector list is
+one item shorter. Verified at 1440x900 and 375x812: hero computes
+`rgba(0, 0, 0, 0)` with `::before` content `none`, no `.hero__scroll` in the
+DOM, no line at the boundary in either direction, hero back to opacity 1 after a
+scroll round trip (the cd4d98f defect has not returned), no console errors,
+`tsc` clean.
+Ref: pending
+
 ## 2026-08-08 · fix · make the open menu span the sheet, and drop the plain-text handle
 By: alekseysamarskiyfb-bit
 Why: the menu's content was capped at 34rem, so past that width it sat in a

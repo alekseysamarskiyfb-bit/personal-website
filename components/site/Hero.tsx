@@ -6,7 +6,6 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SITE } from "@/data/site";
 import { REVEAL, prefersReducedMotion } from "@/components/motion/motion";
-import { ArrowDown } from "./icons";
 
 const LINES = [SITE.firstName, SITE.lastName];
 
@@ -91,8 +90,7 @@ export default function Hero() {
               Number((target as HTMLElement).dataset.i ?? 0) * 0.035,
           },
           "-=1.3",
-        )
-        .from(".hero__scroll", { opacity: 0, y: 14, duration: 1 }, "-=0.9");
+        );
 
       // The hero leaves the way every other section does, scrubbed over its own
       // first screenful, so it has fully receded by the time the studio arrives.
@@ -104,7 +102,7 @@ export default function Hero() {
       // now stated outright, and immediateRender keeps it from overwriting the
       // intro's own starting point at mount.
       gsap.fromTo(
-        ".hero__top, .hero__portrait, .hero__name, .hero__scroll",
+        ".hero__top, .hero__portrait, .hero__name",
         { opacity: 1, y: 0, filter: "blur(0px)" },
         {
           opacity: 0,
@@ -172,11 +170,6 @@ export default function Hero() {
           />
         </div>
       </div>
-
-      <a className="hero__scroll" href="#velar">
-        <span>Scroll</span>
-        <ArrowDown />
-      </a>
     </section>
   );
 }
