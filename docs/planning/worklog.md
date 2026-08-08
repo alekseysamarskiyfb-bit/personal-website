@@ -2,6 +2,25 @@
 
 Newest first.
 
+## 2026-08-07 · feat · drop the hero lockup lower, stack it above the photo on phones
+By: alekseysamarskiyfb-bit
+Why: Oleksii wanted the name lower in the desktop frame, and on phones moved
+above the picture entirely — balanced, with no awkward empty space.
+How: desktop is one number, `--name-foot` 24vh → 13vh. That is the dial that
+trades composition against legibility: lower puts the lockup behind the
+shoulders, which are twice the width of the head, so "Samarskyi" now loses
+three letters to the torso rather than one. Below 860px the stage becomes a
+flex column — name in normal flow above, portrait below — and the portrait is
+sized `flex: 1 1 0` instead of carrying a height of its own, so it absorbs
+whatever is left over: no gap opens under it on a tall phone and it cannot
+overflow a short one. `--name-size` in that range is now clamped rather than
+pure vw; at 768 a raw 19vw was a 146px name eating the height the portrait
+needed, which left the picture stranded at 49% of a wide frame. Capped at
+6.5rem it recovers to 60%. Verified at 375x812, 390x667, 768x1024, 1440x900
+and 1920x1080, plus the six-width sweep and behaviour pass — no overflow, no
+overlaps, `tsc` clean.
+Ref: pending
+
 ## 2026-08-07 · feat · add the mobile burger menu
 By: alekseysamarskiyfb-bit
 Why: below 820px the nav links were simply hidden and nothing replaced them,

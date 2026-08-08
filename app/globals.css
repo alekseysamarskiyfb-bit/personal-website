@@ -847,10 +847,10 @@ h3 {
    stage they share. */
 .hero__stage {
   --name-size: 15.6vw;
-  /* The lockup rides high enough that its first line crosses the head rather
-     than the shoulders. The head is less than half the width of the torso, so
-     far more of the name survives the occlusion. */
-  --name-foot: clamp(5rem, 24vh, 15rem);
+  /* Where the lockup sits in the frame. Lower puts more of it behind the
+     shoulders, which are twice the width of the head — so this is the dial
+     that trades composition against how much of the name survives. */
+  --name-foot: clamp(3rem, 13vh, 8.5rem);
   /* Height, but capped by width too: driving off viewport height alone lets a
      narrow window compute a portrait wider than the screen, which buries the
      name behind it. The third term is the width cap expressed as a height. */
@@ -900,13 +900,36 @@ h3 {
     gap: 1.1rem;
   }
 
+  /* On a phone the portrait is wide enough to swallow most of the name, so the
+     two stop overlapping: the name goes above the picture and both sit in
+     normal flow. */
   .hero__stage {
-    --name-size: 19vw;
+    /* Capped, not pure vw: at the top of this range 19vw is a 146px name that
+       eats the height the portrait needs, leaving it stranded in the middle of
+       a wide frame. The cap hands that height back. */
+    --name-size: clamp(3rem, 19vw, 6.5rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(0.75rem, 2.5vh, 1.75rem);
+    min-height: 0;
   }
 
-  .hero__stage {
-    --portrait-h: min(64svh, 34rem, calc(76vw * 1160 / 1050));
-    --name-foot: clamp(3.5rem, 17vh, 9rem);
+  .hero__name {
+    position: static;
+    width: 100%;
+  }
+
+  /* The portrait takes whatever height is left rather than a size of its own.
+     That is what keeps the composition tight at every phone height: no gap
+     opens up under it on a tall screen, and it cannot overflow a short one. */
+  .hero__portrait {
+    position: static;
+    flex: 1 1 0;
+    min-height: 0;
+    height: auto;
+    width: 100%;
+    max-width: 90vw;
   }
 
   /* The scroll cue has nowhere to sit once the name fills the width, and touch
